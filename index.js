@@ -10,7 +10,6 @@ client.on('ready', () => {
     client.user.setActivity('your suggestions', { type: 'LISTENING' });
 });
 
-/* When a user types a command */
 client.on('message', message => {
    // ignores all non-command messages and bot messages
    if (!message.content.startsWith(prefix) || message.author.bot)
@@ -26,7 +25,6 @@ client.on('message', message => {
    }
 });
 
-/* When a new user joins the server */
 client.on('guildMemberAdd', member => {
    member.guild.channels.get('422983940060479501').send(outdent({ 'trimLeadingNewline': true })`
       Welcome ${member.user} to ${member.guild.name}'s Discord server!
@@ -38,7 +36,6 @@ client.on('guildMemberAdd', member => {
    );
 });
 
-/* When a user leaves the server */
 client.on('guildMemberRemove', member => {
    member.guild.channels.get('422983940060479501').send(`Whoops! ${member.user} stared directly at the Eclipse...`);
 });
@@ -47,20 +44,7 @@ client.login(token);
 
 /* Command functions */
 
-/*
- * Makes an user to identify him/herself on WarMatch
- * By rule, user nickname on discord should be the same as his/her COC IGN
- *
- * $ +identify @PERIL
- * $ @PERIL, register your account in WarMatch by going to #wmbot and typing !wm identfiy PERIL
- * $
- * $ +identify @PERIL UV2J9YRV
- * $ @PERIL, register your account in WarMatch by going to #wmbot and typing !wm identify UV2J9YRV
- *
- * @param message    message to evaluate
- * @param args       arguments in message
- */
-function identify(message, args) {
+identify = (message, args) => {
    if (!requireLeadershipRole(message) || !requireTagUsers(message))
       return;
 
@@ -76,15 +60,9 @@ function identify(message, args) {
    message.delete();
 }
 
-/* Helper methods, for verification/validation */
+/* Verification */
 
-/*
- * Makes sure that user that sent the message has a leadership roles
- *
- * @param message    message to evaluate
- * @return true if the user is has a leadership role, false otherwise
- */
-function requireLeadershipRole(message) {
+requireLeadershipRole = message => {
    if (!message.member.roles.some(role => leadershipRoles.includes(role.name))) {
       message.channel.send('You do not have permission to use this command.');
       return false;
@@ -92,14 +70,7 @@ function requireLeadershipRole(message) {
    return true;
 }
 
-/*
- * Makes sure that the user that sent the message tags other requireTagUsers
- *
- * @param message    message to evaluate
- * @param num        number of users to tag
- * @return true if user tagged enough users, false otherwise
- */
-function requireTagUsers(message, num) {
+requireTagUsers = (message, num) => {
    if (!num) num = 1;
    if (message.mentions.users.size < num) {
       message.channel.send(`You need to tag ${num > 1 ? `${num}  users` : 'a user'} for this command.`);
@@ -108,9 +79,7 @@ function requireTagUsers(message, num) {
    return true;
 }
 
-/*
- */
-function requireHumanUser(message, taggedUser) {
+requireHumanUser = (message, taggedUser) => {
    if (taggedUser.bot) {
       message.channel.send('You cannot tag a bot for this command.');
       return false;
