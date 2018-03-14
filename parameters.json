@@ -1,5 +1,5 @@
 {
    "leadershipRoles": ["Leadership"],
-   "clanRules": "https://bit.ly/RE-Rules",
-   "rcsPassword": "https://bit.ly/RCSpassword"
+   "rules": "https://bit.ly/RE-Rules",
+   "password": "https://bit.ly/RCSpassword"
 }
