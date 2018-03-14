@@ -19,6 +19,21 @@ client.on('ready', () => {
     client.user.setActivity('your suggestions', { type: 'LISTENING' });
 });
 
+client.on('guildMemberAdd', member => {
+   member.guild.channels.get('422983940060479501').send(outdent({ 'trimLeadingNewline': true })`
+      Welcome ${member.user} to ${member.guild.name}'s Discord server!
+      **Please set your nickname to match your in game name.**
+
+      1. If you’re looking to apply, please make sure you’ve read the clan rules. Clan rules can be found here: ${rules}. You’ll also need the RCS password to apply which can be found here: ${password}.
+
+      2. Apply in-game and tag **@Leadership** to get your server roles.`
+   );
+});
+
+client.on('guildMemberRemove', member => {
+   member.guild.channels.get('422983940060479501').send(`Whoops! ${member.user} stared directly at the Eclipse...`);
+});
+
 client.on('message', message => {
    if (!message.content.startsWith(prefix) || message.author.bot)
       return;
@@ -33,8 +48,8 @@ client.on('message', message => {
       return message.channel.send('This command does not exist. Type `+help` for full list of commands.');
 
    if (command.leadership && !verify.verifyLeadership(message) ||
-         command.tag && !verify.verifyTag(message, command) ||
-         command.args && !verify.verifyArgument(message, command, args))
+         command.args && !verify.verifyArgument(message, command, args) ||
+         command.tag && !verify.verifyTag(message, command))
       return;
 
    /* Execute command */
@@ -44,21 +59,6 @@ client.on('message', message => {
    } catch (error) {
       message.channel.send('Something went wrong...');
    }
-});
-
-client.on('guildMemberAdd', member => {
-   member.guild.channels.get('422983940060479501').send(outdent({ 'trimLeadingNewline': true })`
-      Welcome ${member.user} to ${member.guild.name}'s Discord server!
-      **Please set your nickname to match your in game name.**
-
-      1. If you’re looking to apply, please make sure you’ve read the clan rules. Clan rules can be found here: ${rules}. You’ll also need the RCS password to apply which can be found here: ${password}.
-
-      2. Apply in-game and tag **@Leadership** to get your server roles.`
-   );
-});
-
-client.on('guildMemberRemove', member => {
-   member.guild.channels.get('422983940060479501').send(`Whoops! ${member.user} stared directly at the Eclipse...`);
 });
 
 client.login(token);

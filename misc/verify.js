@@ -11,22 +11,22 @@ module.exports = {
       return true;
    },
 
-   verifyTag: function(message, command) {
-      if (message.mentions.users.size < command.tag) {
+   verifyArgument: function(message, command, args) {
+      if (args.length < command.args) {
          message.channel.send(outdent({ 'trimLeadingNewline': true })`
-            You need to tag ${command.tag > 1 ? `${command.tag}  users` : 'a user'}.
-            The proper usage is: \`${prefix}${command.name}${command.usage ? ` ${command.usage}` : ' '}\``
+            You must provide ${command.args == 1 ? 'an argument' : `${command.args} arguments`}.
+            The proper usage is: \`${prefix}${command.name} ${command.usage ? command.usage : ''}\``
          );
          return false;
       }
       return true;
    },
 
-   verifyArgument: function(message, command, args) {
-      if (args.length != command.args.length) {
+   verifyTag: function(message, command) {
+      if (message.mentions.users.size < command.tag) {
          message.channel.send(outdent({ 'trimLeadingNewline': true })`
-            You need to provide proper arguments.
-            The proper usage is: \`${prefix}${command.name} ${command.usage ? command.usage : ''}\``
+            You need to tag ${command.tag > 1 ? `${command.tag}  users` : 'a user'}.
+            The proper usage is: \`${prefix}${command.name}${command.usage ? ` ${command.usage}` : ' '}\``
          );
          return false;
       }
