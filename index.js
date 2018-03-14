@@ -1,9 +1,12 @@
 const fs = require('fs');
 const outdent = require('outdent');
-
 const Discord = require('discord.js');
-const client = new Discord.Client();
 
+const { prefix, token } = require('./config.json');
+const { rules, password } = require('./parameters.json');
+const verify = require('./misc/verify.js');
+
+const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands');
 for (const file of commandFiles) {
@@ -11,26 +14,35 @@ for (const file of commandFiles) {
    client.commands.set(command.name, command);
 }
 
-const { prefix, token } = require('./config.json');
-const clan = require('./parameters.json');
-
 client.on('ready', () => {
     console.log('Connected.');
     client.user.setActivity('your suggestions', { type: 'LISTENING' });
 });
 
 client.on('message', message => {
-   // ignores all non-command messages and bot messages
    if (!message.content.startsWith(prefix) || message.author.bot)
       return;
 
    const args = message.content.slice(prefix.length).trim().split(/ +/);
-   const command = args.shift().toLowerCase();
+   const commandName = args.shift().toLowerCase();
+   const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-   switch (command) {
-      case 'identify': identify(message, args); break;
-      case 'help': message.channel.send('Help command WIP.'); break;
-      default: message.channel.send('Command not recognized. Type ``+help`` for full list of commands.'); break;
+   /* Verify command usage and permissions */
+
+   if (!command)
+      return message.channel.send('This command does not exist. Type `+help` for full list of commands.');
+
+   if (command.leadership && !verify.verifyLeadership(message) ||
+         command.tag && !verify.verifyTag(message, command) ||
+         command.args && !verify.verifyArgument(message, command, args))
+      return;
+
+   /* Execute command */
+
+   try {
+      command.execute(message, args);
+   } catch (error) {
+      message.channel.send('Something went wrong...');
    }
 });
 
@@ -39,7 +51,7 @@ client.on('guildMemberAdd', member => {
       Welcome ${member.user} to ${member.guild.name}'s Discord server!
       **Please set your nickname to match your in game name.**
 
-      1. If you’re looking to apply, please make sure you’ve read the clan rules. Clan rules can be found here: ${clan.rules}. You’ll also need the RCS password to apply which can be found here: ${clan.password}.
+      1. If you’re looking to apply, please make sure you’ve read the clan rules. Clan rules can be found here: ${rules}. You’ll also need the RCS password to apply which can be found here: ${password}.
 
       2. Apply in-game and tag **@Leadership** to get your server roles.`
    );
@@ -50,34 +62,3 @@ client.on('guildMemberRemove', member => {
 });
 
 client.login(token);
-
-
-help => (message) => {
-
-}
-/* Verification */
-
-requireLeadershipRole = message => {
-   if (!message.member.roles.some(role => clan.leadershipRoles.includes(role.name))) {
-      message.channel.send('You do not have permission to use this command.');
-      return false;
-   }
-   return true;
-}
-
-requireTagUsers = (message, num) => {
-   if (!num) num = 1;
-   if (message.mentions.users.size < num) {
-      message.channel.send(`You need to tag ${num > 1 ? `${num}  users` : 'a user'} for this command.`);
-      return false;
-   }
-   return true;
-}
-
-requireHumanUser = (message, taggedUser) => {
-   if (taggedUser.bot) {
-      message.channel.send('You cannot tag a bot for this command.');
-      return false;
-   }
-   return true;
-}

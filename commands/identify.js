@@ -1,19 +1,25 @@
+const verify = require ('../misc/verify.js');
+
 module.exports = {
    name: 'identify',
-   description: 'Tell a user to identify him/herself on WarMatch',
+   description: 'Tells a user to identify him/herself on WarMatch',
+   aliases: ['i'],
+   usage: '<user>',
+   leadership: true,
+   args: true,
+   tag: 1,
    execute(message, args) {
-      if (!requireLeadershipRole(message) || !requireTagUsers(message))
+      const user = message.mentions.users.first();
+      const member = message.mentions.members.first();
+
+      if (!verify.verifyTagHuman(message, user))
          return;
 
-      const taggedUser = client.channels.get(message.channel.id).members.get(message.mentions.users.first().id);
-      if (!requireHumanUser(message, taggedUser))
-         return;
-
-      if (args.length === 1)
-         message.channel.send(`${taggedUser.user}, register your account in WarMatch by going to <#275563260386869248> and typing -> \`\`!wm identify ${taggedUser.nickname}\`\``);
+      if (!args[1])
+         message.channel.send(`${member.user}, register your account in WarMatch by going to <#275563260386869248> and typing -> \`!wm identify ${member.nickname}\``);
       else
-         message.channel.send(`${taggedUser.user}, register your account in WarMatch by going to <#275563260386869248> and typing -> \`\`!wm identify ${args[1]}\`\``);
+         message.channel.send(`${member.user}, register your account in WarMatch by going to <#275563260386869248> and typing -> \`!wm identify ${args[1]}\``);
 
       message.delete();
-   }
-}
+   },
+};
