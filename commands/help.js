@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { prefix } = require('../config.json');
+const { prefix } = require('../config.js');
 
 module.exports = {
    name: 'help',
@@ -11,7 +11,7 @@ module.exports = {
       const embed = new Discord.RichEmbed()
          .setTitle('Eclipse Bot Commands')
          .setColor(0xdba41a);
-
+      
       const embedLeadership = new Discord.RichEmbed()
          .setTitle('Leadership Commands')
          .setColor(0xdba41a);

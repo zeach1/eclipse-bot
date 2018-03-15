@@ -1,8 +1,10 @@
+require('./bootup.js');
+
 const fs = require('fs');
 const outdent = require('outdent');
 const Discord = require('discord.js');
 
-const { prefix, token } = require('./config.json');
+const { prefix, token } = require('./config.js');
 const { rules, password } = require('./parameters.json');
 const verify = require('./misc/verify.js');
 
