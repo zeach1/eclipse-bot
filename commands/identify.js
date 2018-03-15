@@ -1,6 +1,5 @@
 const outdent = require('outdent');
 
-const check = require('../misc/check.js');
 const messenger = require('../misc/messenger.js');
 
 module.exports = {
@@ -17,13 +16,13 @@ module.exports = {
 
     if (member.bot)
       return messenger.sendArgumentError('You cannot ask a bot to do this.', message, this);
-    
+
     message.channel.send(outdent({ 'trimLeadingNewline': true })`
         ${member}, register your account in WarMatch.
-        ⚔️ Go to <#275563260386869248> 
+        ⚔️ Go to <#275563260386869248>
         ⚔️ Type \`!wm identify ${args[1] ? args[1] : member.displayName}\``
       );
-    
+
     if (options.includes('d'))
       message.delete().catch(console.error);
   },

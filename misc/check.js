@@ -1,12 +1,9 @@
-const outdent = require('outdent');
-
-const { prefix } = require('../.data/config.js');
 const { roles } = require('../misc/parameters.js');
 
 module.exports = {
 
   /* Verification */
-  
+
   verifyLeadership: function(message) {
     return this.verifyEclipse(message) && message.member.roles.some(role => roles.leadership.includes(role.name));
   },

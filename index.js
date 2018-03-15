@@ -46,7 +46,7 @@ client.on('message', message => {
   const commandName = args.shift().toLowerCase();
   const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
   const options = [];
-  while (args.length && args[args.length-1].match(/-/))
+  while (args.length && args[args.length - 1].match(/-/))
     options.push(args.pop().replace(/-/, ''));
 
   /* Verify general command format and permissions */
@@ -56,16 +56,16 @@ client.on('message', message => {
   if (command.type === 'leadership' && !check.verifyLeadership(message) ||
       command.type === 'misc' && !check.verifyMember(message))
     return messenger.sendPermissionError(message);
-  
+
   if (command.args && !check.verifyArgument(message, command, args))
     return messenger.sendArgumentError(`You must provide ${command.args == 1 ? 'an argument' : `${command.args} arguments`}.`, message, command);
-  
+
   if (command.tag && !check.verifyTag(message, command))
     return messenger.sendArgumentError(`You need to tag ${command.tag > 1 ? `${command.tag}  users` : 'a user'}.`, message, command);
 
   /* Execute command */
   try {
-     command.execute(message, args, options) 
+     command.execute(message, args, options);
   } catch (e) {
     message.channel.send('Something went wrong...');
     console.log(e);
