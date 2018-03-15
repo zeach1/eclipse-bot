@@ -2,7 +2,7 @@ const http = require('http');
 const express = require('express');
 const app = express();
 
-app.get("/", (request, response) => {
+app.get('/', (request, response) => {
   const date = new Date();
   console.log(`Ping Received: ${date.toLocaleString()}`);
   response.sendStatus(200);
