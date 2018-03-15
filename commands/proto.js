@@ -1,5 +1,8 @@
+const messenger = require('../misc/messenger.js');
+
 module.exports = {
   name: 'proto',
+  type: 'misc',
   description: 'Prototype\'s command',
   usage: '<quote | summon | reference>',
 
@@ -20,7 +23,7 @@ module.exports = {
         break;
 
       default:
-        message.channel.send('This argument does not exist.');
+        messenger.sendArgumentError('This argument does not exist.', message, this);
         break;
     }
   },
@@ -28,10 +31,8 @@ module.exports = {
   summonPeril: function(message, num) {
     if (num == 0) return;
 
-    if (message.author.id != 262864849300619264 && message.author.id != 293571982883028992) {
-      message.channel.send('You do not have enough swag to do this.');
-      return;
-    }
+    if (message.author.id != 262864849300619264)
+      return message.channel.send('You do not have enough swag to do this.');
 
     message.channel.send('<@166611344995385344> `He can\'t code shit`');
     setTimeout(() => {
