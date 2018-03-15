@@ -1,15 +1,38 @@
 const { prefix } = require('../config.js');
-const { leadershipRoles } = require('../parameters.json');
+const { roles } = require('../parameters.js');
 const outdent = require('outdent');
 
 module.exports = {
+
+   verifyHuman: function(message, member) {
+      if (member.bot)
+         return false;
+      return true;
+   },
+  
    verifyLeadership: function(message) {
-      if (!message.member.roles.some(role => leadershipRoles.includes(role.name))) {
+      if (!message.member.roles.some(role => roles.leadership.includes(role.name))) {
          message.channel.send('You do not have permission to use this command.');
          return false;
       }
       return true;
    },
+  
+  verifyEclipse: function(message) {
+      if (!message.member.roles.some(role => roles.eclipse.includes(role.name))) {
+         message.channel.send('You do not have permission to use this command.');
+         return false;
+      }
+      return true;
+  },
+  
+  verifyVerifiedUser: function(message) {
+      if (!message.member.roles.some(role => roles.verified.includes(role.name))) {
+         message.channel.send('You do not have permission to use this command.');
+         return false;
+      }
+      return true;
+  },
 
    verifyArgument: function(message, command, args) {
       if (args.length < command.args) {
@@ -32,12 +55,5 @@ module.exports = {
       }
       return true;
    },
-
-   verifyTagHuman: function(message, member) {
-      if (member.bot) {
-         message.channel.send('You cannot tag a bot for this command.');
-         return false;
-      }
-      return true;
-   },
+  
 };

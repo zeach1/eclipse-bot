@@ -4,7 +4,7 @@ const { prefix } = require('../config.js');
 module.exports = {
    name: 'help',
    description: 'Gives a user the list of commands he/she can use',
-   aliases: ['h'],
+  
    execute(message) {
       const { commands } = message.client;
 

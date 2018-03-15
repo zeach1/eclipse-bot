@@ -1,14 +1,16 @@
 module.exports = {
    name: 'proto',
    description: 'Prototype\'s command',
-   aliases: ['peril'],
    usage: '<quote | summon | reference>',
+  
    args: 1,
+  
    execute(message, args) {
       switch (args[0]) {
          case 'quote': message.channel.send('`He can\'t code shit`'); break;
          case 'summon': this.summonPeril(message, 15); break;
          case 'reference': this.referencePeril(message); break;
+         default: message.channel.send('This argument does not exist.'); break;
       }
    },
 

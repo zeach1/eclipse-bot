@@ -1,14 +1,14 @@
-require('./bootup.js');
+require('./boot.js');
 
 const fs = require('fs');
 const outdent = require('outdent');
 const Discord = require('discord.js');
+const client = new Discord.Client();
 
 const { prefix, token } = require('./config.js');
-const { rules, password } = require('./parameters.json');
+const { rules, password } = require('./parameters.js');
 const verify = require('./misc/verify.js');
 
-const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands');
 for (const file of commandFiles) {
@@ -18,7 +18,7 @@ for (const file of commandFiles) {
 
 client.on('ready', () => {
     console.log('Connected.');
-    client.user.setActivity('your suggestions', { type: 'LISTENING' });
+    client.user.setActivity('PERIL\'s command', { type: 'LISTENING' });
 });
 
 client.on('guildMemberAdd', member => {

@@ -3,7 +3,8 @@ const express = require('express');
 const app = express();
 
 app.get("/", (request, response) => {
-  console.log(Date.now() + " Ping Received");
+  const date = new Date();
+  console.log(`Ping Received: ${date.toLocaleString()}`);
   response.sendStatus(200);
 });
 
