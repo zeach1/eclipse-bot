@@ -3,5 +3,4 @@
 .env
 .git
 .glitch-assets
-config.js
 node_modules
