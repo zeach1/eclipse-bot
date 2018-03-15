@@ -6,7 +6,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 const { prefix, token } = require('./.data/config.js');
-const { rules, password } = require('./.data/parameters.js');
+const { rules, password } = require('./parameters.js');
 const verify = require('./misc/verify.js');
 
 client.commands = new Discord.Collection();

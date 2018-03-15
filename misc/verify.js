@@ -1,5 +1,5 @@
 const { prefix } = require('../.data/config.js');
-const { roles } = require('../.data/parameters.js');
+const { roles } = require('../parameters.js');
 const outdent = require('outdent');
 
 module.exports = {
