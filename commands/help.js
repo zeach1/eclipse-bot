@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { prefix } = require('../config.js');
+const { prefix } = require('../.data/config.js');
 
 module.exports = {
   name: 'help',
