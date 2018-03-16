@@ -5,9 +5,17 @@ const messenger = require('../misc/messenger.js');
 module.exports = {
   name: 'identify',
   type: 'leadership',
-  description: 'Tells a user to identify him/herself on WarMatch',
-  usage: '<@player> [player name/id] [-d]',
-
+  usage: '<user> [player id] [-d | -delete]',
+  description: outdent({ 'trimLeadingNewline': true })`
+    Tells a user to identify him/herself on WarMatch
+    \`\`
+    <user>          user to instruct
+    [player id]     user's player ID
+    [-d | -delete]  delete command message
+    \`\`
+    \u200b
+  `,
+  
   args: 1,
   tag: 1,
 
@@ -23,7 +31,7 @@ module.exports = {
         ⚔️ Type \`!wm identify ${args[1] ? args[1] : member.displayName}\``
       );
 
-    if (options.includes('d'))
+    if (options.includes('d') || options.includes('delete'))
       message.delete().catch(console.error);
   },
 };
