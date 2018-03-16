@@ -15,7 +15,7 @@ module.exports = {
     \`\`
     \u200b
   `,
-  
+
   args: 1,
   tag: 1,
 

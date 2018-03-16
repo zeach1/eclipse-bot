@@ -7,7 +7,7 @@ module.exports = {
   verifyLeadership: function(message) {
     return this.verifyEclipse(message) && message.member.roles.some(role => roles.leadership.includes(role.name));
   },
-  
+
   verifyDeveloper: function(message) {
     return message.member.roles.some(role => roles.developer.includes(role.name));
   },

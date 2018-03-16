@@ -7,7 +7,7 @@ module.exports = {
 
   execute: function(message) {
     const commands = message.client.commands.filterArray(command => command.type !== 'developer');
-    
+
     messenger.sendCommandList(message, commands);
   },
 };

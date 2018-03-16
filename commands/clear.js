@@ -21,19 +21,19 @@ module.exports = {
       return messenger.sendArgumentError('You must use a number for the argument.', message, this);
 
     const num = parseInt(args[0]);
-    
+
     if (num <= 0)
       return messenger.sendArgumentError('You must remove at least one message.', message, this);
-    
+
     this.clear(message, num, 0);
   },
 
   clear: async function(message, num, numDeleted) {
     if (numDeleted == 0)
       message = await message.delete();
-    
+
     const fetched = await message.channel.fetchMessages({ limit: num > 100 ? 100 : num });
-    
+
     const deleted = await message.channel.bulkDelete(fetched);
     const thisDeleted = deleted.array().length;
 
