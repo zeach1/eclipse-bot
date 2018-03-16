@@ -1,10 +1,18 @@
+const outdent = require('outdent');
+
 const messenger = require('../misc/messenger.js');
 
 module.exports = {
   name: 'proto',
   type: 'misc',
-  description: 'Prototype\'s command',
   usage: '<quote | summon | reference>',
+  description: outdent({ 'trimLeadingNewline': true })`
+    Various quotes and commands, Prototype style
+    \`\`
+    <quote | summon | reference>  type of command
+    \`\`
+    \u200b
+  `,
 
   args: 1,
 

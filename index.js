@@ -14,7 +14,8 @@ client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands');
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
-  client.commands.set(command.name, command);
+  if (command.name && command.type != 'hidden')
+    client.commands.set(command.name, command);
 }
 
 client.on('ready', () => {
@@ -38,8 +39,8 @@ client.on('guildMemberRemove', member => {
 });
 
 client.on('message', message => {
-  /* Ignore non-commands */
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+  /* Ignores non-commands and direct messages */
+  if (!message.content.startsWith(prefix) || message.author.bot || !message.guild) return;
 
   /* Prepare command, arguments, and options */
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -54,7 +55,8 @@ client.on('message', message => {
     return message.channel.send('This command does not exist. Type `+help` for full list of commands.');
 
   if (command.type === 'leadership' && !check.verifyLeadership(message) ||
-      command.type === 'misc' && !check.verifyMember(message))
+      command.type === 'member' && !check.verifyMember(message) ||
+      command.type === 'developer' && !check.verifyDeveloper(message))
     return messenger.sendPermissionError(message);
 
   if (command.args && !check.verifyArgument(message, command, args))
@@ -68,7 +70,7 @@ client.on('message', message => {
      command.execute(message, args, options);
   } catch (e) {
     message.channel.send('Something went wrong...');
-    console.log(e);
+    console.error;
   }
 });
 
