@@ -6,24 +6,18 @@ module.exports = {
   name: 'proto',
   type: 'misc',
   usage: '<quote | summon | reference>',
-  description: outdent({ 'trimLeadingNewline': true })`
-    Various quotes and commands, Prototype style
-    \`\`
-    <quote | summon | reference>  type of command
-    \`\`
-    \u200b
-  `,
+  description: 'Fun commands, Prototype style',
 
   args: 1,
 
-  execute: function(message, args) {
-    switch (args[0]) {
+  execute: function(message, param) {
+    switch (param.args[0]) {
       case 'quote':
         message.channel.send('`He can\'t code shit`');
         break;
 
       case 'summon':
-        this.summonPeril(message, 15);
+        this.summonPeril(message, 5);
         break;
 
       case 'reference':
@@ -31,7 +25,7 @@ module.exports = {
         break;
 
       default:
-        messenger.sendArgumentError('This argument does not exist.', message, this);
+        messenger.sendArgumentError(message, this, 'This argument does not exist.');
         break;
     }
   },
@@ -39,10 +33,10 @@ module.exports = {
   summonPeril: function(message, num) {
     if (num == 0) return;
 
-    if (message.author.id != 262864849300619264)
+    if (message.author.id != process.env.prototypeID)
       return message.channel.send('You do not have enough swag to do this.');
 
-    message.channel.send('<@166611344995385344> `He can\'t code shit`');
+    message.channel.send(`<@${process.env.perilID}>`);
     setTimeout(() => {
       this.summonPeril(message, num - 1);
     }, 1000);

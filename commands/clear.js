@@ -1,26 +1,18 @@
-const outdent = require('outdent');
-
 const messenger = require('../misc/messenger.js');
 
 module.exports = {
   name: 'clear',
   type: 'leadership',
-  usage: '[number]',
-  description: outdent({ 'trimLeadingNewline': true })`
-    Removes recent messages from the channel (up to 2 weeks old)
-    \`\`
-    <number>  number of messages to remove
-    \`\`
-    \u200b
-  `,
+  usage: '<number>',
+  description: 'Removes recent messages from the channel (up to 2 weeks old)',
 
   args: 1,
 
-  execute: function(message, args) {
-    if (isNaN(args[0]))
+  execute: function(message, param) {
+    if (isNaN(param.args[0]))
       return messenger.sendArgumentError('You must use a number for the argument.', message, this);
 
-    const num = parseInt(args[0]);
+    const num = parseInt(param.args[0]);
 
     if (num <= 0)
       return messenger.sendArgumentError('You must remove at least one message.', message, this);
