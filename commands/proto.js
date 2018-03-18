@@ -40,8 +40,9 @@ module.exports = {
 
   referencePeril: async function(message) {
     const peril = message.channel.members.get(user.peril);
+    
     if (peril)
-      return messenger.sendMessage(message, {
+      return messenger.send(message, {
         title: peril.displayName,
         avatar: peril.user.avatarURL,
         message: 'Proto can\'t code shit',

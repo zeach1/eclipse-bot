@@ -7,7 +7,7 @@ module.exports = {
 
   execute: async function(message) {
     return messenger.sendMessage(message, {
-      title: 'Reddit Eclipse Subreddit',
+      title: 'Reddit Eclipse\'s subreddit',
       avatar: message.guild.iconURL,
       description: 'https://www.reddit.com/r/RedditEclipse/',
       color: 0x68b87a,

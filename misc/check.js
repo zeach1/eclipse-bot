@@ -1,20 +1,20 @@
-const { roles } = require('../data/config.js');
+const { role } = require('../data/config.js');
 
 module.exports = {
   verifyLeadership: function(message) {
-    return this.verifyEclipse(message) && message.member.roles.some(role => roles.leadership.includes(role.name));
+    return this.verifyEclipse(message) && message.member.roles.some(r => role.leadership.includes(r.name));
   },
 
   verifyDeveloper: function(message) {
-    return message.member.roles.some(role => roles.developer.includes(role.name));
+    return message.member.roles.some(r => role.developer.includes(r.name));
   },
 
   verifyEclipse: function(message) {
-    return this.verifyMember(message) && message.member.roles.some(role => roles.eclipse.includes(role.name));
+    return this.verifyMember(message) && message.member.roles.some(r => role.eclipse.includes(r.name));
   },
 
   verifyMember: function(message) {
-    return message.member.roles.some(role => roles.member.includes(role.name));
+    return message.member.roles.some(r => role.member.includes(r.name));
   },
 
   verifyArgument: function(message, command, args) {
@@ -22,6 +22,6 @@ module.exports = {
   },
 
   verifyTag: function(message, command) {
-    return message.mentions.users.array().length >= command.tag;
+    return message.mentions.users.size >= command.tag;
   },
 };

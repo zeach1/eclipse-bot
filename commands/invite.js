@@ -10,6 +10,7 @@ module.exports = {
     const invites = await message.guild.fetchInvites();
 
     let invite = invites.last();
+    
     if (!invite)
       invite = await message.guild.channels.get(channel.welcome).createInvite({
           temporary: true,
@@ -18,7 +19,7 @@ module.exports = {
       }).catch(e => console.log(e));
 
     return messenger.sendMessage(message, {
-      title: `Invite to ${message.guild.name} Discord server`,
+      title: `Invite to ${message.guild.name}`,
       avatar: message.guild.iconURL,
       description: invite.url,
       color: 0x68b87a,

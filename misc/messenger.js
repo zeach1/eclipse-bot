@@ -1,7 +1,7 @@
 const outdent = require('outdent');
 const Discord = require('discord.js');
 
-const { rules, password, channel, group, prefix } = require('../data/config.js');
+const { rules, password, channelCategory, channel, group, prefix } = require('../data/config.js');
 
 module.exports = {
   sendCommandList: async function(message, commands) {
@@ -12,7 +12,7 @@ module.exports = {
       .setFooter(`Requested by ${message.member.displayName} at ${message.createdAt.toUTCString()}`);
 
     for (const commandCategory of commands) {
-      if (commandCategory.type === 'leadership' && message.channel.parentID !== process.env.leadershipID)
+      if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership)
         continue;
 
       let header = [];
@@ -46,7 +46,7 @@ module.exports = {
         1. If you want to apply, make sure to read the [clan rules](${rules}), and fill out the form in the end. Apply in-game with the [RCS password](${password}).
         2. Tag <@${group.leadership}> to get your roles.
       `,
-      color: 0x21c32a,
+      color: 0x43b581,
     });
     /* return member.guild.channels.get(channel.test).send(outdent({ 'trimLeadingNewline': true })`
       Welcome ${member.user} to the **${member.guild.name}** Discord server!
@@ -61,7 +61,7 @@ module.exports = {
 
     return this.sendMessage(message, {
       description: `**${member.displayName}** has left the server`,
-      color: 0xff0000,
+      color: 0xf04747,
     });
     // return member.guild.channels.get(channel.test).send(`**${member.displayName}** has left the server`);
   },
@@ -74,7 +74,7 @@ module.exports = {
 
         ${reason ? `Reason: ${reason}` : ''}
       `,
-      color: 0xff0000,
+      color: 0xf04747,
     });
   },
 

@@ -73,11 +73,13 @@ client.on('message', message => {
   command.execute(message, {
     args: args,
     options: options,
-  }).catch(() =>
+  }).catch((e) => {
     messenger.sendError(message, {
       message: 'Something went wrong',
       submessage: 'Please let development team know',
-  }).catch(e => console.log(e)));
+    }).catch(e => console.log(e));
+    console.log(e);
+  });
 });
 
 /* Handle deprecated promise rejections if they happen */
