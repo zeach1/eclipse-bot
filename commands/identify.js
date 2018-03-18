@@ -1,6 +1,7 @@
 const outdent = require('outdent');
 
 const messenger = require('../misc/messenger.js');
+const { channel } = require('../data/config.js');
 
 module.exports = {
   name: 'identify',
@@ -14,12 +15,11 @@ module.exports = {
   execute: async function(message, param) {
     const member = message.mentions.members.first();
 
-    if (member.user.bot)
-      return messenger.sendBotTagError(message, member);
+    if (member.user.bot) return messenger.sendBotTagError(message, member);
 
     return message.channel.send(outdent({ 'trimLeadingNewline': true })`
         ${member}, register your account in WarMatch.
-        ⚔️ Go to <#275563260386869248>
+        ⚔️ Go to <#${channel.wmbot}>
         ⚔️ Type \`!wm identify ${param.args[1] ? param.args[1] : member.displayName}\`
       `)
       .then(() => {

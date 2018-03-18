@@ -1,5 +1,3 @@
-const outdent = require('outdent');
-
 const messenger = require('../misc/messenger.js');
 
 module.exports = {
@@ -22,7 +20,7 @@ module.exports = {
       type: 'misc',
       commandList: commands.filter(command => command.type === 'misc'),
     };
-    
+
     return messenger.sendCommandList(message, [essentials, leadership, misc]);
   },
 };

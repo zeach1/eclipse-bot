@@ -32,7 +32,7 @@ module.exports = {
     if (deleted.size < 100 || numDeleted == num)
       return message.channel.send(`🖍 Deleted ${numDeleted} ${numDeleted != 1 ? 'messages' : 'message'}.`)
         .then(msg => msg.delete(3000).catch(e => console.log(e)));
-    
+
     return this.clear(message, num - 100, numDeleted);
   },
 };

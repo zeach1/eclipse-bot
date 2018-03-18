@@ -1,6 +1,5 @@
-const outdent = require('outdent');
-
 const messenger = require('../misc/messenger.js');
+const { user } = require('../data/config.js');
 
 module.exports = {
   name: 'proto',
@@ -29,17 +28,27 @@ module.exports = {
   summonPeril: async function(message, num) {
     if (num == 0) return;
 
-    if (message.author.id != process.env.prototypeID)
-      return message.channel.send('You do not have enough swag to do this.');
+    if (message.author.id != user.prototype)
+      return message.channel.send('Nah you can\'t do this fam, leave it for the big boy Prototype.');
 
-    message.channel.send(`<@${process.env.perilID}>`).catch(e => console.log(e));
-    
+    message.channel.send(`<@${user.peril}>`).catch(e => console.log(e));
+
     setTimeout(() => {
       return this.summonPeril(message, num - 1);
     }, 1000);
   },
 
   referencePeril: async function(message) {
+    const peril = message.channel.members.get(user.peril);
+    if (peril)
+      return messenger.sendMessage(message, {
+        title: peril.displayName,
+        avatar: peril.user.avatarURL,
+        message: 'Proto can\'t code shit',
+        submessage: 'Today at 1:12 PM',
+        color: 0xcccccc,
+      });
+
     return message.channel.send('```PERIL - Today at 1:12 PM\nProto can\'t code shit```');
   },
 };

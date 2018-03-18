@@ -1,9 +1,6 @@
-const { roles } = require('../misc/parameters.js');
+const { roles } = require('../data/config.js');
 
 module.exports = {
-
-  /* Verification */
-
   verifyLeadership: function(message) {
     return this.verifyEclipse(message) && message.member.roles.some(role => roles.leadership.includes(role.name));
   },
