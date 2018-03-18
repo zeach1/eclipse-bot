@@ -8,7 +8,7 @@ module.exports = {
   
   args: 1,
   
-  execute: function(message, param) {
+  execute: async function(message, param) {
     let title = '';
     let description = '';
     
@@ -17,31 +17,29 @@ module.exports = {
     switch (arg) {
       case 'respect':
       case 'fear':
-        messenger.sendMessage(message, { 
+        return messenger.sendMessage(message, { 
           title: arg.charAt(0).toUpperCase() + arg.slice(1),
           description: arg === 'respect' ? '@everyone respect the dark knight of Go Canada!' : 'You are too weak to take it',
         });
-        break;
         
       case 'irritate':
-        this.irritatePeril(message, 3);
-        break;
+        return this.irritatePeril(message, 3);
         
       default:
-        messenger.sendArgumentError(message, this, 'Jay does not approve of this argument.');
-        break;
+        return messenger.sendArgumentError(message, this, 'Jay does not approve of this argument.');
     }
   },
   
-  irritatePeril: function(message, num) {
+  irritatePeril: async function(message, num) {
     if (num == 0) return;
 
     if (message.author.id != process.env.jayID)
       return message.channel.send('You fear him so much... you cannot try it.');
 
-    message.channel.send(`<@${process.env.perilID}>`);
+    message.channel.send(`<@${process.env.perilID}>`).catch(e => console.log(e));
+    
     setTimeout(() => {
-      this.irritatePeril(message, num - 1);
+      return this.irritatePeril(message, num - 1);
     }, 1000);
   },
 };

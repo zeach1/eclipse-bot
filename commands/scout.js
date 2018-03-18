@@ -3,7 +3,7 @@ module.exports = {
   type: 'developer',
   description: 'Tips for a scout in war',
   
-  execute: function(message) {
+  execute: async function(message) {
     
   },
 }

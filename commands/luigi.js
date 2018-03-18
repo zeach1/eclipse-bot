@@ -5,7 +5,7 @@ module.exports = {
   type: 'misc',
   description: 'Luigi\'s command',
   
-  execute: function(message) {
-    messenger.sendImage(message, { url: 'https://i.imgur.com/SjRwl3T.gif' });
+  execute: async function(message) {
+    return messenger.sendImage(message, { url: 'https://i.imgur.com/SjRwl3T.gif' });
   },
 };

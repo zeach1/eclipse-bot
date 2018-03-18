@@ -5,10 +5,7 @@ module.exports = {
   type: 'misc',
   description: 'Lina\'s command',
   
-  execute: function(message, param) {
-    messenger.sendMessage(message, { description: '**#ANGST**' });
-    
-    if (param.options.includes('d') || param.options.includes('delete'))
-      message.delete().catch(console.error);
+  execute: async function(message) {
+    return messenger.sendMessage(message, { description: '**#ANGST**' });
   },
 };

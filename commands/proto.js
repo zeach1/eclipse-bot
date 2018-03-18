@@ -10,39 +10,36 @@ module.exports = {
 
   args: 1,
 
-  execute: function(message, param) {
+  execute: async function(message, param) {
     switch (param.args[0]) {
       case 'quote':
-        message.channel.send('`He can\'t code shit`');
-        break;
+        return message.channel.send('`He can\'t code shit`');
 
       case 'summon':
-        this.summonPeril(message, 5);
-        break;
+        return this.summonPeril(message, 5);
 
       case 'reference':
-        this.referencePeril(message);
-        break;
+        return this.referencePeril(message);
 
       default:
-        messenger.sendArgumentError(message, this, 'This argument does not exist.');
-        break;
+        return messenger.sendArgumentError(message, this, 'This argument does not exist');
     }
   },
 
-  summonPeril: function(message, num) {
+  summonPeril: async function(message, num) {
     if (num == 0) return;
 
     if (message.author.id != process.env.prototypeID)
       return message.channel.send('You do not have enough swag to do this.');
 
-    message.channel.send(`<@${process.env.perilID}>`);
+    message.channel.send(`<@${process.env.perilID}>`).catch(e => console.log(e));
+    
     setTimeout(() => {
-      this.summonPeril(message, num - 1);
+      return this.summonPeril(message, num - 1);
     }, 1000);
   },
 
-  referencePeril: function(message) {
-    message.channel.send('```PERIL - Today at 1:12 PM\nProto can\'t code shit```');
+  referencePeril: async function(message) {
+    return message.channel.send('```PERIL - Today at 1:12 PM\nProto can\'t code shit```');
   },
 };

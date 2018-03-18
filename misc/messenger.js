@@ -4,41 +4,41 @@ const Discord = require('discord.js');
 const { rules, password, channels } = require('./parameters.js');
 const { prefix } = require('../.data/config.js');
 module.exports = {
-  sendCommandList: function(message, commands) {
-    const { essentials, leadership, misc } = commands;
-    
+  sendCommandList: async function(message, commands) {
     const embed =  new Discord.RichEmbed()
       .setAuthor('Eclipse Bot Help')
       .setDescription('**<mandatory argument> [optional argument]**\n\u200b')
       .setColor(0xe7a237)
       .setFooter(`Requested by ${message.member.displayName} at ${message.createdAt.toUTCString()}`);
     
-    embed.addField('⭐ Essentials', '*Important commands*');
-    for (const command of essentials)
-      embed.addField(`${prefix}${command.name}${command.usage ? ` ${command.usage}` : ' '}`, command == essentials[essentials.length - 1] ? command.description + '\n\u200b' : command.description); // + '\n\u200b'
-    
-    if (message.channel.parentID == process.env.leadershipID) {
-      embed.addField('🛑 Leadership', '*Must have the roles to use*');
-      for (const command of leadership)
-        embed.addField(`${prefix}${command.name}${command.usage ? ` ${command.usage}` : ' '}`, command == leadership[leadership.length - 1] ? command.description + '\n\u200b' : command.description); // + '\n\u200b'
+    for (const commandCategory of commands) {
+      if (commandCategory.type === 'leadership' && message.channel.parentID !== process.env.leadershipID)
+        continue; // skips the iteration
+      
+      let header = [];
+      switch (commandCategory.type) {
+        case 'essentials': header = ['⭐ Essentials', '*Important commands*']; break;
+        case 'leadership': header = ['🛑 Leadership', '*Must have the roles to use*']; break;
+        case 'misc'      : header = ['😂 Miscellaneous', '*Random stuff for our members*']; break;
+      }
+      
+      embed.addField(header[0], header[1])
+      for (const command of commandCategory.commandList)
+        embed.addField(`${prefix}${command.name}${command.usage ? ` ${command.usage}` : ' '}`, command == commandCategory.commandList[commandCategory.commandList.length - 1] ? command.description + '\n\u200b' : command.description); // + '\n\u200b'
     }
     
-    embed.addField('😂 Miscellaneous', '*Random stuff for our members*');
-    for (const command of misc)
-      embed.addField(`${prefix}${command.name}${command.usage ? ` ${command.usage}` : ' '}`, command == misc[misc.length - 1] ? command.description + '\n\u200b' : command.description); // + '\n\u200b'
-    
-    message.channel.send(embed);
+    return message.channel.send(embed);
   },
   
   sendImage: async function(message, info) {
     const { description, url } = info;
     if (!url) return;
         
-    await message.channel.send(description ? description : '', { files: Array.isArray(url) ? url : [ url ] });
+    return message.channel.send(description ? description : '', { files: Array.isArray(url) ? url : [ url ] });
   },
   
-  sendWelcomeMessage: function(member) {
-    member.guild.channels.get(channels.welcome).send(outdent({ 'trimLeadingNewline': true })`
+  sendWelcomeMessage: async function(member) {
+    return member.guild.channels.get(channels.welcome).send(outdent({ 'trimLeadingNewline': true })`
       Welcome ${member.user} to ${member.guild.name}'s Discord server!
       **Please set your nickname to match your in game name.**
 
@@ -48,12 +48,12 @@ module.exports = {
     `);
   },
   
-  sendLeaveMessage: function(member) {
-    member.guild.channels.get(channels.welcome).send(`**${member.displayName}** stared directly at the Eclipse...`);
+  sendLeaveMessage: async function(member) {
+    return member.guild.channels.get(channels.welcome).send(`**${member.displayName}** stared directly at the Eclipse...`);
   },
 
-  sendKickMessage: function(message, member, reason) {
-    this.sendMessage(message, {
+  sendKickMessage: async function(message, member, reason) {
+    return this.sendMessage(message, {
       title: '📛 Kicked Member',
       description: outdent({ 'trimLeadingNewline': true })`
         **${member.displayName}** is kicked by ${message.member.displayName}
@@ -64,10 +64,11 @@ module.exports = {
     });
   },
   
-  sendMessage: function(message, info) {
-    if (!info) return;
+  sendMessage: async function(message, info) {
+    if (!info)
+      return console.log('sendMessage failed');
     
-    this.send(message, {
+    return this.send(message, {
       title: info.title ? info.title : '',
       avatar: info.avatar ? info.avatar : '',
       color: info.color ? info.color : 0x3498db,
@@ -76,8 +77,8 @@ module.exports = {
     });
   },
   
-  sendArgumentError: function(message, command, warning) {
-    this.sendError(message, {
+  sendArgumentError: async function(message, command, warning) {
+    return this.sendError(message, {
       title: '❌ Argument Error',
       color: 0xf06c00,
       message: warning,
@@ -85,35 +86,39 @@ module.exports = {
     });
   },
 
-  sendPermissionError: function(message) {
-    this.sendError(message, {
+  sendPermissionError: async function(message) {
+    return this.sendError(message, {
       title: '🚫 Permission Denied',
-      message: 'You do not have permissions to use this command.',
-      submessage: 'Talk to @Leadership if you think this is a mistake.',
+      message: 'You do not have permissions to use this command',
+      submessage: 'Talk to @Leadership if you think this is a mistake',
     });
   },
   
-  sendBotTagError: function(message, bot) {
-    this.sendError(message, {
+  sendBotTagError: async function(message, bot) {
+    return this.sendError(message, {
       title: '🤖 Error',
       color: 0xf06c00,
       message: `${bot.displayName} is a bot`,
-      submessage: 'You cannot use this command on a bot.',
+      submessage: 'You cannot use this command on a bot',
     });
   },
   
-  sendError: function(message, error) {
-    if (!error || !error.message || !error.submessage) return;
+  sendError: async function(message, error) {
+    if (!error || !error.message || !error.submessage)
+      return console.log('sendError failed');
     
-    this.send(message, {
+    return this.send(message, {
       title: error.title ? error.title : '❌ Error',
       color: error.color ? error.color : 0xff0000,
       message: error.message,
-      submessage: error.submessage,
+      submessage: `${error.submessage}.`,
     });
   },
   
   send: function(message, info) {
+    if (!info)
+      return 'send failed';
+    
     const embed = new Discord.RichEmbed()
       .setAuthor(info.title ? info.title : '', info.avatar ? info.avatar : '')
       .setDescription(info.description ? info.description : '')
@@ -123,6 +128,6 @@ module.exports = {
     if (info.message && info.submessage)
       embed.addField(info.message ? info.message : '', info.submessage ? info.submessage : '');
     
-    message.channel.send(embed);
+    return message.channel.send(embed);
   },
 };

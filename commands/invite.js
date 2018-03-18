@@ -17,7 +17,7 @@ module.exports = {
           unique: true,
       });
 
-    messenger.sendMessage(message, {
+    return messenger.sendMessage(message, {
       title: 'Invite Link',
       avatar: message.guild.iconURL,
       description: invite.url,

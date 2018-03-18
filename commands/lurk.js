@@ -5,7 +5,7 @@ module.exports = {
   type: 'misc',
   description: 'Lurk...',
   
-  execute: function(message) {
-    messenger.sendImage(message, { url: 'https://i.imgur.com/JR5uChv.png' });
+  execute: async function(message) {
+    return messenger.sendImage(message, { url: 'https://i.imgur.com/JR5uChv.png' });
   },
 };
