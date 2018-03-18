@@ -1,54 +1,54 @@
-const outdent = require('outdent');
-
 const messenger = require('../misc/messenger.js');
+const { user } = require('../data/config.js');
 
 module.exports = {
   name: 'proto',
   type: 'misc',
   usage: '<quote | summon | reference>',
-  description: outdent({ 'trimLeadingNewline': true })`
-    Various quotes and commands, Prototype style
-    \`\`
-    <quote | summon | reference>  type of command
-    \`\`
-    \u200b
-  `,
+  description: 'Fun commands, Prototype style',
 
   args: 1,
 
-  execute: function(message, args) {
-    switch (args[0]) {
+  execute: async function(message, param) {
+    switch (param.args[0]) {
       case 'quote':
-        message.channel.send('`He can\'t code shit`');
-        break;
+        return message.channel.send('`He can\'t code shit`');
 
       case 'summon':
-        this.summonPeril(message, 15);
-        break;
+        return this.summonPeril(message, 5);
 
       case 'reference':
-        this.referencePeril(message);
-        break;
+        return this.referencePeril(message);
 
       default:
-        messenger.sendArgumentError('This argument does not exist.', message, this);
-        break;
+        return messenger.sendArgumentError(message, this, 'This argument does not exist');
     }
   },
 
-  summonPeril: function(message, num) {
+  summonPeril: async function(message, num) {
     if (num == 0) return;
 
-    if (message.author.id != 262864849300619264)
-      return message.channel.send('You do not have enough swag to do this.');
+    if (message.author.id != user.prototype)
+      return message.channel.send('Nah you can\'t do this fam, leave it for the big boy Prototype.');
 
-    message.channel.send('<@166611344995385344> `He can\'t code shit`');
+    message.channel.send(`<@${user.peril}>`).catch(e => console.log(e));
+
     setTimeout(() => {
-      this.summonPeril(message, num - 1);
+      return this.summonPeril(message, num - 1);
     }, 1000);
   },
 
-  referencePeril: function(message) {
-    message.channel.send('```PERIL - Today at 1:12 PM\nProto can\'t code shit```');
+  referencePeril: async function(message) {
+    const peril = message.channel.members.get(user.peril);
+    if (peril)
+      return messenger.sendMessage(message, {
+        title: peril.displayName,
+        avatar: peril.user.avatarURL,
+        message: 'Proto can\'t code shit',
+        submessage: 'Today at 1:12 PM',
+        color: 0xcccccc,
+      });
+
+    return message.channel.send('```PERIL - Today at 1:12 PM\nProto can\'t code shit```');
   },
 };

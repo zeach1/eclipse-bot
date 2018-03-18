@@ -1,49 +1,38 @@
-const outdent = require('outdent');
-
 const messenger = require('../misc/messenger.js');
 
 module.exports = {
   name: 'clear',
-  type: 'leadership',
-  usage: '[number]',
-  description: outdent({ 'trimLeadingNewline': true })`
-    Removes recent messages from the channel (up to 2 weeks old)
-    \`\`
-    <number>  number of messages to remove
-    \`\`
-    \u200b
-  `,
+  type: 'developer',
+  usage: '<number>',
+  description: 'Removes recent messages from the channel (up to 2 weeks old)',
 
   args: 1,
 
-  execute: function(message, args) {
-    if (isNaN(args[0]))
-      return messenger.sendArgumentError('You must use a number for the argument.', message, this);
+  execute: async function(message, param) {
+    if (isNaN(param.args[0]))
+      return messenger.sendArgumentError(message, this, 'You must use a number for the argument.');
 
-    const num = parseInt(args[0]);
+    const num = parseInt(param.args[0]);
 
     if (num <= 0)
-      return messenger.sendArgumentError('You must remove at least one message.', message, this);
+      return messenger.sendArgumentError(message, this, 'You must remove at least one message.');
 
-    this.clear(message, num, 0);
+    return this.clear(message, num, 0);
   },
 
   clear: async function(message, num, numDeleted) {
     if (numDeleted == 0)
-      message = await message.delete();
+      message = await message.delete().catch(e => console.log(e));
 
-    const fetched = await message.channel.fetchMessages({ limit: num > 100 ? 100 : num });
+    const fetched = await message.channel.fetchMessages({ limit: num > 100 ? 100 : num }).catch(e => console.log(e));
 
-    const deleted = await message.channel.bulkDelete(fetched);
-    const thisDeleted = deleted.array().length;
+    const deleted = await message.channel.bulkDelete(fetched).catch(e => console.log(e));
+    numDeleted += deleted.size;
 
-    numDeleted += thisDeleted;
+    if (deleted.size < 100 || numDeleted == num)
+      return message.channel.send(`🖍 Deleted ${numDeleted} ${numDeleted != 1 ? 'messages' : 'message'}.`)
+        .then(msg => msg.delete(3000).catch(e => console.log(e)));
 
-    if (thisDeleted < 100 || numDeleted == num)
-      message.channel.send(`🖍 Deleted ${numDeleted} ${numDeleted != 1 ? 'messages' : 'message'}.`)
-        .then(msg => msg.delete(3000))
-        .catch(console.error);
-    else
-      this.clear(message, num - 100, numDeleted);
+    return this.clear(message, num - 100, numDeleted);
   },
 };
