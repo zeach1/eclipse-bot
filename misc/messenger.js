@@ -1,4 +1,4 @@
-const { rules, password, channelCategory, group, prefix } = require('../data/config.js');
+const { rules, password, channelCategory, channel, group, prefix } = require('../data/config.js');
 
 const outdent = require('outdent');
 const Discord = require('discord.js');
