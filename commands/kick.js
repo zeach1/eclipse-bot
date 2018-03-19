@@ -17,9 +17,11 @@ module.exports = {
 
     return member.kick(reason)
       .then(() => messenger.sendKickMessage(message, member, reason).catch(e => console.log(e)))
-      .catch(() => messenger.sendError(message, {
-        message: `Cannot kick ${member.displayName}`,
-        submessage: `${member} has more permissions`,
-      }).catch(e => console.log(e)));
+      .catch(() =>
+        messenger.sendError(message, {
+          message: `Cannot kick ${member.displayName}`,
+          submessage: `${member} has more permissions than me`,
+        }).catch(e => console.log(e))
+      );
   },
 };

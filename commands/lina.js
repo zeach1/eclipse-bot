@@ -6,6 +6,6 @@ module.exports = {
   description: 'Feeling angsty?',
 
   execute: async function(message) {
-    return messenger.sendMessage(message, { description: '**#ANGST**' });
+    return message.channel.send('**#ANGST**');
   },
 };

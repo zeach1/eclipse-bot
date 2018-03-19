@@ -1,5 +1,6 @@
-const messenger = require('../misc/messenger.js');
 const { user } = require('../data/config.js');
+
+const messenger = require('../misc/messenger.js');
 
 module.exports = {
   name: 'proto',
@@ -40,9 +41,8 @@ module.exports = {
 
   referencePeril: async function(message) {
     const peril = message.channel.members.get(user.peril);
-    
     if (peril)
-      return messenger.send(message, {
+      return messenger.sendMessage(message, {
         title: peril.displayName,
         avatar: peril.user.avatarURL,
         message: 'Proto can\'t code shit',

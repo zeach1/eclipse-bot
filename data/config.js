@@ -1,6 +1,8 @@
 module.exports = {
+  clanName: 'Reddit Eclipse',
   rules: 'https://bit.ly/RE-Rules',
   password: 'https://bit.ly/RCSpassword',
+  subreddit: 'https://www.reddit.com/r/RedditEclipse/',
 
   role: {
     leadership: ['Leadership'],
@@ -34,4 +36,9 @@ module.exports = {
 
   prefix: '+',
   token: process.env.TOKEN,
+  
+  /* Don't look, bad words */
+  filterWords: [
+    'poach', 'nigger'
+  ],
 };

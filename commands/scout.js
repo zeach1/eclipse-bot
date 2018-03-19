@@ -1,7 +1,8 @@
 const outdent = require('outdent');
 
-const messenger = require('../misc/messenger.js');
 const { channelCategory } = require('../data/config.js');
+
+const messenger = require('../misc/messenger.js');
 
 module.exports = {
   name: 'scout',

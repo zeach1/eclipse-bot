@@ -1,9 +1,9 @@
 const messenger = require('../misc/messenger.js');
 
 module.exports = {
-  name: 'paul',
+  name: 'hype',
   type: 'misc',
-  aliases: ['hype'],
+  aliases: ['paul'],
   description: 'Hype!',
 
   execute: async function(message) {

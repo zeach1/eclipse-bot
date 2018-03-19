@@ -3,7 +3,8 @@ require('./misc/ping.js');
 const Discord = require('discord.js');
 const fs = require('fs');
 
-const { prefix, token } = require('./data/config.js');
+const { prefix, token, filterWords } = require('./data/config.js');
+
 const check = require('./misc/check.js');
 const messenger = require('./misc/messenger.js');
 
@@ -27,8 +28,18 @@ client.on('guildMemberAdd', member => messenger.sendWelcomeMessage(member).catch
 client.on('guildMemberRemove', member => messenger.sendLeaveMessage(member).catch(e => console.log(e)));
 
 client.on('message', message => {
-  /* Ignores non-commands, bot messages, and direct messages */
-  if (!message.content.startsWith(prefix) || message.author.bot || !message.guild) return;
+  /* Filters offensive language */
+  if (filterWords.some(word => message.content.toLowerCase().includes(word)))
+    return message.delete()
+      .then(() => {
+        message.channel.send(`💢 Watch your language ${message.author}`)
+          .then((msg) => msg.delete(2000))
+          .catch(e => console.log(e));
+      })
+      .catch(e => console.log(e));
+    
+  /* Ignores numbers, non-commands, bot messages, and direct messages */
+  if (!isNaN(message.content.replace(/ /g, '')) || !message.content.startsWith(prefix) || message.author.bot || !message.guild) return;
 
   /* Prepare command, arguments, and options */
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -73,12 +84,12 @@ client.on('message', message => {
   command.execute(message, {
     args: args,
     options: options,
-  }).catch((e) => {
+  }).catch(e => {
+    console.log(e); 
     messenger.sendError(message, {
       message: 'Something went wrong',
       submessage: 'Please let development team know',
     }).catch(e => console.log(e));
-    console.log(e);
   });
 });
 
