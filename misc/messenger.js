@@ -1,4 +1,4 @@
-const { rules, password, channel, group, prefix } = require('../data/config.js');
+const { rules, password, channelCategory, group, prefix } = require('../data/config.js');
 
 const outdent = require('outdent');
 const Discord = require('discord.js');
@@ -12,7 +12,7 @@ module.exports = {
       .setFooter(`Requested by ${message.member.displayName} at ${message.createdAt.toUTCString()}`);
 
     for (const commandCategory of commands) {
-      if (commandCategory.type === 'leadership' && message.channel.parentID !== process.env.leadershipID)
+      if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership)
         continue;
 
       let header = [];
