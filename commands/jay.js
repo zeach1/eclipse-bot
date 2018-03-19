@@ -1,10 +1,9 @@
 const messenger = require('../misc/messenger.js');
-const { user } = require('../data/config.js');
 
 module.exports = {
   name: 'jay',
   type: 'misc',
-  usage: '<respect | fear | irritate>',
+  usage: '<respect | fear>',
   description: 'Something important for you to know',
 
   args: 1,
@@ -17,16 +16,18 @@ module.exports = {
       case 'fear':
         return messenger.sendMessage(message, {
           title: `${arg.charAt(0).toUpperCase()}${arg.slice(1)} Jay`,
+<<<<<<< HEAD
           description: arg === 'respect' ? '@everyone respect the dark knight of Go Canada!' : 'You are too weak to take it',
+=======
+          description: arg === 'respect' ? '@everyone respect the dark knight of Go Canada!' : 'You are too weak to take it.',
+>>>>>>> glitch
         });
 
-      case 'irritate':
-        return this.irritatePeril(message, 3);
-
       default:
-        return messenger.sendArgumentError(message, this, 'Jay does not approve of this argument.');
+        return messenger.sendArgumentError(message, this, 'Jay does not approve of this argument');
     }
   },
+<<<<<<< HEAD
 
   irritatePeril: async function(message, num) {
     if (num == 0) return;
@@ -40,4 +41,6 @@ module.exports = {
       return this.irritatePeril(message, num - 1);
     }, 1000);
   },
+=======
+>>>>>>> glitch
 };

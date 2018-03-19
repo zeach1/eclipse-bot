@@ -26,13 +26,23 @@ module.exports = {
 
     const fetched = await message.channel.fetchMessages({ limit: num > 100 ? 100 : num }).catch(e => console.log(e));
 
-    const deleted = await message.channel.bulkDelete(fetched).catch(e => console.log(e));
-    numDeleted += deleted.size;
+    if (fetched && fetched.size > 0) {
+      const deleted = await message.channel.bulkDelete(fetched).catch(e => console.log(e));
 
-    if (deleted.size < 100 || numDeleted == num)
-      return message.channel.send(`🖍 Deleted ${numDeleted} ${numDeleted != 1 ? 'messages' : 'message'}.`)
-        .then(msg => msg.delete(3000).catch(e => console.log(e)));
+      /* The following condition return false if the user is spamming 'clear' */
+      if (deleted && deleted.size > 0) {
+        numDeleted += deleted.size;
 
-    return this.clear(message, num - 100, numDeleted);
+        if (deleted.size < 100 || numDeleted == num)
+          return message.channel.send(`🖍 Deleted ${numDeleted} ${numDeleted != 1 ? 'messages' : 'message'}.`)
+            .then(msg => { if (msg) msg.delete(3000).catch(() => {}); })
+            .catch(e => console.log(e));
+
+        return this.clear(message, num - 100, numDeleted);
+      }
+    }
+
+    return message.channel.send('😰 There are no messages to delete').then(msg => { if (msg) msg.delete(3000).catch(() => {}); }).catch(e => console.log(e));
+
   },
 };

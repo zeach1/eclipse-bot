@@ -1,5 +1,6 @@
-const messenger = require('../misc/messenger.js');
 const { channel } = require('../data/config.js');
+
+const messenger = require('../misc/messenger.js');
 
 module.exports = {
   name: 'invite',
@@ -12,13 +13,13 @@ module.exports = {
     let invite = invites.last();
     if (!invite)
       invite = await message.guild.channels.get(channel.welcome).createInvite({
-          temporary: true,
-          maxAge: 1200,
-          unique: true,
+        temporary: true,
+        maxAge: 1200,
+        unique: true,
       }).catch(e => console.log(e));
 
     return messenger.sendMessage(message, {
-      title: `Invite to ${message.guild.name} Discord server`,
+      title: `Invite to join ${message.guild.name} Discord server`,
       avatar: message.guild.iconURL,
       description: invite.url,
       color: 0x68b87a,

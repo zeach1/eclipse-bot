@@ -8,18 +8,9 @@ module.exports = {
   execute: async function(message) {
     const commands = message.client.commands.filterArray(command => command.type !== 'developer');
 
-    const essentials = {
-      type: 'essentials',
-      commandList: commands.filter(command => command.type === 'essentials'),
-    };
-    const leadership = {
-      type: 'leadership',
-      commandList: commands.filter(command => command.type === 'leadership'),
-    };
-    const misc = {
-      type: 'misc',
-      commandList: commands.filter(command => command.type === 'misc'),
-    };
+    const essentials = { type: 'essentials', commandList: commands.filter(command => command.type === 'essentials') };
+    const leadership = { type: 'leadership', commandList: commands.filter(command => command.type === 'leadership') };
+    const misc =       { type: 'misc', commandList: commands.filter(command => command.type === 'misc') };
 
     return messenger.sendCommandList(message, [essentials, leadership, misc]);
   },

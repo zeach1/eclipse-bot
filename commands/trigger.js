@@ -3,7 +3,7 @@ const messenger = require('../misc/messenger.js');
 module.exports = {
   name: 'trigger',
   type: 'misc',
-  aliases: ['triggered', 'peril'],
+  aliases: ['triggered'],
   description: 'Triggered PERIL',
 
   execute: async function(message) {

@@ -1,5 +1,6 @@
-const messenger = require('../misc/messenger.js');
 const { user } = require('../data/config.js');
+
+const messenger = require('../misc/messenger.js');
 
 module.exports = {
   name: 'proto',

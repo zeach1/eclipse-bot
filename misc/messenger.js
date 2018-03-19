@@ -1,7 +1,7 @@
+const { rules, password, channel, group, prefix } = require('../data/config.js');
+
 const outdent = require('outdent');
 const Discord = require('discord.js');
-
-const { rules, password, channel, group, prefix } = require('../data/config.js');
 
 module.exports = {
   sendCommandList: async function(message, commands) {
@@ -111,6 +111,13 @@ module.exports = {
       color: 0xf06c00,
       message: `${bot.displayName} is a bot`,
       submessage: 'You cannot use this command on a bot',
+    });
+  },
+
+  sendDeveloperError: async function(message) {
+    return this.sendError(message, {
+      message: 'Something went wrong',
+      submessage: 'Please let development team know',
     });
   },
 
