@@ -1,5 +1,3 @@
-const messenger = require('../misc/messenger.js');
-
 module.exports = {
   name: 'lina',
   type: 'misc',

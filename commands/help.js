@@ -10,7 +10,7 @@ module.exports = {
 
     const essentials = { type: 'essentials', commandList: commands.filter(command => command.type === 'essentials') };
     const leadership = { type: 'leadership', commandList: commands.filter(command => command.type === 'leadership') };
-    const misc =       { type: 'misc'      , commandList: commands.filter(command => command.type === 'misc'      ) };
+    const misc =       { type: 'misc', commandList: commands.filter(command => command.type === 'misc') };
 
     return messenger.sendCommandList(message, [essentials, leadership, misc]);
   },

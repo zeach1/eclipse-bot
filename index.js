@@ -37,7 +37,7 @@ client.on('message', message => {
           .catch(e => console.log(e));
       })
       .catch(e => console.log(e));
-    
+
   /* Ignores numbers, non-commands, bot messages, and direct messages */
   if (!isNaN(message.content.replace(/ /g, '')) || !message.content.startsWith(prefix) || message.author.bot || !message.guild) return;
 
@@ -80,16 +80,13 @@ client.on('message', message => {
     return;
   }
 
-  /* Execute command (all commands are ASYNCHRONOUS, returns a Promise) */
+  /* Execute command */
   command.execute(message, {
     args: args,
     options: options,
   }).catch(e => {
-    console.log(e); 
-    messenger.sendError(message, {
-      message: 'Something went wrong',
-      submessage: 'Please let development team know',
-    }).catch(e => console.log(e));
+    console.log(e);
+    messenger.sendDeveloperError(message).catch(f => console.log(f));
   });
 });
 

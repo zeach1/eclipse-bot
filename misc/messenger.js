@@ -114,6 +114,13 @@ module.exports = {
     });
   },
 
+  sendDeveloperError: async function(message) {
+    return this.sendError(message, {
+      message: 'Something went wrong',
+      submessage: 'Please let development team know',
+    });
+  },
+
   sendError: async function(message, error) {
     return this.send(message, {
       title: error.title ? error.title : '❌ Error',

@@ -36,9 +36,9 @@ module.exports = {
 
   prefix: '+',
   token: process.env.TOKEN,
-  
+
   /* Don't look, bad words */
   filterWords: [
-    'poach', 'nigger'
+    'poach', 'nigger',
   ],
 };

@@ -11,7 +11,7 @@ module.exports = {
     return messenger.sendMessage(message, {
       title: `${clanName} subreddit`,
       avatar: message.guild.iconURL,
-      description: 'https://www.reddit.com/r/RedditEclipse/',
+      description: subreddit,
       color: 0x68b87a,
       request: true,
     });

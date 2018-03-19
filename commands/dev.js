@@ -1,7 +1,3 @@
-const { user } = require('../data/config.js');
-
-const messenger = require('../misc/messenger.js');
-
 module.exports = {
   name: 'dev',
   type: 'developer',
