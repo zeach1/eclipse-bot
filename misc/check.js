@@ -6,7 +6,7 @@ module.exports = {
   },
 
   verifyDeveloper: function(message) {
-    return message.member.roles.some(r => role.developer.includes(r.name));
+    return this.verifyEclipse(message) && message.member.roles.some(r => role.developer.includes(r.name));
   },
 
   verifyEclipse: function(message) {
@@ -17,11 +17,11 @@ module.exports = {
     return message.member.roles.some(r => role.member.includes(r.name));
   },
 
-  verifyArgument: function(message, command, args) {
+  verifyArgument: function(args, command) {
     return args.length >= command.args;
   },
 
-  verifyTag: function(message, command) {
-    return message.mentions.users.size >= command.tag;
+  verifyTag: function(users, command) {
+    return users.size >= command.tag;
   },
 };

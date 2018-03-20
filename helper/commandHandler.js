@@ -3,11 +3,11 @@ const { prefix, filterWords } = require('../data/config.js');
 const check = require('../misc/check.js');
 
 const messenger = require('./messenger.js');
+const pointManager = require('./pointManager.js');
 
 module.exports = {
   handleMessage: function(message) {
-    const { content, channel, author, guild } = message;
-    const { commands } = message.client;
+    const { content, channel, author, guild, client } = message;
 
     /* Deletes offensive language */
     if (filterWords.some(word => content.toLowerCase().includes(word))) {
@@ -20,15 +20,21 @@ module.exports = {
         .catch(e => console.error(e));
     }
 
+    /* Ignores message from bots and non-members, and direct messages */
+    if (author.bot || !check.verifyMember(message) || !guild) return;
+
+    /* Point monitoring for any message sent by user */
+    pointManager.updatePoints(message);
+
     /* Ignores numbers, non-commands, bot messages, and direct messages */
-    if (!isNaN(content.replace(/ /g, '')) || !content.startsWith(prefix) || author.bot || !guild) return;
+    if (!isNaN(content.replace(/ /g, '')) || !content.startsWith(prefix)) return;
 
     /* Prepare command, arguments, and options */
     const args = content.toLowerCase().slice(prefix.length).trim().split(/ +/);
     const options = [];
 
     const commandName = args.shift();
-    const command = commands.get(commandName) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+    const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
     for (let i = 0; i < args.length; i++)
       if (args[i].length > 1 && args[i].startsWith('-') && isNaN(args[i]))
@@ -41,19 +47,18 @@ module.exports = {
     }
 
     if (command.type === 'leadership' && !check.verifyLeadership(message) ||
-        command.type === 'member' && !check.verifyMember(message) ||
         command.type === 'developer' && !check.verifyDeveloper(message)) {
       messenger.sendPermissionError(message).catch(e => console.error(e));
       return;
     }
 
-    if (command.args && !check.verifyArgument(message, command, args)) {
+    if (command.args && !check.verifyArgument(args, command)) {
       messenger.sendArgumentError(message, command, `You must provide ${command.args == 1 ? 'an argument' : `${command.args} arguments`}`)
         .catch(e => console.error(e));
       return;
     }
 
-    if (command.tag && !check.verifyTag(message, command)) {
+    if (command.tag && !check.verifyTag(message.mentions.users, command)) {
       messenger.sendArgumentError(message, command, `You need to tag ${command.tag > 1 ? `${command.tag}  users` : 'a user'}`)
         .catch(e => console.error(e));
       return;

@@ -2,7 +2,7 @@ const messenger = require('../helper/messenger.js');
 
 module.exports = {
   name: 'clear',
-  type: 'developer',
+  type: 'leadership',
   usage: '<number>',
   description: 'Removes recent messages from the channel (up to 2 weeks old)',
 

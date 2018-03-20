@@ -12,12 +12,14 @@ module.exports = {
       .setFooter(`Requested by ${message.member.displayName} at ${message.createdAt.toUTCString()}`);
 
     for (const commandCategory of commands) {
-      if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership)
+      if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership ||
+          commandCategory.type === 'developer' && message.channel.id !== channel.test)
         continue;
 
       let header = [];
       switch (commandCategory.type) {
         case 'essentials': header = ['⭐ Essentials', '*Important commands*']; break;
+        case 'developer' : header = ['⚠️ Developer', '*Dev only*']; break;
         case 'leadership': header = ['🛑 Leadership', '*Must have the roles to use*']; break;
         case 'misc'      : header = ['😂 Miscellaneous', '*Random stuff for our members*']; break;
       }
