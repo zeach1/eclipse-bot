@@ -1,9 +1,8 @@
-const messenger = require('../misc/messenger.js');
+const messenger = require('../helper/messenger.js');
 
 module.exports = {
   name: 'hype',
   type: 'misc',
-  aliases: ['paul'],
   description: 'Hype!',
 
   execute: async function(message) {

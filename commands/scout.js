@@ -2,7 +2,7 @@ const outdent = require('outdent');
 
 const { channelCategory } = require('../data/config.js');
 
-const messenger = require('../misc/messenger.js');
+const messenger = require('../helper/messenger.js');
 
 module.exports = {
   name: 'scout',
@@ -29,7 +29,7 @@ module.exports = {
       `);
 
     return messenger.sendError(message, {
-      message: 'Inappropriate Usage',
+      message: 'You can\'t call this command here',
       submessage: 'You can only use this in the War Room',
     });
   },

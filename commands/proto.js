@@ -1,6 +1,6 @@
 const { user } = require('../data/config.js');
 
-const messenger = require('../misc/messenger.js');
+const messenger = require('../helper/messenger.js');
 
 module.exports = {
   name: 'proto',
@@ -32,7 +32,7 @@ module.exports = {
     if (message.author.id != user.prototype)
       return message.channel.send('Nah you can\'t do this fam, leave it for the big boy Prototype.');
 
-    message.channel.send(`<@${user.peril}> \`He can't code shit\``).catch(e => console.log(e));
+    message.channel.send(`<@${user.peril}>`).catch(e => console.log(e));
 
     setTimeout(() => {
       return this.summonPeril(message, num - 1);
@@ -41,8 +41,9 @@ module.exports = {
 
   referencePeril: async function(message) {
     const peril = message.channel.members.get(user.peril);
+
     if (peril)
-      return messenger.send(message, {
+      return messenger.sendMessage(message, {
         title: peril.displayName,
         avatar: peril.user.avatarURL,
         message: 'Proto can\'t code shit',
