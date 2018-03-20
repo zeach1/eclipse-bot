@@ -46,16 +46,11 @@ module.exports = {
         Welcome ${member.user} to the **${member.guild.name}** Discord server!
 
         1. If you want to apply, make sure to read the [clan rules](${rules}), and fill out the form in the end. Apply in-game with the [RCS password](${password}).
+
         2. Tag <@${group.leadership}> to get your roles.
       `,
       color: 0x21c32a,
     });
-    /* return member.guild.channels.get(channel.test).send(outdent({ 'trimLeadingNewline': true })`
-      Welcome ${member.user} to the **${member.guild.name}** Discord server!
-
-      1. If you want to apply, make sure to read the [clan rules](${rules}), and fill out the form in the end. Apply in-game with the [RCS password](${password}).
-      2. Tag <@${group.leadership}> to get your roles.
-    `); */
   },
 
   sendLeaveMessage: async function(member) {

@@ -6,7 +6,7 @@ const messenger = require('../helper/messenger.js');
 
 module.exports = {
   name: 'scout',
-  type: 'developer',
+  type: 'essentials',
   description: 'Tips for a scout in war',
 
   execute: async function(message) {

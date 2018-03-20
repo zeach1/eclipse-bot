@@ -9,12 +9,22 @@ const fs = require('fs');
 
 const { token } = require('./data/config.js');
 
+<<<<<<< HEAD
 const messenger = require('./helper/messenger.js');
 const commandHandler = require('./helper/commandHandler.js');
 
 const client = new Discord.Client();
 
 /* Set up point and ranking system */
+=======
+const commandHandler = require('./helper/commandHandler.js');
+const messenger = require('./helper/messenger.js');
+const pointManager = require('./helper/pointManager.js');
+
+const client = new Discord.Client();
+
+/* Set up PERSISTENT (will not delete itself when system restarts) point and ranking system */
+>>>>>>> glitch
 const pointsProvider = new EnmapLevel({ name: 'points' });
 client.points = new Enmap({ provider: pointsProvider });
 
@@ -22,8 +32,7 @@ client.points = new Enmap({ provider: pointsProvider });
 client.commands = new Discord.Collection();
 for (const file of fs.readdirSync('./commands')) {
   const command = require(`./commands/${file}`);
-  if (command.name && command.type != 'hidden')
-    client.commands.set(command.name, command);
+  client.commands.set(command.name, command);
 }
 
 /* When connected */
@@ -36,6 +45,7 @@ client.on('ready', () => {
 client.on('guildMemberAdd', member => messenger.sendWelcomeMessage(member).catch(e => console.log(e)));
 
 /* When member leaves the server */
+<<<<<<< HEAD
 client.on('guildMemberRemove', member => messenger.sendLeaveMessage(member).catch(e => console.log(e)));
 
 /* When a member sends a message */
@@ -43,5 +53,17 @@ client.on('message', message => commandHandler.handleMessage(message));
 
 client.login(token);
 
+=======
+client.on('guildMemberRemove', member => {
+  pointManager.removePlayer(member, client);
+  messenger.sendLeaveMessage(member).catch(e => console.log(e));
+});
+
+/* When a member sends a message */
+client.on('message', message => commandHandler.handleMessage(message));
+
+client.login(token);
+
+>>>>>>> glitch
 /* Handle uncaught promises, helps developers fix any deprecated promise code */
 process.on('unhandledRejection', e => console.log(`Uncaught Promise Rejection\n${e}`));
