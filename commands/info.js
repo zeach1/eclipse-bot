@@ -4,20 +4,20 @@ const messenger = require('../helper/messenger.js');
 
 module.exports = {
   name: 'info',
-  type: 'developer',
-  usage: '[top | user]',
+  type: 'essentials',
+  usage: '[user | top]',
   description: 'Get points and ranking of a player',
 
   execute: async function(message, param) {
     const { args } = param;
 
     if (args[0] && args[0] === 'top') return this.getTopPlayers(message);
-    
+
     const { client, mentions, member } = message;
     const player = mentions.members.first() ? mentions.members.first() : member;
-    
+
     if (player.user.bot) return messenger.sendBotTagError(message, player);
-    
+
     const { user, displayName } = player;
     const { avatarURL, id } = user;
 

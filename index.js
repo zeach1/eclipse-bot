@@ -9,13 +9,13 @@ const fs = require('fs');
 
 const { token } = require('./data/config.js');
 
-const messenger = require('./helper/messenger.js');
 const commandHandler = require('./helper/commandHandler.js');
+const messenger = require('./helper/messenger.js');
 const pointManager = require('./helper/pointManager.js');
 
 const client = new Discord.Client();
 
-/* Set up point and ranking system */
+/* Set up PERSISTENT (will not delete itself when system restarts) point and ranking system */
 const pointsProvider = new EnmapLevel({ name: 'points' });
 client.points = new Enmap({ provider: pointsProvider });
 
@@ -38,7 +38,7 @@ client.on('guildMemberAdd', member => messenger.sendWelcomeMessage(member).catch
 /* When member leaves the server */
 client.on('guildMemberRemove', member => {
   pointManager.removePlayer(member, client);
-  messenger.sendLeaveMessage(member).catch(e => console.log(e))
+  messenger.sendLeaveMessage(member).catch(e => console.log(e));
 });
 
 /* When a member sends a message */

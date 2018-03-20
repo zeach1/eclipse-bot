@@ -7,7 +7,7 @@ module.exports = {
 
   execute: async function(message) {
     const commands = message.client.commands.array();
-    
+
     const essentials = { type: 'essentials', commandList: commands.filter(command => command.type === 'essentials') };
     const leadership = { type: 'leadership', commandList: commands.filter(command => command.type === 'leadership') };
     const developer =  { type: 'developer', commandList: commands.filter(command => command.type === 'developer') };

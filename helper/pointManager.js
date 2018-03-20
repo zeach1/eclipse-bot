@@ -35,9 +35,9 @@ module.exports = {
 
     message.client.points.set(player.id, score);
   },
-  
+
   removePlayer: function(member, client) {
     client.points.delete(member.user.id);
     console.log(`${member.displayName}'s data is deleted.`);
-  }
+  },
 };
