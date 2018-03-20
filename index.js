@@ -3,6 +3,8 @@ require('./misc/ping.js');
 
 /* Imports */
 const Discord = require('discord.js');
+const Enmap = require('enmap');
+const EnmapLevel = require('enmap-level');
 const fs = require('fs');
 
 const { token } = require('./data/config.js');
@@ -11,6 +13,10 @@ const messenger = require('./helper/messenger.js');
 const commandHandler = require('./helper/commandHandler.js');
 
 const client = new Discord.Client();
+
+/* Set up point and ranking system */
+const pointsProvider = new EnmapLevel({ name: 'points' });
+client.points = new Enmap({ provider: pointsProvider });
 
 /* Set up command list */
 client.commands = new Discord.Collection();
