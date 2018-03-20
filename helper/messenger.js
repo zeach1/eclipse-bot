@@ -1,7 +1,7 @@
-const { rules, password, channelCategory, channel, group, prefix } = require('../data/config.js');
-
 const outdent = require('outdent');
 const Discord = require('discord.js');
+
+const { rules, password, channelCategory, channel, group, prefix } = require('../data/config.js');
 
 module.exports = {
   sendCommandList: async function(message, commands) {
@@ -85,6 +85,14 @@ module.exports = {
       color: info.color ? info.color : 0x3498db,
       description: info.description ? info.description : '',
       footer: info.request ? `Requested by ${message.member.displayName}` : '',
+    });
+  },
+
+  sendCommandDoesNotExistError: async function(message) {
+    return this.sendError(message, {
+      color: 0xf06c00,
+      message: 'This command does not exist',
+      submessage: 'Type `+help` for full list of commands',
     });
   },
 

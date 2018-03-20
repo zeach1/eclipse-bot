@@ -1,6 +1,6 @@
 const { user } = require('../data/config.js');
 
-const messenger = require('../misc/messenger.js');
+const messenger = require('../helper/messenger.js');
 
 module.exports = {
   name: 'proto',
@@ -41,6 +41,7 @@ module.exports = {
 
   referencePeril: async function(message) {
     const peril = message.channel.members.get(user.peril);
+
     if (peril)
       return messenger.sendMessage(message, {
         title: peril.displayName,
