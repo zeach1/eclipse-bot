@@ -8,11 +8,7 @@ module.exports = {
 
     if (score.level < Math.floor(0.1 * Math.sqrt(score.exp))) {
       score.level++;
-<<<<<<< HEAD
-      messenger.sendMessage({
-=======
       messenger.sendMessage(message, {
->>>>>>> glitch
         title: '⬆️ Level Up',
         color: 0x2db634,
         description: `${author} has leveled up to level ${score.level}! Cheers!`,
@@ -39,12 +35,9 @@ module.exports = {
 
     message.client.points.set(player.id, score);
   },
-<<<<<<< HEAD
-=======
 
   removePlayer: function(member, client) {
     client.points.delete(member.user.id);
     console.log(`${member.displayName}'s data is deleted.`);
   },
->>>>>>> glitch
 };
