@@ -1,7 +1,7 @@
 const outdent = require('outdent');
 const Discord = require('discord.js');
 
-const { rules, password, channelCategory, channel, group, prefix } = require('../data/config.js');
+const { rules, password, channelCategory, channel, group, prefix } = require('../config.js');
 
 module.exports = {
   sendCommandList: async function(message, commands) {

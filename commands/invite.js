@@ -1,4 +1,4 @@
-const { channel } = require('../data/config.js');
+const { channel } = require('../config.js');
 
 const messenger = require('../helper/messenger.js');
 
