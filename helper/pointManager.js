@@ -41,30 +41,30 @@ module.exports = {
     console.log(client.points.array());
     client.points.delete(member.user.id);
     console.log(client.points.array());
-    
+
     console.log(`${member.displayName}'s data is deleted.`);
   },
-  
+
   /* Manual change of points (ex. when loading backup data) */
   setPoints: function(points, id, info) {
     const score = points.get(id) || { exp: 0, level: 0, ranking: 5000 };
-    
+
     if (info.exp) {
       score.exp = info.exp;
       score.level = this.getLevel(info.exp);
     }
-    
+
     if (info.ranking)
       score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
-    
+
     points.set(id, score);
   },
-  
+
   /* Helper methods to get exp and level */
   getExp: function(level) {
-    return 0;
+    return level * level * 100;
   },
-  
+
   getLevel: function(exp) {
     return Math.floor(0.1 * Math.sqrt(exp));
   },

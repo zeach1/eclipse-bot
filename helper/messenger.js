@@ -6,7 +6,7 @@ const { rules, password, channelCategory, channel, group, prefix } = require('..
 module.exports = {
   sendCommandList: async function(message, commands) {
     const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
-    
+
     const embed =  new Discord.RichEmbed()
       .setAuthor('Eclipse Bot Help')
       .setDescription('**<mandatory argument> [optional argument]**\n\u200b')
@@ -14,14 +14,12 @@ module.exports = {
       .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`);
 
     for (const commandCategory of commands) {
-      if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership ||
-          commandCategory.type === 'developer' && message.channel.id !== channel.test)
+      if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership)
         continue;
 
       let header = [];
       switch (commandCategory.type) {
         case 'essentials': header = ['⭐ Essentials', '*Important commands*']; break;
-        case 'developer' : header = ['⚠️ Developer', '*Commands that keep this server alive*d']; break;
         case 'leadership': header = ['🛑 Leadership', '*Must have the roles to use*']; break;
         case 'misc'      : header = ['😂 Miscellaneous', '*Random stuff for our members*']; break;
       }
