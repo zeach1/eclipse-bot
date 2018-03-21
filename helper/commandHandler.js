@@ -73,4 +73,25 @@ module.exports = {
       messenger.sendDeveloperError(message).catch(f => console.error(f));
     });
   },
+
+  /* Special command if I need to import data from Mee6 to Eclipse Bot */
+  handleMee6: function(message) {
+    const m = message.content.split('\n').splice(1, 2);
+    m[0] = m[0].slice(4, -4);
+
+    if (m.length != 4) return;
+
+    console.log(m[0]);
+    m[0] = message.guild.members.find(member => member.user.username === m[0]);
+
+    if (!m[0]) return console.log('Failed\n');
+
+    m[0] = m[0].id;
+    m[1] = parseInt(m[1].slice(m[1].indexOf('('), m[1].indexOf(')')).slice(6));
+
+    pointManager.setPoints(message, { id: m[0] }, { exp: m[1] });
+
+    const { exp, level, ranking } = message.client.points.get(m[0]);
+    return message.channel.send(`Set <@${m[0]}>'s exp to ${exp}, level ${level}, ${ranking} ER`);
+  },
 };

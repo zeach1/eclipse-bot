@@ -1,4 +1,4 @@
-const { channel } = require('../data/config.js');
+const { clanName, channel } = require('../data/config.js');
 
 const messenger = require('../helper/messenger.js');
 
@@ -19,7 +19,7 @@ module.exports = {
       }).catch(e => console.log(e));
 
     return messenger.sendMessage(message, {
-      title: 'Invite to ${clanName}',
+      title: `Invite to ${clanName}`,
       avatar: message.guild.iconURL,
       description: invite.url,
       color: 0x68b87a,

@@ -3,6 +3,7 @@ const messenger = require('./messenger.js');
 module.exports = {
   updatePoints: function(message) {
     const { client, author } = message;
+
     const score = client.points.get(author.id) || { exp: 0, level: 0, ranking: 5000 };
     score.exp++;
 
@@ -36,18 +37,12 @@ module.exports = {
     message.client.points.set(id, score);
   },
 
-  /* Remove player points when he/she leaves server */
-  removePlayer: function(member, client) {
-    console.log(client.points.array());
-    client.points.delete(member.user.id);
-    console.log(client.points.array());
+  /* Called by index.js when user leaves a server */
+  removePlayer: function(member, client) { client.points.delete(member.user.id); },
 
-    console.log(`${member.displayName}'s data is deleted.`);
-  },
-
-  /* Manual change of points (ex. when loading backup data) */
-  setPoints: function(points, id, info) {
-    const score = points.get(id) || { exp: 0, level: 0, ranking: 5000 };
+  /* Manually changing player data */
+  setPoints: function(message, player, info) {
+    const score = message.client.points.get(player.id) || { exp: 0, level: 0, ranking: 5000 };
 
     if (info.exp) {
       score.exp = info.exp;
@@ -57,15 +52,15 @@ module.exports = {
     if (info.ranking)
       score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
 
-    points.set(id, score);
+    message.client.points.set(player.id, score);
   },
 
   /* Helper methods to get exp and level */
   getExp: function(level) {
-    return level * level * 100;
+    return level * level * 39.0625;
   },
 
   getLevel: function(exp) {
-    return Math.floor(0.1 * Math.sqrt(exp));
+    return Math.floor(0.16 * Math.sqrt(exp));
   },
 };
