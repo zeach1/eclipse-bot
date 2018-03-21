@@ -38,7 +38,7 @@ module.exports = {
         name: this.name,
         usage: this.usage.slice(this.usage.indexOf('top'), -1),
       }, 'You must provide 2 arguments').catch(e => console.error(e));
-    
+
     return message.channel.send('WIP');
   },
 };
