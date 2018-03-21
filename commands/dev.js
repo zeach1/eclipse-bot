@@ -21,6 +21,9 @@ module.exports = {
           exp: param.args[2],
           ranking: param.args[3] && !isNaN(param.args[3]) ? param.args[3] : 5000,
         });
+        
+      case 'impress':
+        return this.impress(message);
     }
   },
 
@@ -74,16 +77,42 @@ module.exports = {
   },
 
   setPoints: async function(message, param) {
-    const id = message.mentions.users.first().id;
+    const player = message.mentions.users.first();
     const { points } = message.client;
 
-    pointManager.setPoints(points, id, {
+    pointManager.setPoints(message, player, {
       exp: param.exp,
       ranking: param.ranking,
     });
 
-    const { exp, level, ranking } = points.get(id);
+    const { exp, level, ranking } = points.get(player.id);
 
-    return message.channel.send(`Set <@${id}>'s exp to ${exp}, level ${level}, ${ranking} ER`);
+    return message.channel.send(`Set <@${player.id}>'s exp to ${exp}, level ${level}, ${ranking} ER`);
+  },
+  
+  impress: async function(message) {
+    const array = message.guild.members.array()
+    
+    message.channel.send('The following will be a test run of the import process.');
+    
+    this.parseArray(message, 0, array);
+  },
+  
+  parseArray: async function(message, num, array) {
+    if (num == array.length) // done
+      return message.channel.send(`Done. Array size is ${array.length}`);
+    
+    const { user, displayName } = array[num];
+    
+    if (!user.username.includes('_') || user.bot || user.id === '274595926314844161' || user.id === '257195016458469376') { // do not tag danny or jwoelmer
+      this.parseArray(message, num + 1, array); 
+      return;
+    }
+    
+    message.channel.send(`!rank <@${user.id}>`);
+    
+    setTimeout(() => {
+      this.parseArray(message, num + 1, array);
+    }, 3500);
   },
 };
