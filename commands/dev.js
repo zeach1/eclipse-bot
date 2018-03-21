@@ -21,9 +21,6 @@ module.exports = {
           exp: param.args[2],
           ranking: param.args[3] && !isNaN(param.args[3]) ? param.args[3] : 5000,
         });
-        
-      case 'impress':
-        return this.impress(message);
     }
   },
 
@@ -89,30 +86,27 @@ module.exports = {
 
     return message.channel.send(`Set <@${player.id}>'s exp to ${exp}, level ${level}, ${ranking} ER`);
   },
-  
-  impress: async function(message) {
-    const array = message.guild.members.array()
-    
-    message.channel.send('The following will be a test run of the import process.');
-    
-    this.parseArray(message, 0, array);
-  },
-  
-  parseArray: async function(message, num, array) {
-    if (num == array.length) // done
-      return message.channel.send(`Done. Array size is ${array.length}`);
-    
-    const { user, displayName } = array[num];
-    
-    if (!user.username.includes('_') || user.bot || user.id === '274595926314844161' || user.id === '257195016458469376') { // do not tag danny or jwoelmer
-      this.parseArray(message, num + 1, array); 
-      return;
+
+  loadFromMee6: async function(message) {
+    function parseArray(msg, num, array) {
+      if (num == array.length)
+        return message.channel.send(`Done. Array size is ${array.length}`);
+
+      const { user } = array[num];
+
+      /* Does not update jwoelmer or Danny, since they do not want to be tagged */
+      if (user.bot || user.id === '274595926314844161' || user.id === '257195016458469376') {
+        this.parseArray(message, num + 1, array);
+        return;
+      }
+
+      message.channel.send(`!rank <@${user.id}>`);
+
+      setTimeout(() => {
+        parseArray(message, num + 1, array);
+      }, 3500);
     }
-    
-    message.channel.send(`!rank <@${user.id}>`);
-    
-    setTimeout(() => {
-      this.parseArray(message, num + 1, array);
-    }, 3500);
+
+    parseArray(message, 0, message.guild.members.array());
   },
 };

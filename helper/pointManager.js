@@ -3,8 +3,7 @@ const messenger = require('./messenger.js');
 module.exports = {
   updatePoints: function(message) {
     const { client, author } = message;
-    if (author.bot) return;
-    
+
     const score = client.points.get(author.id) || { exp: 0, level: 0, ranking: 5000 };
     score.exp++;
 

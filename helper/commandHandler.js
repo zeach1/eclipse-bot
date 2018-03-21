@@ -9,48 +9,6 @@ module.exports = {
   handleMessage: function(message) {
     const { content, channel, author, guild, client } = message;
 
-    /* Custom command to load ranks from Mee6 to Eclipse Bot */
-    if (message.author.id === '159985870458322944') {
-      let m = message.content.split('\n');
-      
-      if (m.length != 4) return;
-      
-      m[0] = m[0].slice(4, -4);
-      
-      console.log(m[0]);
-      
-      m[0] = message.guild.members.find(member => member.user.username === m[0]);
-      
-      if (!m[0]) {
-        console.log('failed\n');
-        return;
-      }
-        
-      m[0] = m[0].id;
-      m[3] = parseInt(m[3].slice(m[3].indexOf('('), m[3].indexOf(')')).slice(6));
-      m.splice(1, 2);
-      
-      console.log(m);
-      
-      pointManager.setPoints(message, { id: m[0] }, { exp: m[1] });
-      
-      const { exp, level, ranking } = message.client.points.get(m[0]);
-      return message.channel.send(`Set <@${m[0]}>'s exp to ${exp}, level ${level}, ${ranking} ER`);
-    }
-    
-/*  setPoints: function(message, player, info) {
-    const score = message.client.points.get(player.id) || { exp: 0, level: 0, ranking: 5000 };
-
-    if (info.exp) {
-      score.exp = info.exp;
-      score.level = this.getLevel(info.exp);
-    }
-
-    if (info.ranking)
-      score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
-
-    message.client.points.set(player.id, score);*/
-    
     /* Deletes offensive language */
     if (filterWords.some(word => content.toLowerCase().includes(word))) {
       return message.delete()
@@ -62,7 +20,7 @@ module.exports = {
         .catch(e => console.error(e));
     }
 
-    /* Ignores message from bots (except Mee6) and non-members, and direct messages */
+    /* Ignores message from bots and non-members, and direct messages */
     if (author.bot || !check.verifyMember(message) || !guild) return;
 
     /* Point monitoring for any message sent by user */
@@ -114,5 +72,26 @@ module.exports = {
       console.error(e);
       messenger.sendDeveloperError(message).catch(f => console.error(f));
     });
+  },
+
+  /* Special command if I need to import data from Mee6 to Eclipse Bot */
+  handleMee6: function(message) {
+    const m = message.content.split('\n').splice(1, 2);
+    m[0] = m[0].slice(4, -4);
+
+    if (m.length != 4) return;
+
+    console.log(m[0]);
+    m[0] = message.guild.members.find(member => member.user.username === m[0]);
+
+    if (!m[0]) return console.log('Failed\n');
+
+    m[0] = m[0].id;
+    m[1] = parseInt(m[1].slice(m[1].indexOf('('), m[1].indexOf(')')).slice(6));
+
+    pointManager.setPoints(message, { id: m[0] }, { exp: m[1] });
+
+    const { exp, level, ranking } = message.client.points.get(m[0]);
+    return message.channel.send(`Set <@${m[0]}>'s exp to ${exp}, level ${level}, ${ranking} ER`);
   },
 };
