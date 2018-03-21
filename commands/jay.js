@@ -12,15 +12,13 @@ module.exports = {
     const arg = param.args[0];
 
     switch (arg) {
-      case 'respect':
-      case 'fear':
+      case 'respect': case 'fear':
         return messenger.sendMessage(message, {
           title: `${arg.charAt(0).toUpperCase()}${arg.slice(1)} Jay`,
           description: arg === 'respect' ? '@everyone respect the dark knight of Go Canada!' : 'You are too weak to take it.',
         });
 
-      default:
-        return messenger.sendArgumentError(message, this, 'Jay does not approve of this argument');
+      default: return messenger.sendArgumentError(message, this, 'Jay does not approve of this argument');
     }
   },
 };

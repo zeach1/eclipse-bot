@@ -1,3 +1,5 @@
 .DS_Store
 .glitch-assets
+.points.json
+
 node_modules

@@ -16,8 +16,7 @@ const pointManager = require('./helper/pointManager.js');
 const client = new Discord.Client();
 
 /* Set up PERSISTENT (will not delete itself when system restarts) point and ranking system */
-const pointsProvider = new EnmapLevel({ name: 'points' });
-client.points = new Enmap({ provider: pointsProvider });
+client.points = new Enmap({ provider: new EnmapLevel({ name: 'points' }) });
 
 /* Set up command list */
 client.commands = new Discord.Collection();
@@ -36,6 +35,7 @@ client.on('ready', () => {
 client.on('guildMemberAdd', member => messenger.sendWelcomeMessage(member).catch(e => console.log(e)));
 
 /* When member leaves the server */
+
 client.on('guildMemberRemove', member => {
   pointManager.removePlayer(member, client);
   messenger.sendLeaveMessage(member).catch(e => console.log(e));

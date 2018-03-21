@@ -1,44 +1,51 @@
 const fs = require('fs');
+const outdent = require('outdent');
+const Discord = require('discord.js');
+
+const { user } = require('../data/config.js');
 
 const messenger = require('../helper/messenger.js');
+const pointManager = require('../helper/pointManager.js');
 
 module.exports = {
   name: 'dev',
   type: 'developer',
-  usage: '[load | save | set <person> <num>] ',
-  description: 'Save/load points and ranks, other testing stuff',
-
+  usage: '[load | save | get | set <person> <exp> [rank]]',
+  description: 'Save/load points and ranks, and test functions',
+  
   execute: async function(message, param) {
     switch (param.args[0]) {
-      case 'load':
-        return this.loadPoints(message);
-
-      case 'save':
-        return this.savePoints(message);
-
+      case 'load': return this.loadPoints(message);
+      case 'save': return this.savePoints(message);
+      case 'get':  return this.getPoints(message);
+        
       case 'set':
-        if (param.args.length != 3 || isNaN(param.args[2]) || !message.mentions)
-          return messenger.sendArgumentError(message, this, 'Wrong usage');
-        return this.setPoints(message, param.args[2]);
+        if (param.args.length < 3 || !message.mentions || isNaN(param.args[2]))
+          return messenger.sendArgumentError(message, {
+            name: this.name,
+            usage: this.usage.slice(this.usage.indexOf('set'), -1),
+          }, 'You must provide 3 proper arguments');
+        return this.setPoints(message, {
+          exp: param.args[2],
+          ranking: param.args[3] && !isNaN(param.args[3]) ? param.args[3] : 5000,
+        });
 
-      default:
-        return this.devFunc(message);
+      default: return this.test(message);
     }
   },
-
-  devFunc: async function(message) {
-    return message.channel.send('Paul is the best');
+  
+  test: async function(message) {
+    pointManager.removePlayer(message.guild.members.get('424496775760445442'), message.client);
+    console.log('done');
   },
 
   loadPoints: async function(message) {
     const { points } = message.client;
-    const players = JSON.parse(fs.readFileSync('./data/.points.json', 'utf8'));
-
-    for (const player of players) {
-      const { id, exp, ranking } = player;
-      points.set(id, {
+    const players = JSON.parse(fs.readFileSync('./data/points.json', 'utf8'));
+    
+    for (const { id, exp, ranking } of players) {
+      pointManager.setPoints(points, id, {
         exp: exp,
-        level: Math.floor(0.1 * Math.sqrt(exp)),
         ranking: ranking,
       });
     }
@@ -51,34 +58,48 @@ module.exports = {
     const { points }  = client;
     const players = [];
 
-    for (const player of guild.members.array()) {
-      if (points.get(player.user.id)) {
-        const { exp, ranking } = points.get(player.user.id);
-
+    for (const { user } of guild.members.array()) {
+      if (points.get(user.id)) {
+        const { exp, ranking } = points.get(user.id);
         players.push({
-          id: player.user.id,
+          id: user.id,
           exp: exp ? exp : 0,
           ranking: ranking ? ranking : 0,
         });
       }
     }
 
-    return fs.writeFile('./data/.points.json', JSON.stringify(players), e => {
+    return fs.writeFile('./data/points.json', JSON.stringify(players), e => {
       if (e) console.error(e);
       channel.send('Points backup saved.');
     });
   },
 
-  setPoints(message, num) {
+  getPoints: async function(message) {
+    const { points } = message.client;
+    
+    console.log(`Number of players: ${points.size}`);
+    
+    for (const key of points.keyArray()) {
+      const { displayName } = message.guild.members.get(key);
+      const { exp, level, ranking } = points.get(key);
+      console.log({ name: displayName, exp: exp, level: level, ranking: ranking });
+    }
+    
+    return message.channel.send('Done. List sent to command log.');
+  },
+  
+  setPoints: async function(message, param) {
     const id = message.mentions.users.first().id;
     const { points } = message.client;
 
-    const score = points.get(id) || { exp: 0, level: 0, ranking: 5000 };
-    score.exp = parseInt(num);
-    score.level = Math.floor(0.1 * Math.sqrt(score.exp));
+    pointManager.setPoints(points, id, {
+      exp: param.exp,
+      ranking: param.ranking,
+    });
+    
+    const { exp, level, ranking } = points.get(id);
 
-    points.set(id, score);
-
-    return message.channel.send(`Set <@${id}>'s exp to ${num}, level ${score.level}`);
+    return message.channel.send(`Set <@${id}>'s exp to ${exp}, level ${level}, ${ranking} ER`);
   },
 };
