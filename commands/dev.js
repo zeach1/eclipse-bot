@@ -29,7 +29,7 @@ module.exports = {
     const players = JSON.parse(fs.readFileSync('./data/points.json', 'utf8'));
 
     for (const { id, exp, ranking } of players) {
-      pointManager.setPoints(points, id, {
+      pointManager.setPoints(message, { id: id }, {
         exp: exp,
         ranking: ranking,
       });

@@ -38,7 +38,6 @@ module.exports = {
     return message.channel.send(description ? description : '', { files: Array.isArray(url) ? url : [ url ] });
   },
 
-  /* update color */
   sendWelcomeMessage: async function(member) {
     const message = { channel: member.guild.channels.get(channel.test) };
 
@@ -50,17 +49,16 @@ module.exports = {
 
         2. Tag <@&${group.leadership}> to get your roles.
       `,
-      color: 0x21c32a,
+      color: 0x43b581,
     });
   },
 
-  /* update color */
   sendLeaveMessage: async function(member) {
     const message = { channel: member.guild.channels.get(channel.test) };
 
     return this.sendMessage(message, {
       description: `**${member.displayName}** has left the server`,
-      color: 0xff0000,
+      color: 0xf04747,
     });
   },
 
@@ -73,7 +71,7 @@ module.exports = {
 
         ${reason ? `Reason: ${reason}` : ''}
       `,
-      color: 0xff0000,
+      color: 0xf04747,
     });
   },
 
