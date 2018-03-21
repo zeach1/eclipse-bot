@@ -1,4 +1,4 @@
-const { role } = require('../config.js');
+const { role } = require('../data/config.js');
 
 module.exports = {
   verifyLeadership: function(message) {

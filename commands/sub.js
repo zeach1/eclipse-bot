@@ -1,4 +1,4 @@
-const { clanName, subreddit } = require('../config.js');
+const { clanName, subreddit } = require('../data/config.js');
 
 const messenger = require('../helper/messenger.js');
 

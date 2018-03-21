@@ -1,6 +1,6 @@
 const outdent = require('outdent');
 
-const { channelCategory } = require('../config.js');
+const { channelCategory } = require('../data/config.js');
 
 const messenger = require('../helper/messenger.js');
 

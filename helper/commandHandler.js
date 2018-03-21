@@ -1,4 +1,4 @@
-const { prefix, filterWords } = require('../config.js');
+const { prefix, filterWords } = require('../data/config.js');
 
 const check = require('../misc/check.js');
 

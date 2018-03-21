@@ -7,7 +7,7 @@ const Enmap = require('enmap');
 const EnmapLevel = require('enmap-level');
 const fs = require('fs');
 
-const { token } = require('./config.js');
+const { token } = require('./data/config.js');
 
 const commandHandler = require('./helper/commandHandler.js');
 const messenger = require('./helper/messenger.js');
