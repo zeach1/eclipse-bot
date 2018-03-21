@@ -5,21 +5,21 @@ const { rules, password, channelCategory, channel, group, prefix } = require('..
 
 module.exports = {
   sendCommandList: async function(message, commands) {
+    const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
+
     const embed =  new Discord.RichEmbed()
       .setAuthor('Eclipse Bot Help')
       .setDescription('**<mandatory argument> [optional argument]**\n\u200b')
       .setColor(0xe7a237)
-      .setFooter(`Requested by ${message.member.displayName} at ${message.createdAt.toUTCString()}`);
+      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`);
 
     for (const commandCategory of commands) {
-      if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership ||
-          commandCategory.type === 'developer' && message.channel.id !== channel.test)
+      if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership)
         continue;
 
       let header = [];
       switch (commandCategory.type) {
         case 'essentials': header = ['⭐ Essentials', '*Important commands*']; break;
-        case 'developer' : header = ['⚠️ Developer', '*Dev only*']; break;
         case 'leadership': header = ['🛑 Leadership', '*Must have the roles to use*']; break;
         case 'misc'      : header = ['😂 Miscellaneous', '*Random stuff for our members*']; break;
       }
@@ -38,6 +38,7 @@ module.exports = {
     return message.channel.send(description ? description : '', { files: Array.isArray(url) ? url : [ url ] });
   },
 
+  /* update color */
   sendWelcomeMessage: async function(member) {
     const message = { channel: member.guild.channels.get(channel.test) };
 
@@ -47,12 +48,13 @@ module.exports = {
 
         1. If you want to apply, make sure to read the [clan rules](${rules}), and fill out the form in the end. Apply in-game with the [RCS password](${password}).
 
-        2. Tag <@${group.leadership}> to get your roles.
+        2. Tag <@&${group.leadership}> to get your roles.
       `,
       color: 0x21c32a,
     });
   },
 
+  /* update color */
   sendLeaveMessage: async function(member) {
     const message = { channel: member.guild.channels.get(channel.test) };
 
@@ -60,9 +62,9 @@ module.exports = {
       description: `**${member.displayName}** has left the server`,
       color: 0xff0000,
     });
-    // return member.guild.channels.get(channel.test).send(`**${member.displayName}** has left the server`);
   },
 
+  /* update color */
   sendKickMessage: async function(message, member, reason) {
     return this.sendMessage(message, {
       title: '📛 Kicked Member',

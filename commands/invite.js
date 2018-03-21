@@ -19,7 +19,7 @@ module.exports = {
       }).catch(e => console.log(e));
 
     return messenger.sendMessage(message, {
-      title: `Invite to join ${message.guild.name} Discord server`,
+      title: 'Invite to ${clanName}',
       avatar: message.guild.iconURL,
       description: invite.url,
       color: 0x68b87a,

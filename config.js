@@ -1,5 +1,3 @@
-/* I use js instead of json here becaue I am using .env to get my variables */
-
 module.exports = {
   clanName: 'Reddit Eclipse',
   rules: 'https://bit.ly/RE-Rules',
@@ -31,6 +29,7 @@ module.exports = {
 
   user: {
     jay: process.env.JAY,
+    luigi: process.env.LUIGI,
     paul: process.env.PAUL,
     peril: process.env.PERIL,
     prototype: process.env.PROTOTYPE,

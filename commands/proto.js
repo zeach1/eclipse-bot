@@ -12,17 +12,10 @@ module.exports = {
 
   execute: async function(message, param) {
     switch (param.args[0]) {
-      case 'quote':
-        return message.channel.send('`He can\'t code shit`');
-
-      case 'summon':
-        return this.summonPeril(message, 5);
-
-      case 'reference':
-        return this.referencePeril(message);
-
-      default:
-        return messenger.sendArgumentError(message, this, 'This argument does not exist');
+      case 'quote':     return message.channel.send('`He can\'t code shit`');
+      case 'summon':    return this.summonPeril(message, 5);
+      case 'reference': return this.referencePeril(message);
+      default:          return messenger.sendArgumentError(message, this, 'This argument does not exist');
     }
   },
 

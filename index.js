@@ -16,9 +16,13 @@ const pointManager = require('./helper/pointManager.js');
 const client = new Discord.Client();
 
 /* Set up PERSISTENT (will not delete itself when system restarts) point and ranking system */
+<<<<<<< HEAD
 
 const pointsProvider = new EnmapLevel({ name: 'points' });
 client.points = new Enmap({ provider: pointsProvider });
+=======
+client.points = new Enmap({ provider: new EnmapLevel({ name: 'points' }) });
+>>>>>>> glitch
 
 /* Set up command list */
 client.commands = new Discord.Collection();
