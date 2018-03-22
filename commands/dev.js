@@ -18,7 +18,7 @@ module.exports = {
         if (args.length < 3 || !message.mentions || isNaN(args[2]))
           return message.channel.send('Wrong usage');
 
-        return this.setPoints(message, {
+        return this.setPlayer(message, {
           exp: args[2],
           ranking: args[3] && !isNaN(args[3]) ? args[3] : 5000,
         });
@@ -62,11 +62,11 @@ module.exports = {
     });
   },
 
-  setPoints: async function(message, param) {
+  setPlayer: async function(message, param) {
     const player = message.mentions.users.first();
     const { points } = message.client;
 
-    playerManager.setPoints(message, player, {
+    playerManager.setPlayer(message, player, {
       exp: param.exp,
       ranking: param.ranking,
     });

@@ -7,10 +7,10 @@ const check = require('../misc/check.js');
 
 module.exports = {
   name: 'rank',
-  type: 'developer',
+  type: 'essentials',
   usage: '[user | top <exp | ranking>]',
   aliases: ['info', 'level'],
-  description: 'Displays exp and Eclipse Ranking (ER) of a player',
+  description: 'Displays experience, level, and Eclipse Ranking (ER) of a player',
 
   execute: async function(message, param) {
     const { args } = param;
@@ -33,23 +33,19 @@ module.exports = {
     const { avatarURL, id } = user;
     const { exp, level, ranking, flair } = client.points.get(id) ? client.points.get(id) : playerManager.new;
 
-    const expLevel = playerManager.getExp(level), expNextLevel = playerManager.getExp(level + 1);
-
+    const expToLevelUp = playerManager.getExp(level + 1) - exp;
     const rank = playerManager.getPlayerRank(message, user, 'exp');
-    const totalPlayers = client.points.size;
 
-    const currentExp = exp - expLevel, expToLevelUp = expNextLevel - expLevel;
-
-    return messenger.sendMessage(message, {
-      title: `${displayName} | ${title} ${flair}`,
+    return messenger.send(message, {
+      title: `${displayName} | ${title}`,
       avatar: avatarURL ? avatarURL : 'https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png',
       color: rank === 1 ? 0xcfb53b :
              rank === 2 ? 0xe6e8fa :
              rank === 3 ? 0xa67d3d : 0xcccccc,
       description: outdent({ 'trimLeadingNewline': true })`
-        **${ranking}** ER
+        Level ${level} | **${ranking}** ER
 
-        Level ${level} | Rank **${rank}**/${totalPlayers} | ${currentExp}/${expToLevelUp} to level up
+        ${expToLevelUp} exp. to level up ${flair}
       `,
     });
   },
