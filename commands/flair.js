@@ -13,7 +13,7 @@ module.exports = {
 
   execute: function(message, param) {
     const name = param.args[0];
-    const flair = emoji.getEmoji(name);
+    const flair = emoji.getEmoji(name, message.client);
 
     if (!flair)
       return messenger.sendArgumentError(message, this, 'There is no such emoji');

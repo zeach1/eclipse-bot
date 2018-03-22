@@ -1,13 +1,11 @@
-const fs = require('fs');
-
 module.exports = {
   getEmoji: function(name, client) {
-    const twimojis = fs.readFileSync('../data/emojis.txt', 'utf8').split('\n');
-    name = name.replace(/:/g, '');
+    console.log(name);
+    const emojis = [];
+    if (emojis.includes(name))
+      return name;
 
-    if (twimojis.includes(name))
-      return `\:${name}:`; // eslint-disable-line no-useless-escape
-
-    return client.emojis.find('name', name);
+    const key = name.slice(2).slice(name.indexOf(':'), -1);
+    return client.emojis.get(key);
   },
 };
