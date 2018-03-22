@@ -1,3 +1,5 @@
+const { multiplier } = require('../data/config.js');
+
 const messenger = require('./messenger.js');
 
 module.exports = {
@@ -56,11 +58,7 @@ module.exports = {
   },
 
   /* Helper methods to get exp and level */
-  getExp: function(level) {
-    return level * level * 39.0625;
-  },
+  getExp: function(level) { return Math.ceil(Math.pow(1 / multiplier * level, 2)); },
 
-  getLevel: function(exp) {
-    return Math.floor(0.16 * Math.sqrt(exp));
-  },
+  getLevel: function(exp) { return Math.floor(multiplier * Math.sqrt(exp)); },
 };

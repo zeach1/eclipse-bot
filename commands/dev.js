@@ -9,25 +9,26 @@ module.exports = {
   args: 1,
 
   execute: async function(message, param) {
-    switch (param.args[0]) {
-      case 'load': return this.loadPoints(message);
-      case 'save': return this.savePoints(message);
-      case 'get':  return this.getPoints(message);
+    const { args } = param;
+    
+    switch (args[0]) {
+      case 'load': return this.load(message);
+      case 'save': return this.save(message);
       case 'set':
-        if (param.args.length < 3 || !message.mentions || isNaN(param.args[2]))
-          return message.channel.send('wrong usage');
+        if (args.length < 3 || !message.mentions || isNaN(args[2]))
+          return message.channel.send('Wrong usage');
 
         return this.setPoints(message, {
-          exp: param.args[2],
-          ranking: param.args[3] && !isNaN(param.args[3]) ? param.args[3] : 5000,
+          exp: args[2],
+          ranking: args[3] && !isNaN(args[3]) ? args[3] : 5000,
         });
     }
   },
 
-  loadPoints: async function(message) {
+  load: async function(message) {
     const { points } = message.client;
     const players = JSON.parse(fs.readFileSync('./data/points.json', 'utf8'));
-
+    
     for (const { id, exp, ranking } of players) {
       pointManager.setPoints(message, { id: id }, {
         exp: exp,
@@ -38,7 +39,7 @@ module.exports = {
     return message.channel.send('Points backup loaded.');
   },
 
-  savePoints: async function(message) {
+  save: async function(message) {
     const { client, guild, channel } = message;
     const { points }  = client;
     const players = [];
@@ -58,19 +59,6 @@ module.exports = {
       if (e) console.error(e);
       channel.send('Points backup saved.');
     });
-  },
-
-  getPoints: async function(message) {
-    const { points } = message.client;
-
-    console.log(`Number of players: ${points.size}`);
-    for (const key of points.keyArray()) {
-      const { displayName } = message.guild.members.get(key);
-      const { exp, level, ranking } = points.get(key);
-      console.log({ name: displayName, exp: exp, level: level, ranking: ranking });
-    }
-
-    return message.channel.send('Done. List sent to command log.');
   },
 
   setPoints: async function(message, param) {

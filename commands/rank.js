@@ -1,33 +1,51 @@
 const outdent = require('outdent');
 
 const messenger = require('../helper/messenger.js');
+const pointManager = require('../helper/pointManager.js');
+
+const check = require('../misc/check.js');
+const emoji = require('../misc/emoji.js');
 
 module.exports = {
   name: 'rank',
-  type: 'essentials',
+  type: 'developer',
   usage: '[user | top <exp | ranking>]',
-  description: 'Get points and ranking of a player',
+  aliases: ['info', 'level'],
+  description: 'Displays exp and Eclipse Ranking (ER) of a player',
 
   execute: async function(message, param) {
-    if (param.args[0] && param.args[0] === 'top') return this.getTopPlayers(message, param);
-
+    const { args } = param;
+    
+    switch (args[0]) {
+      case 'top': return this.getTopPlayers(message, args);
+      default:    return this.getPlayerPoints(message)
+    }
+  },
+  
+  getPlayerPoints(message) {
     const { client, mentions, member } = message;
+    
     const player = mentions.members.first() ? mentions.members.first() : member;
-
-    if (player.user.bot) return messenger.sendBotTagError(message, player);
-
+    const title = check.verifyLeadership({ member: player }) ? 'Leadership' :
+                  check.verifyEclipse({ member: player }) ? 'Reddit Eclipse' : 
+                  check.verifyFriends({ member: player }) ? 'Friends of Eclipse' : 'Noob';
+    
     const { user, displayName } = player;
     const { avatarURL, id } = user;
-
-    const { exp, level, ranking } = client.points.get(id) ? client.points.get(id) : 0;
-
+    const { exp, level, ranking } = client.points.get(id) ? client.points.get(id) : { exp: 0, level: 0, ranking: 5000 };
+    
+    const expLevel = pointManager.getExp(level);
+    const expNextLevel = pointManager.getExp(level + 1);
+    
+    const currentExp = exp - expLevel;
+    const expToLevelUp = expNextLevel - expLevel;
+    
     return messenger.sendMessage(message, {
-      title: displayName,
+      title: `${displayName} | ${title}`,
       avatar: avatarURL ? avatarURL : 'https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png',
       color: 0xcccccc,
       description: outdent({ 'trimLeadingNewline': true })`
-        **${ranking ? ranking : 5000}** ER
-        Level ${level ? level : 0} (${exp ? exp : 0})
+        Level ${level} | ${currentExp}/${expToLevelUp}
       `,
     });
   },

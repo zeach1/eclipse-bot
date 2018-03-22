@@ -13,6 +13,8 @@ const commandHandler = require('./helper/commandHandler.js');
 const messenger = require('./helper/messenger.js');
 const pointManager = require('./helper/pointManager.js');
 
+const emoji = require('./misc/emoji.js');
+
 const client = new Discord.Client();
 
 /* Set up point system */
@@ -42,7 +44,7 @@ client.on('guildMemberRemove', member => {
 });
 
 /* When a member sends a message */
-client.on('message', message => commandHandler.handleMessage(message));
+client.on('message', message =>commandHandler.handleMessage(message));
 
 client.login(token);
 
