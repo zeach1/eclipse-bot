@@ -53,7 +53,7 @@ module.exports = {
   /* Manually changing player data */
   setPlayer: function(message, player, info) {
     const score = message.client.points.get(player.id) || this.new;
-    
+
     if (info.exp) {
       score.exp = info.exp;
       score.level = this.getLevel(info.exp);
@@ -82,8 +82,8 @@ module.exports = {
       scores = scores.sort((a, b) => { return a.ranking < b.ranking ? 1 : a.ranking > b.ranking ? -1 : 0; });
     else
       return -1;
-    
+
     const data = message.client.points.get(player.id);
-    return scores.findIndex(score => { return data === score }) + 1;
+    return scores.findIndex(score => { return data === score; }) + 1;
   },
 };

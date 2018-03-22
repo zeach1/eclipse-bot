@@ -1,8 +1,8 @@
 # files
 .DS_Store
 .glitch-assets
+shrinkwrap.yaml
 
 # folders
-points
+players
 node_modules
-

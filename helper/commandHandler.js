@@ -12,7 +12,7 @@ module.exports = {
     /* Hahaha */
     if (message.content.includes('stupid'))
       return message.client.commands.get('stupidbot').execute(message);
-    
+
     /* Deletes offensive language */
     if (filterWords.some(word => content.toLowerCase().includes(word))) {
       return message.delete()
