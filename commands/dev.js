@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const pointManager = require('../helper/pointManager.js');
+const playerManager = require('../helper/playerManager.js');
 
 module.exports = {
   name: 'dev',
@@ -10,7 +10,7 @@ module.exports = {
 
   execute: async function(message, param) {
     const { args } = param;
-    
+
     switch (args[0]) {
       case 'load': return this.load(message);
       case 'save': return this.save(message);
@@ -26,13 +26,13 @@ module.exports = {
   },
 
   load: async function(message) {
-    const { points } = message.client;
-    const players = JSON.parse(fs.readFileSync('./data/points.json', 'utf8'));
-    
-    for (const { id, exp, ranking } of players) {
-      pointManager.setPoints(message, { id: id }, {
+    const players = JSON.parse(fs.readFileSync('./data/players.json', 'utf8'));
+
+    for (const { id, exp, ranking, flair } of players) {
+      playerManager.setPlayer(message, { id: id }, {
         exp: exp,
         ranking: ranking,
+        flair: flair,
       });
     }
 
@@ -46,16 +46,17 @@ module.exports = {
 
     for (const { user } of guild.members.array()) {
       if (points.get(user.id)) {
-        const { exp, ranking } = points.get(user.id);
+        const { exp, ranking, flair } = points.get(user.id);
         players.push({
           id: user.id,
-          exp: exp ? exp : 0,
-          ranking: ranking ? ranking : 0,
+          exp: exp,
+          ranking: ranking,
+          flair: flair,
         });
       }
     }
 
-    return fs.writeFile('./data/points.json', JSON.stringify(players), e => {
+    return fs.writeFile('./data/players-backup.json', JSON.stringify(players), e => {
       if (e) console.error(e);
       channel.send('Points backup saved.');
     });
@@ -65,7 +66,7 @@ module.exports = {
     const player = message.mentions.users.first();
     const { points } = message.client;
 
-    pointManager.setPoints(message, player, {
+    playerManager.setPoints(message, player, {
       exp: param.exp,
       ranking: param.ranking,
     });

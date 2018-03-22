@@ -3,7 +3,7 @@ const { prefix, filterWords } = require('../data/config.js');
 const check = require('../misc/check.js');
 
 const messenger = require('./messenger.js');
-const pointManager = require('./pointManager.js');
+const playerManager = require('./playerManager.js');
 
 module.exports = {
   handleMessage: function(message) {
@@ -28,7 +28,7 @@ module.exports = {
     if (author.bot || !check.verifyMember(message) || !guild) return;
 
     /* Point monitoring for any message sent by user */
-    pointManager.updatePoints(message);
+    playerManager.updatePoints(message);
 
     /* Ignores numbers, non-commands, bot messages, and direct messages */
     if (!isNaN(content.replace(/ /g, '')) || !content.startsWith(prefix)) return;
@@ -93,7 +93,7 @@ module.exports = {
     m[0] = m[0].id;
     m[1] = parseInt(m[1].slice(m[1].indexOf('('), m[1].indexOf(')')).slice(6));
 
-    pointManager.setPoints(message, { id: m[0] }, { exp: m[1] });
+    playerManager.setPoints(message, { id: m[0] }, { exp: m[1] });
 
     const { exp, level, ranking } = message.client.points.get(m[0]);
     return message.channel.send(`Set <@${m[0]}>'s exp to ${exp}, level ${level}, ${ranking} ER`);
