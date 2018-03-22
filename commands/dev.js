@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const pointManager = require('../helper/pointManager.js');
+const playerManager = require('../helper/playerManager.js');
 
 module.exports = {
   name: 'dev',
@@ -9,75 +9,64 @@ module.exports = {
   args: 1,
 
   execute: async function(message, param) {
-    switch (param.args[0]) {
-      case 'load': return this.loadPoints(message);
-      case 'save': return this.savePoints(message);
-      case 'get':  return this.getPoints(message);
+    const { args } = param;
+
+    switch (args[0]) {
+      case 'load': return this.load(message);
+      case 'save': return this.save(message);
       case 'set':
-        if (param.args.length < 3 || !message.mentions || isNaN(param.args[2]))
-          return message.channel.send('wrong usage');
+        if (args.length < 3 || !message.mentions || isNaN(args[2]))
+          return message.channel.send('Wrong usage');
 
         return this.setPoints(message, {
-          exp: param.args[2],
-          ranking: param.args[3] && !isNaN(param.args[3]) ? param.args[3] : 5000,
+          exp: args[2],
+          ranking: args[3] && !isNaN(args[3]) ? args[3] : 5000,
         });
     }
   },
 
-  loadPoints: async function(message) {
-    const { points } = message.client;
-    const players = JSON.parse(fs.readFileSync('./data/points.json', 'utf8'));
+  load: async function(message) {
+    const players = JSON.parse(fs.readFileSync('./data/players.json', 'utf8'));
 
-    for (const { id, exp, ranking } of players) {
-      pointManager.setPoints(message, { id: id }, {
+    for (const { id, exp, ranking, flair } of players) {
+      playerManager.setPlayer(message, { id: id }, {
         exp: exp,
         ranking: ranking,
+        flair: flair,
       });
     }
 
     return message.channel.send('Points backup loaded.');
   },
 
-  savePoints: async function(message) {
+  save: async function(message) {
     const { client, guild, channel } = message;
     const { points }  = client;
     const players = [];
 
     for (const { user } of guild.members.array()) {
       if (points.get(user.id)) {
-        const { exp, ranking } = points.get(user.id);
+        const { exp, ranking, flair } = points.get(user.id);
         players.push({
           id: user.id,
-          exp: exp ? exp : 0,
-          ranking: ranking ? ranking : 0,
+          exp: exp,
+          ranking: ranking,
+          flair: flair,
         });
       }
     }
 
-    return fs.writeFile('./data/points.json', JSON.stringify(players), e => {
+    return fs.writeFile('./data/players-backup.json', JSON.stringify(players), e => {
       if (e) console.error(e);
       channel.send('Points backup saved.');
     });
-  },
-
-  getPoints: async function(message) {
-    const { points } = message.client;
-
-    console.log(`Number of players: ${points.size}`);
-    for (const key of points.keyArray()) {
-      const { displayName } = message.guild.members.get(key);
-      const { exp, level, ranking } = points.get(key);
-      console.log({ name: displayName, exp: exp, level: level, ranking: ranking });
-    }
-
-    return message.channel.send('Done. List sent to command log.');
   },
 
   setPoints: async function(message, param) {
     const player = message.mentions.users.first();
     const { points } = message.client;
 
-    pointManager.setPoints(message, player, {
+    playerManager.setPoints(message, player, {
       exp: param.exp,
       ranking: param.ranking,
     });

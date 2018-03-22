@@ -8,6 +8,7 @@ module.exports = {
     leadership: ['Leadership'],
     developer: ['Bot Developer'],
     eclipse: ['Eclipse'],
+    friends: ['Friends of Eclipse'],
     member: ['Friends of Eclipse', 'Eclipse', 'Visitor'],
   },
 
@@ -36,6 +37,7 @@ module.exports = {
   },
 
   prefix: '+',
+  multiplier: 0.24,
   token: process.env.TOKEN,
 
   /* Don't look, bad words */

@@ -13,6 +13,10 @@ module.exports = {
     return this.verifyMember(message) && message.member.roles.some(r => role.eclipse.includes(r.name));
   },
 
+  verifyFriends: function(message) {
+    return this.verifyMember(message) && message.member.roles.some(r => role.friends.includes(r.name));
+  },
+
   verifyMember: function(message) {
     return message.member.roles.some(r => role.member.includes(r.name));
   },

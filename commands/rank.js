@@ -1,33 +1,55 @@
 const outdent = require('outdent');
 
 const messenger = require('../helper/messenger.js');
+const playerManager = require('../helper/playerManager.js');
+
+const check = require('../misc/check.js');
 
 module.exports = {
   name: 'rank',
-  type: 'essentials',
+  type: 'developer',
   usage: '[user | top <exp | ranking>]',
-  description: 'Get points and ranking of a player',
+  aliases: ['info', 'level'],
+  description: 'Displays exp and Eclipse Ranking (ER) of a player',
 
   execute: async function(message, param) {
-    if (param.args[0] && param.args[0] === 'top') return this.getTopPlayers(message, param);
+    const { args } = param;
 
+    switch (args[0]) {
+      case 'top': return this.getTopPlayers(message, args);
+      default:    return this.getPlayer(message);
+    }
+  },
+
+  getPlayer(message) {
     const { client, mentions, member } = message;
-    const player = mentions.members.first() ? mentions.members.first() : member;
 
-    if (player.user.bot) return messenger.sendBotTagError(message, player);
+    const player = mentions.members.first() ? mentions.members.first() : member;
+    const title = check.verifyLeadership({ member: player }) ? 'Leadership' :
+                  check.verifyEclipse({ member: player }) ? 'Reddit Eclipse' :
+                  check.verifyFriends({ member: player }) ? 'Friends of Eclipse' : 'Noob';
 
     const { user, displayName } = player;
     const { avatarURL, id } = user;
+    const { exp, level, ranking, flair } = client.points.get(id) ? client.points.get(id) : playerManager.new;
 
-    const { exp, level, ranking } = client.points.get(id) ? client.points.get(id) : 0;
+    const expLevel = playerManager.getExp(level), expNextLevel = playerManager.getExp(level + 1);
+
+    const rank = playerManager.getPlayerRank(message, user, 'exp');
+    const totalPlayers = client.points.size;
+
+    const currentExp = exp - expLevel, expToLevelUp = expNextLevel - expLevel;
 
     return messenger.sendMessage(message, {
-      title: displayName,
+      title: `${displayName} | ${title} ${flair}`,
       avatar: avatarURL ? avatarURL : 'https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png',
-      color: 0xcccccc,
+      color: rank === 1 ? 0xcfb53b :
+             rank === 2 ? 0xe6e8fa :
+             rank === 3 ? 0xa67d3d : 0xcccccc,
       description: outdent({ 'trimLeadingNewline': true })`
-        **${ranking ? ranking : 5000}** ER
-        Level ${level ? level : 0} (${exp ? exp : 0})
+        **${ranking}** ER
+
+        Level ${level} | Rank **${rank}**/${totalPlayers} | ${currentExp}/${expToLevelUp} to level up
       `,
     });
   },
