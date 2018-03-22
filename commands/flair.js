@@ -5,7 +5,7 @@ const emoji = require('../misc/emoji.js');
 
 module.exports = {
   name: 'flair',
-  type: 'developer',
+  type: 'essentials',
   usage: '<emoji>',
   description: 'Set your own custom flair! Use any emojis from this server or a default Discord emoji!',
 

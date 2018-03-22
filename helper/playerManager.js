@@ -44,7 +44,7 @@ module.exports = {
 
     score.flair = flair;
 
-    message.client.points.set(id, flair);
+    message.client.points.set(id, score);
   },
 
   /* Called by index.js when user leaves a server */
@@ -53,7 +53,7 @@ module.exports = {
   /* Manually changing player data */
   setPlayer: function(message, player, info) {
     const score = message.client.points.get(player.id) || this.new;
-
+    
     if (info.exp) {
       score.exp = info.exp;
       score.level = this.getLevel(info.exp);
@@ -62,7 +62,8 @@ module.exports = {
     if (info.ranking)
       score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
 
-    score.flair = info.flair ? info.flair : '';
+    if (score.flair)
+      score.flair = info.flair;
 
     message.client.points.set(player.id, score);
   },
@@ -76,12 +77,13 @@ module.exports = {
   getPlayerRank: function(message, player, type) {
     let scores = message.client.points.array();
     if (type === 'exp')
-      scores = scores.sort((a, b) => { return a.exp > b ? 1 : a.exp < b ? -1 : 0; });
+      scores = scores.sort((a, b) => { return a.exp < b.exp ? 1 : a.exp > b.exp ? -1 : 0; });
     else if (type === 'ranking')
-      scores = scores.sort((a, b) => { return a.ranking > b ? 1 : a.ranking < b ? -1 : 0; });
+      scores = scores.sort((a, b) => { return a.ranking < b.ranking ? 1 : a.ranking > b.ranking ? -1 : 0; });
     else
       return -1;
-
-    return scores.findIndex(score => player.id === score.id);
+    
+    const data = message.client.points.get(player.id);
+    return scores.findIndex(score => { return data === score }) + 1;
   },
 };

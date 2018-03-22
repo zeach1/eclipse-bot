@@ -1,11 +1,14 @@
+const twemoji = require('twemoji');
+
 module.exports = {
   getEmoji: function(name, client) {
-    console.log(name);
-    const emojis = [];
-    if (emojis.includes(name))
+    if (twemoji.parse(name).startsWith('<img'))
       return name;
 
-    const key = name.slice(2).slice(name.indexOf(':'), -1);
-    return client.emojis.get(key);
+    name = name.slice(2);
+    const key = name.slice(name.indexOf(':') + 1, -1);
+    const emoji = client.emojis.get(key);
+    
+    return `<:${emoji.name}:${emoji.id}>`;
   },
 };
