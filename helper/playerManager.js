@@ -3,12 +3,12 @@ const { multiplier } = require('../data/config.js');
 const messenger = require('./messenger.js');
 
 module.exports = {
-  
+
   updatePoints: function(message) {
     const { client, author } = message;
 
     let score = message.client.points.get(author.id);
-    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '⚔️' };
+    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '<:pepeok:410176368626761738>' };
 
     score.exp++;
 
@@ -33,7 +33,7 @@ module.exports = {
 
   updateRanking: function(message, player, amount) {
     let score = message.client.points.get(player.id);
-    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '⚔️' };
+    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '<:pepeok:410176368626761738>' };
 
     score.ranking += amount;
     score.ranking = score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
@@ -57,10 +57,8 @@ module.exports = {
 
   /* Manually changing player data */
   setPlayer: function(message, player, info) {
-    let score = { exp: 0, level: 0, ranking: 5000, flair: '⚔️' };
-    
-    console.log(`initial: ${score.exp}`);
-    
+    const score = { exp: 0, level: 0, ranking: 5000, flair: '<:pepeok:410176368626761738>' };
+
     if (info.exp) {
       score.exp = info.exp;
       score.level = this.getLevel(info.exp);
@@ -71,12 +69,8 @@ module.exports = {
 
     if (score.flair)
       score.flair = info.flair;
-    
-    console.log(`set: ${score.exp}`);
-    
+
     message.client.points.set(player.id, score);
-    
-    console.log(`after set: ${message.client.points.get(player.id).exp}\n`);
   },
 
   /* Helper methods to interchange exp and level*/
@@ -91,9 +85,7 @@ module.exports = {
 
   getRankList: function(message, type) {
     const ids = message.client.points.keyArray();
-    
-    console.log(message.client.points.get('293571982883028992'));
-    
+
     const scores = message.client.points.array();
 
     for (let i = 0; i < scores.length; i++) {
@@ -101,8 +93,6 @@ module.exports = {
       scores[i].name = member.displayName;
       scores[i].id = member.id;
     }
-    
-    console.log(message.client.points.get('293571982883028992'));
 
     if (type === 'exp')
       return scores.sort((a, b) => { return a.exp < b.exp ? 1 :

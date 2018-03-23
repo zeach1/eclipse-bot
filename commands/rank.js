@@ -22,31 +22,23 @@ module.exports = {
   },
 
   getPlayerScore: async function(message) {
-    console.log(message.client.points.get('293571982883028992'));
-    
     const { client, mentions, member } = message;
     const player = mentions.members.first() ? mentions.members.first() : member;
-    
+
     const { avatarURL, id } = player.user;
 
-    console.log(message.client.points.get('293571982883028992'));
-    
     const title = check.verifyLeadership({ member: player }) ? 'Leadership' :
                   check.verifyEclipse({ member: player }) ? 'Reddit Eclipse' :
                   check.verifyFriends({ member: player }) ? 'Friends of Eclipse' : 'Noob';
 
     let score = client.points.get(id);
-    
-    console.log(message.client.points.get('293571982883028992'));
-    
+
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '⚔️' };
-    
+
     const { exp, level, ranking, flair } = score;
     const expToLevelUp = playerManager.getExp(level + 1) - exp;
     const rank = playerManager.getPlayerRank(message, player.user, 'exp');
 
-    console.log(message.client.points.get('293571982883028992'));
-    
     return messenger.sendMessage(message, {
       title: `${player.displayName} | ${title}`,
       avatar: avatarURL ? avatarURL : 'https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png',
@@ -83,17 +75,17 @@ module.exports = {
 
     const longestExpLength = `${scores[0].exp} (${scores[0].level})`.length;
     const numberLength = number.toString().length;
-    
+
     let description = '';
     for (let i = 1; i <= number; i++) {
       const score = scores[i - 1];
 
-      const number = `${i}`.padEnd(numberLength);
-      const exp = `${score.exp} (${score.level})`.padStart(longestExpLength);
+      const n       = `${i}`.padEnd(numberLength);
+      const exp     = `${score.exp} (${score.level})`.padStart(longestExpLength);
       const ranking = `${score.ranking}`.padStart(4);
-      const name = score.name.substring(0, 25);
+      const name    = score.name.substring(0, 25);
 
-      description += `\`${number} ${type === 'exp' ? exp : ranking} |\` ${score.flair} ${name}\n`;
+      description += `\`${n} ${type === 'exp' ? exp : ranking} |\` ${score.flair} ${name}\n`;
     }
 
     return messenger.sendMessage(message, {
