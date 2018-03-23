@@ -1,4 +1,4 @@
-const { prefix, filterWords } = require('../data/config.js');
+const { prefix, thonkWords, filterWords } = require('../data/config.js');
 
 const check = require('../misc/check.js');
 
@@ -10,8 +10,8 @@ module.exports = {
     const { content, channel, author, guild, client } = message;
 
     /* Hahaha */
-    if (message.content.toLowerCase().includes('stupid') || message.content.toLowerCase().includes('bro'))
-      return message.client.commands.get('stupidbot').execute(message);
+    if (thonkWords.find(m => message.content.toLowerCase().includes(m)))
+      return message.channel.send('**NO U**');
 
     /* Deletes offensive language */
     if (filterWords.some(word => content.toLowerCase().includes(word)))
