@@ -35,14 +35,14 @@ module.exports = {
 
         if (deleted.size < 100 || numDeleted == num)
           return message.channel.send(`🖍 Deleted ${numDeleted} ${numDeleted != 1 ? 'messages' : 'message'}.`)
-            .then(msg => { if (msg) msg.delete(3000).catch(() => {}); })
-            .catch(e => console.error(e));
+            .then(msg => { if (msg) msg.delete(3000).catch(() => {}); });
 
         return this.clear(message, num - 100, numDeleted);
       }
     }
 
-    return message.channel.send('😰 There are no messages to delete').then(msg => { if (msg) msg.delete(3000).catch(() => {}); }).catch(e => console.error(e));
+    return message.channel.send('😰 There are no messages to delete')
+      .then(msg => { if (msg) msg.delete(3000).catch(() => {}); });
 
   },
 };

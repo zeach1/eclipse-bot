@@ -4,7 +4,7 @@ const app = express();
 
 app.get('/', (request, response) => {
   const date = new Date();
-  console.error(`Ping Received: ${date.toLocaleString('en-US')}`);
+  console.log(`Ping Received: ${date.toLocaleString('en-US')}`);
   response.sendStatus(200);
 });
 

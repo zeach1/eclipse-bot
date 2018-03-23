@@ -27,7 +27,7 @@ for (const file of fs.readdirSync('./commands')) {
 
 /* When connected */
 client.on('ready', () => {
-   console.error('Connected.');
+   console.log('Connected.');
    client.user.setActivity('Mee6 leave', { type: 'WATCHING' });
 });
 
@@ -42,7 +42,11 @@ client.on('guildMemberRemove', member => {
 });
 
 /* When a member sends a message */
-client.on('message', message =>  commandHandler.handleMessage(message));
+client.on('message', async message =>
+  await commandHandler.handleMessage(message).catch(e => {
+    console.error(e);
+    messenger.sendDeveloperError(message).catch(f => console.error(f));
+}));
 
 client.login(token);
 
