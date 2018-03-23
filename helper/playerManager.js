@@ -3,12 +3,12 @@ const { multiplier } = require('../data/config.js');
 const messenger = require('./messenger.js');
 
 module.exports = {
-  new: { exp: 0, level: 0, ranking: 5000, flair: '⚔️' },
+
   updatePoints: function(message) {
     const { client, author } = message;
 
     let score = message.client.points.get(author.id);
-    if (!score || !score.exp) score = this.new;
+    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '<:pepeok:410176368626761738>' };
 
     score.exp++;
 
@@ -33,7 +33,7 @@ module.exports = {
 
   updateRanking: function(message, player, amount) {
     let score = message.client.points.get(player.id);
-    if (!score || !score.exp) score = this.new;
+    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '<:pepeok:410176368626761738>' };
 
     score.ranking += amount;
     score.ranking = score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
@@ -57,8 +57,7 @@ module.exports = {
 
   /* Manually changing player data */
   setPlayer: function(message, player, info) {
-    let score = message.client.points.get(player.id);
-    if (!score || !score.exp) score = this.new;
+    const score = { exp: 0, level: 0, ranking: 5000, flair: '<:pepeok:410176368626761738>' };
 
     if (info.exp) {
       score.exp = info.exp;
@@ -86,6 +85,7 @@ module.exports = {
 
   getRankList: function(message, type) {
     const ids = message.client.points.keyArray();
+
     const scores = message.client.points.array();
 
     for (let i = 0; i < scores.length; i++) {

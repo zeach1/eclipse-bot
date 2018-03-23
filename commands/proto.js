@@ -27,7 +27,7 @@ module.exports = {
     if (message.author.id != user.prototype)
       return message.channel.send('Nah you can\'t do this fam.');
 
-    message.channel.send(`<@${user.peril}>`).catch(e => console.log(e));
+    message.channel.send(`<@${user.peril}>`).catch(e => console.error(e));
 
     setTimeout(() => {
       return this.summonPeril(message, num - 1);

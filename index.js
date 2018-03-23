@@ -27,18 +27,18 @@ for (const file of fs.readdirSync('./commands')) {
 
 /* When connected */
 client.on('ready', () => {
-   console.log('Connected.');
+   console.error('Connected.');
    client.user.setActivity('Mee6 leave', { type: 'WATCHING' });
 });
 
 /* When new member joins the server */
-client.on('guildMemberAdd', member => messenger.sendWelcomeMessage(member).catch(e => console.log(e)));
+client.on('guildMemberAdd', member => messenger.sendWelcomeMessage(member).catch(e => console.error(e)));
 
 /* When member leaves the server */
 
 client.on('guildMemberRemove', member => {
   playerManager.removePlayer(member, client);
-  messenger.sendLeaveMessage(member).catch(e => console.log(e));
+  messenger.sendLeaveMessage(member).catch(e => console.error(e));
 });
 
 /* When a member sends a message */
@@ -47,4 +47,4 @@ client.on('message', message =>  commandHandler.handleMessage(message));
 client.login(token);
 
 /* Handle uncaught promises, helps developers fix any deprecated promise code */
-process.on('unhandledRejection', e => console.log(`Uncaught Promise Rejection\n${e}`));
+process.on('unhandledRejection', e => console.error(`Uncaught Promise Rejection\n${e}`));

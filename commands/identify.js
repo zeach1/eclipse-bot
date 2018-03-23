@@ -25,7 +25,7 @@ module.exports = {
       `)
       .then(() => {
         if (param.options.includes('d') || param.options.includes('delete'))
-          message.delete().catch(e => console.log(e));
+          message.delete().catch(e => console.error(e));
       });
   },
 };

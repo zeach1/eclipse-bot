@@ -16,12 +16,12 @@ module.exports = {
     if (member.user.bot) return messenger.sendBotTagError(message, member);
 
     return member.kick(reason)
-      .then(() => messenger.sendKickMessage(message, member, reason).catch(e => console.log(e)))
+      .then(() => messenger.sendKickMessage(message, member, reason).catch(e => console.error(e)))
       .catch(() =>
         messenger.sendError(message, {
           message: `Cannot kick ${member.displayName}`,
           submessage: `${member} has more permissions than me`,
-        }).catch(e => console.log(e))
+        }).catch(e => console.error(e))
       );
   },
 };

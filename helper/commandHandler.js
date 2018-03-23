@@ -85,10 +85,9 @@ module.exports = {
 
     if (m.length != 4) return;
 
-    console.log(m[0]);
     m[0] = message.guild.members.find(member => member.user.username === m[0]);
 
-    if (!m[0]) return console.log('Failed\n');
+    if (!m[0]) return console.error('Failed\n');
 
     m[0] = m[0].id;
     m[1] = parseInt(m[1].slice(m[1].indexOf('('), m[1].indexOf(')')).slice(6));

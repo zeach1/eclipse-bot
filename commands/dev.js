@@ -32,11 +32,11 @@ module.exports = {
       playerManager.setPlayer(message, { id: id }, {
         exp: exp,
         ranking: ranking,
-        flair: flair === '' ? '⚔️' : flair,
+        flair: flair,
       });
     }
 
-    return message.channel.send('Points backup loaded.');
+    return message.channel.send('Player backup loaded.');
   },
 
   save: async function(message) {
