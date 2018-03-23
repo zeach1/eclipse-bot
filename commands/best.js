@@ -15,7 +15,7 @@ module.exports = {
 
     const scores = playerManager.getRankList(message, type);
     number = number > 30 ? 30 : number < 0 ? 10 : number;
-    
+
     const expLength    = `${scores[0].exp} exp.`.length;
     const levelLength  = `(${scores[0].level})`.length;
     const numberLength = number.toString().length;
@@ -27,13 +27,13 @@ module.exports = {
       const n        = `${i}`.padEnd(numberLength);
       const exp      = `${score.exp} exp.`.padStart(expLength);
       const level    = `(${score.level})`.padStart(levelLength);
-      const expLevel = `${exp} ${level}`
+      const expLevel = `${exp} ${level}`;
       const ranking  = `${score.ranking} ER`.padStart(7);
       const name     = score.name.substring(0, 25);
 
       description += `\`${n} ${type === 'exp' ? expLevel : ranking} |\` ${score.flair} ${name}\n`;
     }
-    
+
     return messenger.sendMessage(message, {
       title: `🏅 Top Players by ${type === 'exp' ? 'Level' : 'Eclipse Ranking'}`,
       color: 0xf5f513,

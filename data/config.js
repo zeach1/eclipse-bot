@@ -7,6 +7,7 @@ module.exports = {
   role: {
     leadership: ['Leadership'],
     developer: ['Bot Developer'],
+    inwar: ['inwar'],
     eclipse: ['Eclipse'],
     friends: ['Friends of Eclipse'],
     member: ['Friends of Eclipse', 'Eclipse', 'Visitor'],
