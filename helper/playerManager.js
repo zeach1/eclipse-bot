@@ -3,13 +3,13 @@ const { multiplier } = require('../data/config.js');
 const messenger = require('./messenger.js');
 
 module.exports = {
-  new: { exp: 0, level: 0, ranking: 5000, flair: '' },
+  new: { exp: 0, level: 0, ranking: 5000, flair: '⚔️' },
   updatePoints: function(message) {
     const { client, author } = message;
 
     let score = message.client.points.get(author.id);
     if (!score || !score.exp) score = this.new;
-    
+
     score.exp++;
 
     if (score.level < this.getLevel(score.exp)) {
@@ -34,7 +34,7 @@ module.exports = {
   updateRanking: function(message, player, amount) {
     let score = message.client.points.get(player.id);
     if (!score || !score.exp) score = this.new;
-    
+
     score.ranking += amount;
     score.ranking = score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
 
@@ -43,10 +43,10 @@ module.exports = {
 
   updateFlair: function(message, flair) {
     const { id, client } = message.author;
-    
+
     let score = client.points.get(id);
     if (!score || !score.exp) score = this.new;
-    
+
     score.flair = flair;
 
     message.client.points.set(id, score);
@@ -57,9 +57,9 @@ module.exports = {
 
   /* Manually changing player data */
   setPlayer: function(message, player, info) {
-    const score = message.client.points.get(player.id);
+    let score = message.client.points.get(player.id);
     if (!score || !score.exp) score = this.new;
-    
+
     if (info.exp) {
       score.exp = info.exp;
       score.level = this.getLevel(info.exp);
@@ -83,17 +83,17 @@ module.exports = {
   getPlayerRank: function(message, player, type) {
     return this.getRankList(message, type).findIndex(score => { return player.id === score.id; }) + 1;
   },
-  
+
   getRankList: function(message, type) {
-    let ids = message.client.points.keyArray();
-    let scores = message.client.points.array();
-    
+    const ids = message.client.points.keyArray();
+    const scores = message.client.points.array();
+
     for (let i = 0; i < scores.length; i++) {
       const member = message.guild.members.get(ids[i]);
       scores[i].name = member.displayName;
       scores[i].id = member.id;
     }
-    
+
     if (type === 'exp')
       return scores.sort((a, b) => { return a.exp < b.exp ? 1 :
                                             a.exp > b.exp ? -1 :

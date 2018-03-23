@@ -32,7 +32,7 @@ module.exports = {
       playerManager.setPlayer(message, { id: id }, {
         exp: exp,
         ranking: ranking,
-        flair: flair,
+        flair: flair === '' ? '⚔️' : flair,
       });
     }
 
