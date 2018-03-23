@@ -9,12 +9,8 @@ module.exports = {
   handleMessage: async function(message) {
     const { content, channel, author, guild, client } = message;
 
-    if (message.content === 'create a webhook')
-      return message.channel.createWebhook('Eclipse Bot Webhook', message.guild.members.find('displayName', 'Eclipse Bot').user.avatarURL)
-        .then(webhook => message.channel.send(`Created ${webhook}`));
-
     /* Hahaha */
-    if (message.content.includes('stupid'))
+    if (message.content.toLowerCase().includes('stupid') || message.content.toLowerCase().includes('bro'))
       return message.client.commands.get('stupidbot').execute(message);
 
     /* Deletes offensive language */
