@@ -27,7 +27,7 @@ for (const file of fs.readdirSync('./commands')) {
 
 /* When connected */
 client.on('ready', () => {
-   console.error('Connected.');
+   console.log('Connected.');
    client.user.setActivity('Mee6 leave', { type: 'WATCHING' });
 });
 

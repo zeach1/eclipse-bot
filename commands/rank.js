@@ -8,9 +8,9 @@ const check = require('../misc/check.js');
 module.exports = {
   name: 'rank',
   type: 'essentials',
-  usage: '[user | top <exp | ranking> [number <= 30]]',
+  usage: '[user | top <exp | ranking> [number]]',
   aliases: ['info', 'stats'],
-  description: 'Displays experience, level, and Eclipse Ranking (ER) of a player, or top players by exp or ranking (defaults to top 10)',
+  description: 'Displays experience, level, and Eclipse Ranking (ER) of a player, or top players by exp or ranking (defaults to top 10, max 30 players)',
 
   execute: async function(message, param) {
     const { args } = param;
@@ -19,7 +19,7 @@ module.exports = {
       case 'top': return this.getTopPlayers(message, args);
       default:    return this.getPlayerScore(message);
     }
-  },
+  },  
 
   getPlayerScore: async function(message) {
     const { client, mentions, member } = message;
