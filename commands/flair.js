@@ -16,7 +16,7 @@ module.exports = {
     const flair = emoji.getEmoji(name, message.client);
 
     if (!flair)
-      return messenger.sendArgumentError(message, this, 'There is no such emoji');
+      return messenger.sendArgumentError(message, this, 'This emoji is not supported by the server');
 
     playerManager.updateFlair(message, flair);
 

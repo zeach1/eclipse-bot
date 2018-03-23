@@ -7,7 +7,9 @@ module.exports = {
   updatePoints: function(message) {
     const { client, author } = message;
 
-    const score = client.points.get(author.id) || this.new;
+    let score = message.client.points.get(author.id);
+    if (!score || !score.exp) score = this.new;
+    
     score.exp++;
 
     if (score.level < this.getLevel(score.exp)) {
@@ -30,8 +32,9 @@ module.exports = {
   },
 
   updateRanking: function(message, player, amount) {
-    const score = message.client.points.get(player.id) || this.new;
-
+    let score = message.client.points.get(player.id);
+    if (!score || !score.exp) score = this.new;
+    
     score.ranking += amount;
     score.ranking = score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
 
@@ -40,8 +43,10 @@ module.exports = {
 
   updateFlair: function(message, flair) {
     const { id, client } = message.author;
-    const score = client.points.get(id) || this.new;
-
+    
+    let score = client.points.get(id);
+    if (!score || !score.exp) score = this.new;
+    
     score.flair = flair;
 
     message.client.points.set(id, score);
@@ -52,8 +57,9 @@ module.exports = {
 
   /* Manually changing player data */
   setPlayer: function(message, player, info) {
-    const score = message.client.points.get(player.id) || this.new;
-
+    const score = message.client.points.get(player.id);
+    if (!score || !score.exp) score = this.new;
+    
     if (info.exp) {
       score.exp = info.exp;
       score.level = this.getLevel(info.exp);
@@ -75,15 +81,29 @@ module.exports = {
 
   /* Gets player rank of all players */
   getPlayerRank: function(message, player, type) {
+    return this.getRankList(message, type).findIndex(score => { return player.id === score.id; }) + 1;
+  },
+  
+  getRankList: function(message, type) {
+    let ids = message.client.points.keyArray();
     let scores = message.client.points.array();
+    
+    for (let i = 0; i < scores.length; i++) {
+      const member = message.guild.members.get(ids[i]);
+      scores[i].name = member.displayName;
+      scores[i].id = member.id;
+    }
+    
     if (type === 'exp')
-      scores = scores.sort((a, b) => { return a.exp < b.exp ? 1 : a.exp > b.exp ? -1 : 0; });
+      return scores.sort((a, b) => { return a.exp < b.exp ? 1 :
+                                            a.exp > b.exp ? -1 :
+                                            a.name > b.name ? 1 :
+                                            a.name < b.name ? -1 : 0; });
     else if (type === 'ranking')
-      scores = scores.sort((a, b) => { return a.ranking < b.ranking ? 1 : a.ranking > b.ranking ? -1 : 0; });
-    else
-      return -1;
-
-    const data = message.client.points.get(player.id);
-    return scores.findIndex(score => { return data === score; }) + 1;
+      return scores.sort((a, b) => { return a.ranking < b.ranking ? 1 :
+                                            a.ranking > b.ranking ? -1 :
+                                            a.name > b.name ? 1 :
+                                            a.name < b.name ? -1 : 0; });
+    return -1;
   },
 };

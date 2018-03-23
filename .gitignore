@@ -4,5 +4,9 @@
 shrinkwrap.yaml
 
 # folders
-players
 node_modules
+
+# collective files
+data/players.json
+data/players-backup.json
+data/players/*
