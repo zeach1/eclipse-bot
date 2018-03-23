@@ -5,25 +5,27 @@ const messenger = require('../helper/messenger.js');
 module.exports = {
   name: 'proto',
   type: 'misc',
-  usage: '<quote | summon | reference>',
+  usage: '<quote | summon [number] | reference>',
   description: 'Fun commands, Prototype style',
 
   args: 1,
 
   execute: async function(message, param) {
-    switch (param.args[0]) {
+    const { args } = param;
+    
+    switch (args[0]) {
       case 'quote':     return message.channel.send('`He can\'t code shit`');
-      case 'summon':    return this.summonPeril(message, 5);
+      case 'summon':    return this.summonPeril(message, !isNaN(args[1]) ? parseInt(args[1]) : 1 );
       case 'reference': return this.referencePeril(message);
       default:          return messenger.sendArgumentError(message, this, 'This argument does not exist');
     }
   },
 
   summonPeril: async function(message, num) {
-    if (num == 0) return;
+    if (num <= 0) return;
 
     if (message.author.id != user.prototype)
-      return message.channel.send('Nah you can\'t do this fam, leave it for the big boy Prototype.');
+      return message.channel.send('Nah you can\'t do this fam.');
 
     message.channel.send(`<@${user.peril}>`).catch(e => console.log(e));
 
@@ -33,14 +35,14 @@ module.exports = {
   },
 
   referencePeril: async function(message) {
-    const peril = message.channel.members.get(user.peril);
+    const peril = message.guild.members.get(user.peril);
 
     if (peril)
-      return messenger.sendMessage(message, {
+      return messenger.send(message, {
         title: peril.displayName,
         avatar: peril.user.avatarURL,
-        message: 'Proto can\'t code shit',
-        submessage: 'Today at 1:12 PM',
+        description: 'Proto can\'t code shit',
+        footer: 'Today at 1:12 PM',
         color: 0xcccccc,
       });
 

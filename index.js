@@ -28,7 +28,7 @@ for (const file of fs.readdirSync('./commands')) {
 /* When connected */
 client.on('ready', () => {
    console.log('Connected.');
-   client.user.setActivity('Mee6 leaving', { type: 'WATCHING' });
+   client.user.setActivity('Mee6 leave', { type: 'WATCHING' });
 });
 
 /* When new member joins the server */
@@ -42,7 +42,7 @@ client.on('guildMemberRemove', member => {
 });
 
 /* When a member sends a message */
-client.on('message', message =>commandHandler.handleMessage(message));
+client.on('message', message =>  commandHandler.handleMessage(message));
 
 client.login(token);
 

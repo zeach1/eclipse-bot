@@ -19,8 +19,8 @@ module.exports = {
           return message.channel.send('Wrong usage');
 
         return this.setPlayer(message, {
-          exp: args[2],
-          ranking: args[3] && !isNaN(args[3]) ? args[3] : 5000,
+          exp: parseInt(args[2]),
+          ranking: args[3] && !isNaN(args[3]) ? parseInt(args[3]) : 5000,
         });
     }
   },
@@ -32,7 +32,7 @@ module.exports = {
       playerManager.setPlayer(message, { id: id }, {
         exp: exp,
         ranking: ranking,
-        flair: flair,
+        flair: flair === '' ? '⚔️' : flair,
       });
     }
 
