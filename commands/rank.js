@@ -34,7 +34,7 @@ module.exports = {
       avatar: avatarURL ? avatarURL : 'https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png',
       color: rank === 1 ? 0xcfb53b :
              rank === 2 ? 0xc0c0c0 :
-             rank === 3 ? 0xa67d3d : 0xcccccc,
+             rank === 3 ? 0xa67d3d : 0x696969,
       description: outdent({ 'trimLeadingNewline': true })`
         Level ${level} | **${ranking}** ER
 

@@ -6,11 +6,11 @@ const messenger = require('./messenger.js');
 const playerManager = require('./playerManager.js');
 
 module.exports = {
-  handleMessage: function(message) {
+  handleMessage: async function(message) {
     const { content, channel, author, guild, client } = message;
 
     if (message.content === 'create a webhook')
-      message.channel.createWebhook('Eclipse Bot Webhook')
+      return message.channel.createWebhook('Eclipse Bot Webhook', message.guild.members.find('displayName', 'Eclipse Bot').user.avatarURL)
         .then(webhook => message.channel.send(`Created ${webhook}`));
 
     /* Hahaha */
@@ -20,7 +20,8 @@ module.exports = {
     /* Deletes offensive language */
     if (filterWords.some(word => content.toLowerCase().includes(word)))
       return message.delete()
-        .then(() => channel.send(`💢 Watch your language ${author}`).then(msg => { if (msg) msg.delete(2000); }));
+        .then(() => channel.send(`💢 Watch your language ${author}`)
+          .then(msg => msg.delete(3000).catch(() => {})));
 
     /* Ignores message from bots and non-members, and direct messages */
     if (author.bot || !check.verifyMember(message) || !guild) return;
