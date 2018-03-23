@@ -11,7 +11,7 @@ module.exports = {
 
   args: 1,
 
-  execute: function(message, param) {
+  execute: async function(message, param) {
     const name = param.args[0];
     const flair = emoji.getEmoji(name, message.client);
 

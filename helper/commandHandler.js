@@ -9,20 +9,18 @@ module.exports = {
   handleMessage: function(message) {
     const { content, channel, author, guild, client } = message;
 
+    if (message.content === 'create a webhook')
+      message.channel.createWebhook('Eclipse Bot Webhook')
+        .then(webhook => message.channel.send(`Created ${webhook}`));
+
     /* Hahaha */
     if (message.content.includes('stupid'))
       return message.client.commands.get('stupidbot').execute(message);
 
     /* Deletes offensive language */
-    if (filterWords.some(word => content.toLowerCase().includes(word))) {
+    if (filterWords.some(word => content.toLowerCase().includes(word)))
       return message.delete()
-        .then(() => {
-          channel.send(`💢 Watch your language ${author}`)
-            .then((msg) => msg.delete(2000))
-            .catch(e => console.error(e));
-        })
-        .catch(e => console.error(e));
-    }
+        .then(() => channel.send(`💢 Watch your language ${author}`).then(msg => { if (msg) msg.delete(2000); }));
 
     /* Ignores message from bots and non-members, and direct messages */
     if (author.bot || !check.verifyMember(message) || !guild) return;
@@ -45,41 +43,28 @@ module.exports = {
         options.push(args.splice(i--, 1).pop().slice(1));
 
     /* Verify general command format and permissions */
-    if (!command) {
-      messenger.sendCommandDoesNotExistError(message).catch(e => console.error(e));
-      return;
-    }
+    if (!command)
+      return messenger.sendCommandDoesNotExistError(message);
 
     if (command.type === 'leadership' && !check.verifyLeadership(message) ||
-        command.type === 'developer' && !check.verifyDeveloper(message)) {
-      messenger.sendPermissionError(message).catch(e => console.error(e));
-      return;
-    }
+        command.type === 'developer' && !check.verifyDeveloper(message))
+      return messenger.sendPermissionError(message);
 
-    if (command.args && !check.verifyArgument(args, command)) {
-      messenger.sendArgumentError(message, command, `You must provide ${command.args == 1 ? 'an argument' : `${command.args} arguments`}`)
-        .catch(e => console.error(e));
-      return;
-    }
+    if (command.args && !check.verifyArgument(args, command))
+      return messenger.sendArgumentError(message, command, `You must provide ${command.args == 1 ? 'an argument' : `${command.args} arguments`}`);
 
-    if (command.tag && !check.verifyTag(message.mentions.users, command)) {
-      messenger.sendArgumentError(message, command, `You need to tag ${command.tag > 1 ? `${command.tag}  users` : 'a user'}`)
-        .catch(e => console.error(e));
-      return;
-    }
+    if (command.tag && !check.verifyTag(message.mentions.users, command))
+      return messenger.sendArgumentError(message, command, `You need to tag ${command.tag > 1 ? `${command.tag}  users` : 'a user'}`);
 
     /* Execute command */
-    command.execute(message, {
+    return command.execute(message, {
       args: args,
       options: options,
-    }).catch(e => {
-      console.error(e);
-      messenger.sendDeveloperError(message).catch(f => console.error(f));
     });
   },
 
   /* Special command if I need to import data from Mee6 to Eclipse Bot */
-  handleMee6: function(message) {
+  handleMee6: async function(message) {
     const m = message.content.split('\n').splice(1, 2);
     m[0] = m[0].slice(4, -4);
 

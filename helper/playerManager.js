@@ -55,6 +55,35 @@ module.exports = {
   /* Called by index.js when user leaves a server */
   removePlayer: function(member, client) { client.points.delete(member.user.id); },
 
+  /* Gets player rank of all players */
+  getPlayerRank: function(message, player, type) {
+    return this.getRankList(message, type).findIndex(score => { return player.id === score.id; }) + 1;
+  },
+
+  getRankList: function(message, type) {
+      const ids = message.client.points.keyArray();
+
+      const scores = message.client.points.array();
+
+      for (let i = 0; i < scores.length; i++) {
+        const member = message.guild.members.get(ids[i]);
+        scores[i].name = member.displayName;
+        scores[i].id = member.id;
+      }
+
+      if (type === 'exp')
+        return scores.sort((a, b) => { return a.exp < b.exp ? 1 :
+                                              a.exp > b.exp ? -1 :
+                                              a.name > b.name ? 1 :
+                                              a.name < b.name ? -1 : 0; });
+      else if (type === 'ranking')
+        return scores.sort((a, b) => { return a.ranking < b.ranking ? 1 :
+                                              a.ranking > b.ranking ? -1 :
+                                              a.name > b.name ? 1 :
+                                              a.name < b.name ? -1 : 0; });
+      return -1;
+    },
+
   /* Manually changing player data */
   setPlayer: function(message, player, info) {
     const score = { exp: 0, level: 0, ranking: 5000, flair: '<:pepeok:410176368626761738>' };
@@ -77,33 +106,4 @@ module.exports = {
   getExp: function(level) { return Math.ceil(Math.pow(1 / multiplier * level, 2)); },
 
   getLevel: function(exp) { return Math.floor(multiplier * Math.sqrt(exp)); },
-
-  /* Gets player rank of all players */
-  getPlayerRank: function(message, player, type) {
-    return this.getRankList(message, type).findIndex(score => { return player.id === score.id; }) + 1;
-  },
-
-  getRankList: function(message, type) {
-    const ids = message.client.points.keyArray();
-
-    const scores = message.client.points.array();
-
-    for (let i = 0; i < scores.length; i++) {
-      const member = message.guild.members.get(ids[i]);
-      scores[i].name = member.displayName;
-      scores[i].id = member.id;
-    }
-
-    if (type === 'exp')
-      return scores.sort((a, b) => { return a.exp < b.exp ? 1 :
-                                            a.exp > b.exp ? -1 :
-                                            a.name > b.name ? 1 :
-                                            a.name < b.name ? -1 : 0; });
-    else if (type === 'ranking')
-      return scores.sort((a, b) => { return a.ranking < b.ranking ? 1 :
-                                            a.ranking > b.ranking ? -1 :
-                                            a.name > b.name ? 1 :
-                                            a.name < b.name ? -1 : 0; });
-    return -1;
-  },
 };

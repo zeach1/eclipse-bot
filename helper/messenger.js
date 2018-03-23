@@ -62,7 +62,6 @@ module.exports = {
     });
   },
 
-  /* update color */
   sendKickMessage: async function(message, member, reason) {
     return this.sendMessage(message, {
       title: '📛 Kicked Member',
@@ -135,7 +134,7 @@ module.exports = {
     });
   },
 
-  send: function(message, info) {
+  send: async function(message, info) {
     const embed = new Discord.RichEmbed()
       .setAuthor(info.title ? info.title : '', info.avatar ? info.avatar : '')
       .setDescription(info.description ? info.description : '')
