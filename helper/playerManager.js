@@ -1,11 +1,14 @@
-const { multiplier } = require('../data/config.js');
+const { multiplier, blacklisted } = require('../data/config.js');
 
 const messenger = require('./messenger.js');
 
 module.exports = {
 
+  /* Increments player's exp by 1 per message */
   updatePoints: function(message) {
     const { client, author } = message;
+
+    if (blacklisted.includes(author.id)) return;
 
     let score = message.client.points.get(author.id);
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
@@ -24,9 +27,8 @@ module.exports = {
     client.points.set(author.id, score);
   },
 
-  /* Players will be an array of GuildMembers, first index will be first place, and so on */
+  /* Updates players' ER after finishing a game */
   updateRankings: function(message, players) {
-    /* Get array of points, using players as the key array */
     const scores = [];
     for (const player of players) {
       let score = message.client.points.get(player.id);
@@ -34,23 +36,13 @@ module.exports = {
       scores.push(score);
     }
 
-    console.log(scores.map(m => m.ranking));
-
-    /* Get ER to add/remove for each player, then send it to updateRanking to update player ranking */
     for (let i = 0; i < scores.length; i++) {
       const score = scores[i];
       const lostTo = scores.map(res => res.ranking).slice(0, i);
-      const wonTo = scores.map(res => res.ranking).slice(i);
-
-      console.log(`\n\nscore: ${score}\nlostTo: ${lostTo}]\nwonTo: ${wonTo}`);
+      const wonTo = scores.map(res => res.ranking).slice(i + 1);
 
       const amount = this.getERAdd(score.ranking, wonTo, lostTo);
-
-      console.log('amount: ' + amount);
       this.updateRanking(message, players[i], score, amount);
-
-      const ranking = message.client.points.get(players[i].id).ranking;
-      message.channel.send(`Updated ${players[i].displayName}'s ranking to ${ranking}`);
     }
 
 
@@ -67,7 +59,7 @@ module.exports = {
     const { id, client } = message.author;
 
     let score = client.points.get(id);
-    if (!score || !score.exp) score = this.new;
+    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
 
     score.flair = flair;
 
@@ -110,7 +102,7 @@ module.exports = {
   /* Function to manually change player data */
   setPlayer: function(message, player, info) {
     let score = message.client.points.get(player.id);
-    if (!score || !score.exp) score = this.new;
+    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
 
     if (info.exp) {
       score.exp = info.exp;
@@ -118,9 +110,9 @@ module.exports = {
     }
 
     if (info.ranking)
-      score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
+      score.ranking  = info.ranking > 9999 ? 9999 : (info.ranking < 1 ? 1 : info.ranking);
 
-    if (score.flair)
+    if (info.flair)
       score.flair = info.flair;
 
     message.client.points.set(player.id, score);
@@ -144,6 +136,6 @@ module.exports = {
     for (const otherRanking of lostTo)
       add -= f(ranking - otherRanking);
 
-    return add;
+    return Math.floor(add);
   },
 };

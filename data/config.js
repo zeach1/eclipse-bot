@@ -37,6 +37,8 @@ module.exports = {
     prototype: process.env.PROTOTYPE,
   },
 
+  blacklisted: [],
+
   prefix: '+',
   multiplier: 0.24,
   token: process.env.TOKEN,
