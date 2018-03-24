@@ -14,7 +14,8 @@ module.exports = {
     const { args } = param;
 
     switch (args[0]) {
-      case 'testRanking': return this.testRanking(message);
+      case 'reset': return this.resetRanking(message);
+      case 'test': return this.testRanking(message);
       case 'load': return this.load(message);
       case 'save': return this.save(message);
       case 'set':
@@ -28,6 +29,16 @@ module.exports = {
     }
   },
 
+  resetRanking: async function(message) {
+    for (const id of message.client.points.keyArray()) {
+      const player = message.guild.members.get(id);
+      
+      playerManager.setPlayer(message, { id: id }, { ranking: 5000 });
+    }
+    
+    message.channel.send('done');
+  },
+  
   testRanking: async function(message) {
     message.channel.send('Testing ranking...');
 
@@ -36,8 +47,8 @@ module.exports = {
     const paul  = message.guild.members.get(u.paul);
     const prototype = message.guild.members.get(u.prototype);
 
-    const players = [paul, peril, luigi, prototype];
-
+    const players = [peril, prototype, luigi, paul];
+    
     for (let i = 0; i < players.length; i++) {
       let msg = '';
       switch (i + 1) {
@@ -51,7 +62,7 @@ module.exports = {
       message.channel.send(`${msg}${players[i].displayName}`);
     }
 
-    playerManager.updateRankings(players);
+    playerManager.updateRankings(message, players);
   },
 
   load: async function(message) {

@@ -40,9 +40,9 @@ module.exports = {
     for (let i = 0; i < scores.length; i++) {
       const score = scores[i];
       const lostTo = scores.map(res => res.ranking).slice(0, i);
-      const wonTo = scores.map(res => res.ranking).slice(i);
+      const wonTo = scores.map(res => res.ranking).slice(i + 1);
 
-      console.log(`\n\nscore: ${score}\nlostTo: ${lostTo}]\nwonTo: ${wonTo}`);
+      console.log(`\n\nscore: ${score}\nlostTo: ${lostTo}\nwonTo: ${wonTo}`);
 
       const amount = this.getERAdd(score.ranking, wonTo, lostTo);
 
@@ -67,7 +67,7 @@ module.exports = {
     const { id, client } = message.author;
 
     let score = client.points.get(id);
-    if (!score || !score.exp) score = this.new;
+    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
 
     score.flair = flair;
 
@@ -110,7 +110,7 @@ module.exports = {
   /* Function to manually change player data */
   setPlayer: function(message, player, info) {
     let score = message.client.points.get(player.id);
-    if (!score || !score.exp) score = this.new;
+    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
 
     if (info.exp) {
       score.exp = info.exp;
@@ -118,9 +118,9 @@ module.exports = {
     }
 
     if (info.ranking)
-      score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
+      score.ranking  = info.ranking > 9999 ? 9999 : (info.ranking < 1 ? 1 : info.ranking);
 
-    if (score.flair)
+    if (info.flair)
       score.flair = info.flair;
 
     message.client.points.set(player.id, score);
@@ -144,6 +144,6 @@ module.exports = {
     for (const otherRanking of lostTo)
       add -= f(ranking - otherRanking);
 
-    return add;
+    return Math.floor(add);
   },
 };
