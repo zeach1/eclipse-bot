@@ -19,7 +19,7 @@ module.exports = {
       score.level++;
       messenger.sendMessage(message, {
         title: '🎉 Level Up',
-        color: 0x2db634,
+        color: 0x3ea92e,
         description: `${author} has leveled up to level ${score.level}! Cheers!`,
       }).catch(e => console.error(e));
     }
