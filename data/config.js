@@ -43,7 +43,7 @@ module.exports = {
 
   /* Words that trigger NO U */
   thonkWords: [
-    'bro', 'stupid',
+    'stupid',
   ],
 
   /* Don't look, bad words */

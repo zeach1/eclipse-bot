@@ -3,7 +3,7 @@ const messenger = require('../helper/messenger.js');
 module.exports = {
   name: 'kick',
   type: 'leadership',
-  description: 'Kicks a user from this server.',
+  description: 'Kicks a user from this server',
   usage: '<user> [reason]',
 
   args: 1,

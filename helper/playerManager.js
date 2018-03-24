@@ -15,7 +15,7 @@ module.exports = {
     if (score.level < this.getLevel(score.exp)) {
       score.level++;
       messenger.sendMessage(message, {
-        title: '⬆️ Level Up',
+        title: '🎉 Level Up',
         color: 0x2db634,
         description: `${author} has leveled up to level ${score.level}! Cheers!`,
       }).catch(e => console.error(e));

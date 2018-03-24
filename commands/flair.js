@@ -7,7 +7,7 @@ module.exports = {
   name: 'flair',
   type: 'essentials',
   usage: '<emoji>',
-  description: 'Set your own custom flair! Use any emojis from this server or a default Discord emoji!',
+  description: 'Set a flair which will be displayed on your rank and on games',
 
   args: 1,
 
