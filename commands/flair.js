@@ -13,10 +13,10 @@ module.exports = {
 
   execute: async function(message, param) {
     const name = param.args[0];
-    
+
     if (name === 'list')
       return message.channel.send('WIP');
-    
+
     const flair = emoji.getEmoji(name, message.client);
 
     if (!flair)

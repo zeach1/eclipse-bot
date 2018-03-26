@@ -14,6 +14,7 @@ module.exports = {
     if (!args) return message.channel.send('Needs argument');
 
     switch (args[0]) {
+      case 'countdown': return this.countdown(message, 10);
       case 'reset': return this.resetRanking(message);
       case 'test': return this.testRanking(message);
       case 'load': return this.load(message);
@@ -26,6 +27,14 @@ module.exports = {
 
       default: return message.channel.send('Wrong argument');
     }
+  },
+
+  countdown: async function(message, num) {
+    if (num === 0) return;
+
+    await message.channel.send(num).delete(1000).catch(e => console.error(e));
+
+    setTimeout(() => this.countdown(message, num - 1), 1000);
   },
 
   load: async function(message) {

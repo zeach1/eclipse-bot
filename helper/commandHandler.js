@@ -8,7 +8,7 @@ const playerManager = require('./playerManager.js');
 module.exports = {
   handleMessage: async function(message) {
     const { content, channel, author, guild, client } = message;
-    
+
     /* Ignores direct messages and messages from external servers */
     if (!guild || serverIgnore.includes(guild.id)) return;
 
@@ -27,7 +27,7 @@ module.exports = {
     /* Hahaha */
     if (thonkWords.find(m => message.content.toLowerCase().includes(m)))
       return message.channel.send('**NO U**');
-    
+
     /* Ignores numbers and non-commands */
     if (!isNaN(content.replace(/ /g, '')) || !content.startsWith(prefix)) return;
 

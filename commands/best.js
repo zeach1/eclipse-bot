@@ -1,5 +1,3 @@
-const { prefix } = require('../data/config.js');
-
 const messenger = require('../helper/messenger.js');
 const playerManager = require('../helper/playerManager.js');
 
@@ -11,14 +9,14 @@ module.exports = {
   description: 'Gets top players by experience or ranking',
 
   args: 1,
-  
+
   execute: async function(message, param) {
     const { args } = param;
     const type = args[0];
-    
+
     if (type !== 'exp' && type !== 'ranking')
       return messenger.sendArgumentError(message, this, 'This argument does not exist');
-    
+
     let number = !isNaN(args[0]) ? parseInt(args[0]) : !isNaN(args[1]) ? parseInt(args[1]) : 10;
 
     const scores = playerManager.getRankList(message, type);
