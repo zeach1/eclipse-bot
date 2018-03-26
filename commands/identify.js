@@ -21,7 +21,7 @@ module.exports = {
     return message.channel.send(outdent({ 'trimLeadingNewline': true })`
         ${member}, register your account in WarMatch.
         ⚔️ Go to <#${channel.wmbot}>
-        ⚔️ Type \`!wm identify ${param.args[1] ? param.args[1] : member.displayName}\`
+        ⚔️ Type \`!wm identify ${param.args[1] ? param.args[1].toUpperCase() : member.displayName}\`
       `)
       .then(() => {
         if (param.options.includes('d') || param.options.includes('delete'))

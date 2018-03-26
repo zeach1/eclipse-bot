@@ -1,4 +1,4 @@
-const { prefix, thonkWords, filterWords } = require('../data/config.js');
+const { serverIgnore, prefix, thonkWords, filterWords } = require('../data/config.js');
 
 const check = require('../misc/check.js');
 
@@ -8,10 +8,9 @@ const playerManager = require('./playerManager.js');
 module.exports = {
   handleMessage: async function(message) {
     const { content, channel, author, guild, client } = message;
-
-    /* Hahaha */
-    if (thonkWords.find(m => message.content.toLowerCase().includes(m)))
-      return message.channel.send('**NO U**');
+    
+    /* Ignores direct messages and messages from external servers */
+    if (!guild || serverIgnore.includes(guild.id)) return;
 
     /* Deletes offensive language */
     if (filterWords.some(word => content.toLowerCase().includes(word)))
@@ -19,13 +18,17 @@ module.exports = {
         .then(() => channel.send(`💢 Watch your language ${author}`)
           .then(msg => msg.delete(3000).catch(() => {})));
 
-    /* Ignores message from bots and non-members, and direct messages */
-    if (author.bot || !check.verifyMember(message) || !guild) return;
+    /* Ignores message from bots and non-members */
+    if (author.bot || !check.verifyMember(message)) return;
 
-    /* Point monitoring for any message sent by user */
+    /* Adds an exp to member */
     playerManager.updatePoints(message);
 
-    /* Ignores numbers, non-commands, bot messages, and direct messages */
+    /* Hahaha */
+    if (thonkWords.find(m => message.content.toLowerCase().includes(m)))
+      return message.channel.send('**NO U**');
+    
+    /* Ignores numbers and non-commands */
     if (!isNaN(content.replace(/ /g, '')) || !content.startsWith(prefix)) return;
 
     /* Prepare command, arguments, and options */

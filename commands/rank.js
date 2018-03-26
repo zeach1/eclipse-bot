@@ -12,10 +12,15 @@ module.exports = {
   aliases: ['info', 'level'],
   description: 'Displays experience, level, and ranking (ER) of a player',
 
-  execute: async function(message) {
+  execute: async function(message, param) {
+    const { args } = param;
+    
     const { client, mentions, member } = message;
-    const player = mentions.members.first() ? mentions.members.first() : member;
+    const mentionedTag = mentions.members.first();
+    const mentionedNoTag = message.guild.members.find(m => m.displayName.toLowerCase().startsWith(args[0]) || m.displayName.toLowerCase().includes(args[0]));
 
+    const player = mentionedTag || mentionedNoTag || member;
+    
     const { avatarURL, id } = player.user;
 
     const title = check.verifyLeadership({ member: player }) ? 'Leadership' :
@@ -26,7 +31,7 @@ module.exports = {
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
 
     const { exp, level, ranking, flair } = score;
-    const expToLevelUp = playerManager.getExp(level + 1) - exp;
+    const expToLevelUp = playerManager.getExp(level + 1) - exp - 1;
     const rank = playerManager.getPlayerRank(message, player.user, 'exp');
 
     return messenger.sendMessage(message, {

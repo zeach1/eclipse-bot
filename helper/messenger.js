@@ -97,7 +97,7 @@ module.exports = {
       title: '❌ Argument Error',
       color: 0xf06c00,
       message: warning,
-      submessage: `Proper usage is ${prefix}${command.name}${command.usage ? ` ${command.usage}` : ' '}`,
+      submessage: `Proper usage is ${prefix}${command.name} ${command.usage ? command.usage : ''}`,
     });
   },
 
@@ -105,7 +105,7 @@ module.exports = {
     return this.sendError(message, {
       title: '🚫 Permission Denied',
       message: ' You do not have permissions to use this command',
-      submessage: 'Talk to @Leadership if you think this is a mistake',
+      submessage: `Talk to <@&${group.leadership}> if there is a problem`,
     });
   },
 
@@ -120,8 +120,8 @@ module.exports = {
 
   sendDeveloperError: async function(message) {
     return this.sendError(message, {
-      message: 'Something went wrong',
-      submessage: 'Please let development team know',
+      message: 'Oops',
+      submessage: 'Something went wrong. Please let development team know',
     });
   },
 
