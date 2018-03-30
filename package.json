@@ -19,6 +19,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luis729/eclipse-bot.git"
+  },
   "author": "Paul Matthew Barrameda",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Luis729/eclipse-bot/issues"
+  },
+  "homepage": "https://github.com/Luis729/eclipse-bot#readme"
 }
