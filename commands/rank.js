@@ -14,13 +14,13 @@ module.exports = {
 
   execute: async function(message, param) {
     const { args } = param;
-    
+
     const { client, mentions, member } = message;
     const mentionedTag = mentions.members.first();
     const mentionedNoTag = message.guild.members.find(m => m.displayName.toLowerCase().startsWith(args[0]) || m.displayName.toLowerCase().includes(args[0]));
 
     const player = mentionedTag || mentionedNoTag || member;
-    
+
     const { avatarURL, id } = player.user;
 
     const title = check.verifyLeadership({ member: player }) ? 'Leadership' :

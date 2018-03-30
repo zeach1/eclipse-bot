@@ -39,7 +39,7 @@ module.exports = {
   },
 
   sendWelcomeMessage: async function(member) {
-    const message = { channel: member.guild.channels.get(channel.test) };
+    const message = { channel: member.guild.channels.get(channel.welcome) };
 
     return this.sendMessage(message, {
       description: outdent({ 'trimLeadingNewline': true })`
@@ -54,7 +54,7 @@ module.exports = {
   },
 
   sendLeaveMessage: async function(member) {
-    const message = { channel: member.guild.channels.get(channel.test) };
+    const message = { channel: member.guild.channels.get(channel.welcome) };
 
     return this.sendMessage(message, {
       description: `**${member.displayName}** has left the server`,

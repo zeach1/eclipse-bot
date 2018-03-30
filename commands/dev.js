@@ -14,13 +14,13 @@ module.exports = {
     if (!args) return message.channel.send('Needs argument');
 
     switch (args[0]) {
-      case 'countdown': return this.countdown(message, 10);
+      case 'countdown': return this.countdown(message, 10, 10);
       case 'reset': return this.resetRanking(message);
       case 'test': return this.testRanking(message);
       case 'load': return this.load(message);
       case 'save': return this.save(message);
       case 'set':
-        if (args.length < 3 || !message.mentions || isNaN(args[2]) || (args[3] && isNaN(args[3])) || (args[4] && !emoji.getEmoji(args[4])))
+        if (args.length < 3 || !message.mentions || isNaN(args[2]) || (args[3] && isNaN(args[3])))
           return message.channel.send('Wrong usage');
 
         return this.setPlayer(message, parseInt(args[2]), parseInt(args[3]), args[4]);
@@ -29,12 +29,14 @@ module.exports = {
     }
   },
 
-  countdown: async function(message, num) {
+  countdown: async function(message, num, start) {
+    if (num === start) await message.delete().catch(e => console.error(e));
     if (num === 0) return;
 
-    await message.channel.send(num).delete(1000).catch(e => console.error(e));
+    await message.channel.send(num).then(msg => msg.delete(1000).catch(e => console.error(e)))
+      .catch(e => console.error(e));
 
-    setTimeout(() => this.countdown(message, num - 1), 1000);
+    this.countdown(message, num - 1);
   },
 
   load: async function(message) {
@@ -59,6 +61,7 @@ module.exports = {
     for (const { user } of guild.members.array()) {
       if (points.get(user.id)) {
         const { exp, ranking, flair } = points.get(user.id);
+
         players.push({
           id: user.id,
           exp: exp,
@@ -78,10 +81,12 @@ module.exports = {
     const player = message.mentions.users.first();
     const { points } = message.client;
 
+    const em = emoji.getEmoji(FLAIR, message.client);
+
     playerManager.setPlayer(message, player, {
       exp: EXP,
       ranking: RANKING,
-      flair: FLAIR,
+      flair: em,
     });
 
     const { exp, level, ranking, flair } = points.get(player.id);

@@ -39,10 +39,6 @@ module.exports = {
 
   blacklisted: [],
 
-  serverIgnore: [
-    process.env.PEPE,
-  ],
-
   prefix: '+',
   multiplier: 0.24,
   token: process.env.TOKEN,
