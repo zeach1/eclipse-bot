@@ -71,7 +71,7 @@ module.exports = {
       }
     }
 
-    return fs.writeFile('./data/players.json', JSON.stringify(players), e => {
+    return fs.writeFile('./data/players-backup.json', JSON.stringify(players), e => {
       if (e) console.error(e);
       channel.send('Points backup saved.');
     });
