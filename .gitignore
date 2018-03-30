@@ -1,6 +1,7 @@
 # files
 .DS_Store
 .glitch-assets
+package-lock.json
 shrinkwrap.yaml
 
 # folders

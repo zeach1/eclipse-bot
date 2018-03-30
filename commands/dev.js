@@ -61,7 +61,7 @@ module.exports = {
     for (const { user } of guild.members.array()) {
       if (points.get(user.id)) {
         const { exp, ranking, flair } = points.get(user.id);
-        
+
         players.push({
           id: user.id,
           exp: exp,
@@ -82,7 +82,7 @@ module.exports = {
     const { points } = message.client;
 
     const em = emoji.getEmoji(FLAIR, message.client);
-    
+
     playerManager.setPlayer(message, player, {
       exp: EXP,
       ranking: RANKING,

@@ -22,6 +22,8 @@ module.exports = {
         ${member}, register your account in WarMatch.
         ⚔️ Go to <#${channel.wmbot}>
         ⚔️ Type \`!wm identify ${param.args[1] ? param.args[1].toUpperCase() : member.displayName}\`
+
+        *Ignore when the bot asks to add your war weight*
       `)
       .then(() => {
         if (param.options.includes('d') || param.options.includes('delete'))
