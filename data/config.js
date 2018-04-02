@@ -1,7 +1,7 @@
 module.exports = {
   clanName: 'Reddit Eclipse',
-  rules: 'https://bit.ly/RE-Rules',
-  password: 'https://bit.ly/RCSpassword',
+  rules: '',
+  password: 'https://www.reddit.com/r/redditclansystem/wiki/official_reddit_clan_system',
   subreddit: 'https://www.reddit.com/r/RedditEclipse/',
 
   role: {

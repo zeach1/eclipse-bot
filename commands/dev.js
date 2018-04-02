@@ -16,7 +16,6 @@ module.exports = {
     switch (args[0]) {
       case 'countdown': return this.countdown(message, 10, 10);
       case 'reset': return this.resetRanking(message);
-      case 'test': return this.testRanking(message);
       case 'load': return this.load(message);
       case 'save': return this.save(message);
       case 'set':
@@ -24,7 +23,8 @@ module.exports = {
           return message.channel.send('Wrong usage');
 
         return this.setPlayer(message, parseInt(args[2]), parseInt(args[3]), args[4]);
-
+        
+      case 'loadmee': return this.loadFromMee6(message);
       default: return message.channel.send('Wrong argument');
     }
   },
@@ -71,7 +71,7 @@ module.exports = {
       }
     }
 
-    return fs.writeFile('./data/players.json', JSON.stringify(players), e => {
+    return fs.writeFile('./data/players-backup.json', JSON.stringify(players), e => {
       if (e) console.error(e);
       channel.send('Points backup saved.');
     });
@@ -96,14 +96,13 @@ module.exports = {
 
   loadFromMee6: async function(message) {
     function parseArray(msg, num, array) {
-      if (num == array.length)
+      if (num === array.length)
         return message.channel.send(`Done. Array size is ${array.length}`);
 
       const { user } = array[num];
 
-      /* Does not update jwoelmer or Danny, since they do not want to be tagged */
-      if (user.bot || user.id === '274595926314844161' || user.id === '257195016458469376') {
-        this.parseArray(message, num + 1, array);
+      if (user.bot) {
+        parseArray(message, num + 1, array);
         return;
       }
 
@@ -111,7 +110,7 @@ module.exports = {
 
       setTimeout(() => {
         parseArray(message, num + 1, array);
-      }, 3500);
+      }, 4000);
     }
 
     parseArray(message, 0, message.guild.members.array());

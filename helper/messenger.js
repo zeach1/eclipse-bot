@@ -40,12 +40,12 @@ module.exports = {
 
   sendWelcomeMessage: async function(member) {
     const message = { channel: member.guild.channels.get(channel.welcome) };
-
+  // If you want to apply, make sure to read the [clan rules](${rules}), and fill out the form in the end. 
     return this.sendMessage(message, {
       description: outdent({ 'trimLeadingNewline': true })`
         Welcome ${member.user} to the **${member.guild.name}** Discord server!
 
-        1. If you want to apply, make sure to read the [clan rules](${rules}), and fill out the form in the end. Apply in-game with the [RCS password](${password}).
+        1. Apply in-game with the [RCS password](${password}).
 
         2. Tag <@&${group.leadership}> to get your roles.
       `,
@@ -105,7 +105,7 @@ module.exports = {
     return this.sendError(message, {
       title: '🚫 Permission Denied',
       message: ' You do not have permissions to use this command',
-      submessage: `Talk to <@&${group.leadership}> if there is a problem`,
+      submessage: 'Thanks for understanding',
     });
   },
 
@@ -130,7 +130,7 @@ module.exports = {
       title: error.title ? error.title : '❌ Error',
       color: error.color ? error.color : 0xff0000,
       message: error.message,
-      submessage: `${error.submessage}.`,
+      submessage: error.submessage,
     });
   },
 

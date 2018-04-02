@@ -9,9 +9,9 @@ module.exports = {
   handleMessage: async function(message) {
     const { content, channel, author, guild, client } = message;
 
-    /* Ignores direct messages and messages from external servers */
-    if (!guild || serverIgnore.includes(guild.id)) return;
-
+    if (author.id === '159985870458322944') // Mee6
+      return this.handleMee6(message);
+    
     /* Deletes offensive language */
     if (filterWords.some(word => content.toLowerCase().includes(word)))
       return message.delete()
@@ -65,21 +65,21 @@ module.exports = {
 
   /* Special command if I need to import data from Mee6 to Eclipse Bot */
   handleMee6: async function(message) {
-    const m = message.content.split('\n').splice(1, 2);
-    m[0] = m[0].slice(4, -4);
+    if (!message.embeds) return;
+    
+    const { author, fields } = message.embeds[0];
+    
+    const USERNAME = author.name;
+    const xp = fields[2].value;
+    const EXP = parseInt(xp.slice(xp.indexOf('('), xp.indexOf(')')).slice(6));
+    
+    const MEMBER = message.guild.members.find(member => member.user.username === USERNAME);
 
-    if (m.length != 4) return;
+    if (!MEMBER) return console.error(`Failed ${USERNAME}\n`);
 
-    m[0] = message.guild.members.find(member => member.user.username === m[0]);
+    playerManager.setPlayer(message, { id: MEMBER.id }, { exp: EXP, ranking: 5000 });
 
-    if (!m[0]) return console.error('Failed\n');
-
-    m[0] = m[0].id;
-    m[1] = parseInt(m[1].slice(m[1].indexOf('('), m[1].indexOf(')')).slice(6));
-
-    playerManager.setPoints(message, { id: m[0] }, { exp: m[1] });
-
-    const { exp, level, ranking } = message.client.points.get(m[0]);
-    return message.channel.send(`Set <@${m[0]}>'s exp to ${exp}, level ${level}, ${ranking} ER`);
+    const { exp, level, ranking } = message.client.points.get(MEMBER.id);
+    return message.channel.send(`Set ${MEMBER.displayName}'s exp to ${exp}, level ${level}, ${ranking} ER`);
   },
 };

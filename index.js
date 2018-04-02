@@ -28,7 +28,7 @@ for (const file of fs.readdirSync('./commands')) {
 /* When connected */
 client.on('ready', () => {
    console.log('Connected.');
-   client.user.setActivity('Mee6 leave', { type: 'WATCHING' });
+   client.user.setActivity('the Eclipse', { type: 'WATCHING' });
 });
 
 /* When new member joins the server */
