@@ -1,5 +1,6 @@
 const fs = require('fs');
 
+const gameManager = require('../helper/gameManager.js');
 const playerManager = require('../helper/playerManager.js');
 
 const emoji = require('../misc/emoji.js');
@@ -15,6 +16,7 @@ module.exports = {
     if (!args) return message.channel.send('Needs argument');
 
     switch (args[0]) {
+      case 'game': return gameManager.createNewRoom();
       case 'load': return this.load(message);
       case 'save': return this.save(message);
       case 'set':
@@ -91,19 +93,23 @@ module.exports = {
     await message.channel.send(num).then(msg => msg.delete(1000).catch(console.error))
       .catch(console.error);
     */
+    if (num <= 0) {
+      await message.delete().catch(() => {});
+      return;
+    }
     if (start) {
       const msg = await message.channel.send(`Time left: ${num} ${num != 1 ? 'seconds' : 'second'}`);
 
       setTimeout(() => {
         return this.countdown(msg, num - 1);
-      }, 1000);
+      }, 1500);
     }
     else {
       message.edit(`Time left: ${num} ${num != 1 ? 'seconds' : 'second'}`);
 
       setTimeout(() => {
         return this.countdown(message, num - 1);
-      }, 1000);
+      }, 1500);
     }
   },
 };

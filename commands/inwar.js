@@ -27,7 +27,7 @@ module.exports = {
     const members = message.guild.roles.get(role.id).members.map(m => m.displayName).sort((a, b) => { return a.toLowerCase() > b.toLowerCase() ? 1 : a.toLowerCase() < b.toLowerCase() ? -1 : 0; }).join('\n');
 
     return messenger.sendMessage(message, {
-      title: `Members with role \`${role.name}\``,
+      title: 'Members in war',
       description: members.length ? members : 'None',
     });
   },

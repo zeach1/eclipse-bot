@@ -8,21 +8,22 @@ module.exports = {
     const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
 
     const embed =  new Discord.RichEmbed()
-      .setAuthor('Eclipse Bot Help')
-      .setDescription('\u200b')
+      .setAuthor(`${prefix}${command.name} | Eclipse Bot Help`)
       .setColor(0xe7a237)
-      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`);
+      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`)
+      .setDescription(outdent`
+        ${outdent}
+        *${command.description}*
 
-    embed.addField(`${prefix}${command.name}${command.usage ? command.usage : ''}`, outdent`
-      ${outdent}
-      *${command.description}*
+        **Type**: ${command.type === 'essentials' ? 'Essentials' : command.type === 'misc' ? 'Miscellaneous' : command.type === 'leadership' ? 'Leadership' : command.type === 'developer' ? 'Developer' : 'Default'}
+        **Usage**: ${prefix}${command.name} ${command.usage ? command.usage : ''}
+        ${command.aliases ? `**Aliases**: ${command.aliases.map(c => c = `${prefix}${c}`).join(', ')}` : ''}
+      `);
 
-      **Type**: ${command.type === 'essentials' ? 'Essentials' : command.type === 'misc' ? 'Miscellaneous' : command.type === 'leadership' ? 'Leadership' : command.type === 'dev' ? 'Developer' : ''}
-      ${command.aliases ? `**Aliases**: ${command.aliases.map(c => c = `${prefix}${c}`).join(', ')}` : ''}
-    `);
+    return message.channel.send(embed);
   },
 
-  sendCommandHelpList: async function(message, commands) {
+  sendAllCommandHelp: async function(message, commands) {
     const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
 
     const embed =  new Discord.RichEmbed()
@@ -44,7 +45,7 @@ module.exports = {
 
       embed.addField(header[0], header[1]);
       for (const command of commandCategory.commandList)
-        embed.addField(`${prefix}${command.name}${command.usage ? command.usage : ''}`, command == commandCategory.commandList[commandCategory.commandList.length - 1] ? `${command.description} \n\u200b` : command.description);
+        embed.addField(`${prefix}${command.name} ${command.usage ? command.usage : ''}`, command == commandCategory.commandList[commandCategory.commandList.length - 1] ? `${command.description} \n\u200b` : command.description);
     }
 
     return message.channel.send(embed);
@@ -150,7 +151,7 @@ module.exports = {
       title: error.title ? error.title : '❌ Error',
       color: error.color ? error.color : 0xff0000,
       message: error.message,
-      submessage: error.submessage,
+      submessage: `${error.submessage}.`,
     });
   },
 

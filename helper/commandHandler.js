@@ -16,6 +16,7 @@ module.exports = {
     /* Updates player points */
     playerManager.updatePoints(message);
 
+    moderator.moderateNoU(message);
     automator.automate();
 
     /* Filters out message that aren't commands */
@@ -48,7 +49,7 @@ module.exports = {
       return false;
     }
 
-    if (!this.verifyPermissions(message, command)) {
+    if (!this.verifyPermission(message, command)) {
       messenger.sendPermissionError(message).catch(console.error);
       return false;
     }
@@ -66,8 +67,9 @@ module.exports = {
     return true;
   },
 
-  verifyPermissions: function(message, command) {
-    return command.type === 'leadership' && check.verifyLeadership(message) ||
+  verifyPermission: function(message, command) {
+    return command.type === 'essentials' || command.type === 'misc' ||
+           command.type === 'leadership' && check.verifyLeadership(message) ||
            command.type === 'developer' && check.verifyDeveloper(message);
   },
 };
