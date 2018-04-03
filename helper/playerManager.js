@@ -3,7 +3,6 @@ const { multiplier, blacklisted } = require('../data/config.js');
 const messenger = require('./messenger.js');
 
 module.exports = {
-
   /* Increments player's exp by 1 per message */
   updatePoints: function(message) {
     const { client, author } = message;
@@ -21,7 +20,7 @@ module.exports = {
         title: '🎉 Level Up',
         color: 0x3ea92e,
         description: `${author} has leveled up to level ${score.level}! Cheers! ${score.flair}`,
-      }).catch(e => console.error(e));
+      }).catch(console.error);
     }
 
     client.points.set(author.id, score);

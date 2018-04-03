@@ -1,4 +1,4 @@
-const messenger = require('../helper/messenger.js');
+/*const messenger = require('../helper/messenger.js');
 
 module.exports = {
   name: 'twice',
@@ -9,3 +9,4 @@ module.exports = {
     return messenger.sendImage(message, { url: 'https://i.imgur.com/kEu6GcM.gif' });
   },
 };
+*/

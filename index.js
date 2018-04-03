@@ -28,24 +28,24 @@ for (const file of fs.readdirSync('./commands')) {
 /* When connected */
 client.on('ready', () => {
    console.log('Connected.');
-   client.user.setActivity('Mee6 leave', { type: 'WATCHING' });
+   client.user.setActivity('the Eclipse', { type: 'WATCHING' });
 });
 
 /* When new member joins the server */
-client.on('guildMemberAdd', member => messenger.sendWelcomeMessage(member).catch(e => console.error(e)));
+client.on('guildMemberAdd', member => messenger.sendWelcomeMessage(member).catch(console.error));
 
 /* When member leaves the server */
 
 client.on('guildMemberRemove', member => {
   playerManager.removePlayer(member, client);
-  messenger.sendLeaveMessage(member).catch(e => console.error(e));
+  messenger.sendLeaveMessage(member).catch(console.error);
 });
 
 /* When a member sends a message */
 client.on('message', async message =>
-  await commandHandler.handleMessage(message).catch(e => {
+  await commandHandler.handleCommand(message).catch(e => {
     console.error(e);
-    messenger.sendDeveloperError(message).catch(f => console.error(f));
+    messenger.sendDeveloperError(message).catch(console.error);
 }));
 
 client.login(token);

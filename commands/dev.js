@@ -7,6 +7,7 @@ const emoji = require('../misc/emoji.js');
 module.exports = {
   name: 'dev',
   type: 'developer',
+  description: 'Developer only',
 
   execute: async function(message, param) {
     const { args } = param;
@@ -14,29 +15,16 @@ module.exports = {
     if (!args) return message.channel.send('Needs argument');
 
     switch (args[0]) {
-      case 'countdown': return this.countdown(message, 10, 10);
-      case 'reset': return this.resetRanking(message);
-      case 'test': return this.testRanking(message);
       case 'load': return this.load(message);
       case 'save': return this.save(message);
       case 'set':
         if (args.length < 3 || !message.mentions || isNaN(args[2]) || (args[3] && isNaN(args[3])))
           return message.channel.send('Wrong usage');
-
         return this.setPlayer(message, parseInt(args[2]), parseInt(args[3]), args[4]);
 
+      case 'countdown': return this.countdown(message, 10, true);
       default: return message.channel.send('Wrong argument');
     }
-  },
-
-  countdown: async function(message, num, start) {
-    if (num === start) await message.delete().catch(e => console.error(e));
-    if (num === 0) return;
-
-    await message.channel.send(num).then(msg => msg.delete(1000).catch(e => console.error(e)))
-      .catch(e => console.error(e));
-
-    this.countdown(message, num - 1);
   },
 
   load: async function(message) {
@@ -94,26 +82,28 @@ module.exports = {
     return message.channel.send(`Set <@${player.id}>'s exp to ${exp}, level ${level}, ${ranking} ER ${flair ? flair : ''}`);
   },
 
-  loadFromMee6: async function(message) {
-    function parseArray(msg, num, array) {
-      if (num == array.length)
-        return message.channel.send(`Done. Array size is ${array.length}`);
+  countdown: async function(message, num, start) {
+    /*
+    if (num === start)
+      await message.delete().catch(console.error);
+    if (num === 0) return;
 
-      const { user } = array[num];
-
-      /* Does not update jwoelmer or Danny, since they do not want to be tagged */
-      if (user.bot || user.id === '274595926314844161' || user.id === '257195016458469376') {
-        this.parseArray(message, num + 1, array);
-        return;
-      }
-
-      message.channel.send(`!rank <@${user.id}>`);
+    await message.channel.send(num).then(msg => msg.delete(1000).catch(console.error))
+      .catch(console.error);
+    */
+    if (start) {
+      const msg = await message.channel.send(`Time left: ${num} ${num != 1 ? 'seconds' : 'second'}`);
 
       setTimeout(() => {
-        parseArray(message, num + 1, array);
-      }, 3500);
+        return this.countdown(msg, num - 1);
+      }, 1000);
     }
+    else {
+      message.edit(`Time left: ${num} ${num != 1 ? 'seconds' : 'second'}`);
 
-    parseArray(message, 0, message.guild.members.array());
+      setTimeout(() => {
+        return this.countdown(message, num - 1);
+      }, 1000);
+    }
   },
 };

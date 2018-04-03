@@ -1,12 +1,12 @@
 {
   "name": "eclipse-bot",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Reddit Eclipse custom Discord bot",
   "main": "index.js",
   "dependencies": {
     "discord.js": "^11.3.2",
-    "enmap": "^0.6.1",
-    "enmap-level": "^1.0.0",
+    "enmap": "^2.0.1",
+    "enmap-level": "^2.0.0",
     "eslint": "^4.19.1",
     "express": "^4.16.3",
     "outdent": "^0.4.1",

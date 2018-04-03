@@ -1,7 +1,7 @@
 module.exports = {
   clanName: 'Reddit Eclipse',
-  rules: 'https://bit.ly/RE-Rules',
-  password: 'https://bit.ly/RCSpassword',
+  rules: '',
+  password: 'https://www.reddit.com/r/redditclansystem/wiki/official_reddit_clan_system',
   subreddit: 'https://www.reddit.com/r/RedditEclipse/',
 
   role: {
@@ -43,13 +43,11 @@ module.exports = {
   multiplier: 0.24,
   token: process.env.TOKEN,
 
-  /* Words that trigger NO U */
-  thonkWords: [
-    'stupid',
+  noUWords: [
+    'stupid', 'frick',
   ],
 
-  /* Don't look, bad words */
-  filterWords: [
-    'poach', 'nigger',
+  badWords: [
+    'fuck', 'shit', 'gay', 'bitch', 'tits', 'poach', 'nigger',
   ],
 };

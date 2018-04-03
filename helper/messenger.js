@@ -4,8 +4,26 @@ const Discord = require('discord.js');
 const { rules, password, channelCategory, channel, group, prefix } = require('../data/config.js');
 
 module.exports = {
-  sendCommandList: async function(message, commands) {
-    const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
+  sendCommandHelp: async function(message, command) {
+    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
+
+    const embed =  new Discord.RichEmbed()
+      .setAuthor('Eclipse Bot Help')
+      .setDescription('\u200b')
+      .setColor(0xe7a237)
+      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`);
+
+    embed.addField(`${prefix}${command.name}${command.usage ? command.usage : ''}`, outdent`
+      ${outdent}
+      *${command.description}*
+
+      **Type**: ${command.type === 'essentials' ? 'Essentials' : command.type === 'misc' ? 'Miscellaneous' : command.type === 'leadership' ? 'Leadership' : command.type === 'dev' ? 'Developer' : ''}
+      ${command.aliases ? `**Aliases**: ${command.aliases.map(c => c = `${prefix}${c}`).join(', ')}` : ''}
+    `);
+  },
+
+  sendCommandHelpList: async function(message, commands) {
+    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
 
     const embed =  new Discord.RichEmbed()
       .setAuthor('Eclipse Bot Help')
@@ -26,7 +44,7 @@ module.exports = {
 
       embed.addField(header[0], header[1]);
       for (const command of commandCategory.commandList)
-        embed.addField(`${prefix}${command.name}${command.usage ? ` ${command.usage}` : ' '}`, command == commandCategory.commandList[commandCategory.commandList.length - 1] ? command.description + '\n\u200b' : command.description);
+        embed.addField(`${prefix}${command.name}${command.usage ? command.usage : ''}`, command == commandCategory.commandList[commandCategory.commandList.length - 1] ? `${command.description} \n\u200b` : command.description);
     }
 
     return message.channel.send(embed);
@@ -42,8 +60,9 @@ module.exports = {
     const message = { channel: member.guild.channels.get(channel.welcome) };
 
     return this.sendMessage(message, {
-      description: outdent({ 'trimLeadingNewline': true })`
-        Welcome ${member.user} to the **${member.guild.name}** Discord server!
+      description: outdent`
+        ${outdent}
+        Welcome **${member.displayName}** to the ${member.guild.name} Discord server!
 
         1. If you want to apply, make sure to read the [clan rules](${rules}), and fill out the form in the end. Apply in-game with the [RCS password](${password}).
 
@@ -65,10 +84,11 @@ module.exports = {
   sendKickMessage: async function(message, member, reason) {
     return this.sendMessage(message, {
       title: '📛 Kicked Member',
-      description: outdent({ 'trimLeadingNewline': true })`
+      description: outdent`
+        ${outdent}
         **${member.displayName}** is kicked by ${message.member.displayName}
 
-        ${reason ? `Reason: ${reason}` : ''}
+        ${reason ? `*Reason*: ${reason}` : ''}
       `,
       color: 0xf04747,
     });
@@ -105,7 +125,7 @@ module.exports = {
     return this.sendError(message, {
       title: '🚫 Permission Denied',
       message: ' You do not have permissions to use this command',
-      submessage: `Talk to <@&${group.leadership}> if there is a problem`,
+      submessage: 'Thanks for understanding',
     });
   },
 
@@ -130,7 +150,7 @@ module.exports = {
       title: error.title ? error.title : '❌ Error',
       color: error.color ? error.color : 0xff0000,
       message: error.message,
-      submessage: `${error.submessage}.`,
+      submessage: error.submessage,
     });
   },
 

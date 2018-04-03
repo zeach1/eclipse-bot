@@ -16,7 +16,7 @@ module.exports = {
         temporary: true,
         maxAge: 1200,
         unique: true,
-      }).catch(e => console.error(e));
+      }).catch(console.error);
 
     return messenger.sendMessage(message, {
       title: `Invite to ${clanName}`,
