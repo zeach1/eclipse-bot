@@ -1,4 +1,4 @@
-const fs = require('fs');
+  const fs = require('fs');
 
 const playerManager = require('../helper/playerManager.js');
 
@@ -91,19 +91,23 @@ module.exports = {
     await message.channel.send(num).then(msg => msg.delete(1000).catch(console.error))
       .catch(console.error);
     */
+    if (num <= 0) {
+      await message.delete().catch(() => {});
+      return;
+    }
     if (start) {
       const msg = await message.channel.send(`Time left: ${num} ${num != 1 ? 'seconds' : 'second'}`);
 
       setTimeout(() => {
         return this.countdown(msg, num - 1);
-      }, 1000);
+      }, 1500);
     }
     else {
       message.edit(`Time left: ${num} ${num != 1 ? 'seconds' : 'second'}`);
 
       setTimeout(() => {
         return this.countdown(message, num - 1);
-      }, 1000);
+      }, 1500);
     }
   },
 };

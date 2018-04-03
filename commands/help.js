@@ -9,8 +9,8 @@ module.exports = {
 
   execute: async function(message, param) {
     const { args } = param;
-    if (args)
-      return this.sendCommandHelp(message, args[0]);
+    
+    if (args[0]) return this.sendCommandHelp(message, args[0]);
 
     return this.sendAllCommandHelp(message);
   },
@@ -34,6 +34,6 @@ module.exports = {
     const leadership = { type: 'leadership', commandList: commands.filter(command => command.type === 'leadership') };
     const misc = { type: 'misc', commandList: commands.filter(command => command.type === 'misc') };
 
-    return messenger.sendCommandHelpList(message, [essentials, misc, leadership]);
+    return messenger.sendAllCommandHelp(message, [essentials, misc, leadership]);
   },
 };
