@@ -1,5 +1,6 @@
-  const fs = require('fs');
+const fs = require('fs');
 
+const gameManager = require('../helper/gameManager.js');
 const playerManager = require('../helper/playerManager.js');
 
 const emoji = require('../misc/emoji.js');
@@ -15,6 +16,7 @@ module.exports = {
     if (!args) return message.channel.send('Needs argument');
 
     switch (args[0]) {
+      case 'game': return gameManager.createNewRoom();
       case 'load': return this.load(message);
       case 'save': return this.save(message);
       case 'set':

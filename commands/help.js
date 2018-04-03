@@ -9,7 +9,7 @@ module.exports = {
 
   execute: async function(message, param) {
     const { args } = param;
-    
+
     if (args[0]) return this.sendCommandHelp(message, args[0]);
 
     return this.sendAllCommandHelp(message);

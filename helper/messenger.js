@@ -19,7 +19,7 @@ module.exports = {
         **Usage**: ${prefix}${command.name} ${command.usage ? command.usage : ''}
         ${command.aliases ? `**Aliases**: ${command.aliases.map(c => c = `${prefix}${c}`).join(', ')}` : ''}
       `);
-    
+
     return message.channel.send(embed);
   },
 
@@ -151,7 +151,7 @@ module.exports = {
       title: error.title ? error.title : '❌ Error',
       color: error.color ? error.color : 0xff0000,
       message: error.message,
-      submessage: error.submessage,
+      submessage: `${error.submessage}.`,
     });
   },
 
