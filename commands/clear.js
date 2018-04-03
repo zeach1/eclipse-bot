@@ -43,6 +43,5 @@ module.exports = {
 
     return message.channel.send('😰 There are no messages to delete')
       .then(msg => msg.delete(3000).catch(() => {}));
-
   },
 };

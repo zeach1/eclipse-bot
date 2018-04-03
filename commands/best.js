@@ -20,7 +20,7 @@ module.exports = {
     let number = !isNaN(args[0]) ? parseInt(args[0]) : !isNaN(args[1]) ? parseInt(args[1]) : 10;
 
     const scores = playerManager.getRankList(message, type);
-    number = number > 30 ? 30 : number < 0 ? 10 : number;
+    number = number > 30 ? 30 : number < 0 ? 10 : number > scores.length ? scores.length : number;
 
     const expLength    = `${scores[0].exp} exp.`.length;
     const levelLength  = `(${scores[0].level})`.length;

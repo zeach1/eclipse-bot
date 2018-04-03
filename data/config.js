@@ -43,13 +43,11 @@ module.exports = {
   multiplier: 0.24,
   token: process.env.TOKEN,
 
-  /* Words that trigger NO U */
-  thonkWords: [
-    'stupid',
+  noUWords: [
+    'stupid', 'frick',
   ],
 
-  /* Don't look, bad words */
-  filterWords: [
-    'poach', 'nigger',
+  badWords: [
+    'fuck', 'shit', 'gay', 'bitch', 'tits', 'poach', 'nigger',
   ],
 };

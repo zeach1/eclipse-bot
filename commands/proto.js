@@ -23,17 +23,17 @@ module.exports = {
 
   summonPeril: async function(message, num) {
     if (num > 10) num = 10;
-    
+
     if (num <= 0) return;
 
     if (message.author.id != user.prototype)
       return message.channel.send('Nah you can\'t do this fam.');
 
-    message.channel.send(`Can I code shit bro? <:think:426636057082331136>`);
+    message.channel.send('Can I code shit bro? <:think:426636057082331136>');
 
     setTimeout(() => {
       return this.summonPeril(message, num - 1);
-    }, 10);
+    }, 1000);
   },
 
   referencePeril: async function(message) {

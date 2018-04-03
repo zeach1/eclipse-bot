@@ -13,7 +13,6 @@ module.exports = {
 
   execute: async function(message, param) {
     const name = param.args[0];
-
     const flair = emoji.getEmoji(name, message.client);
 
     if (!flair) return messenger.sendArgumentError(message, this, 'This emoji is not supported by the server');
