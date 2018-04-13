@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const gameManager = require('../helper/gameManager.js');
+const messenger = require('../helper/messenger.js');
 const playerManager = require('../helper/playerManager.js');
 
 const emoji = require('../misc/emoji.js');
@@ -8,29 +8,24 @@ const emoji = require('../misc/emoji.js');
 module.exports = {
   name: 'dev',
   type: 'developer',
-  description: 'Developer only',
+  usage: '<load | save | set <user> <exp> [ranking] [flair]',
+  description: 'Developer commands, used for maintenance and testing',
+
+  args: 1,
 
   execute: async function(message, param) {
     const { args } = param;
 
-    if (!args) return message.channel.send('Needs argument');
-
     switch (args[0]) {
-      case 'game': return gameManager.createNewRoom();
-      case 'load': return this.load(message);
-      case 'save': return this.save(message);
-      case 'set':
-        if (args.length < 3 || !message.mentions || isNaN(args[2]) || (args[3] && isNaN(args[3])))
-          return message.channel.send('Wrong usage');
-        return this.setPlayer(message, parseInt(args[2]), parseInt(args[3]), args[4]);
-
-      case 'countdown': return this.countdown(message, 10, true);
-      default: return message.channel.send('Wrong argument');
+      case 'load': return this.load(message, './data/players.json');
+      case 'save': return this.save(message, './data/players.json');
+      case 'set': return this.set(message, args.slice(1));
+      default: return messenger.sendArgumentError(message, this, 'This argument does not exist');
     }
   },
 
-  load: async function(message) {
-    const players = JSON.parse(fs.readFileSync('./data/players.json', 'utf8'));
+  load: async function(message, path) {
+    const players = JSON.parse(fs.readFileSync(path, 'utf8'));
 
     for (const { id, exp, ranking, flair } of players) {
       playerManager.setPlayer(message, { id: id }, {
@@ -43,7 +38,7 @@ module.exports = {
     return message.channel.send('Player backup loaded.');
   },
 
-  save: async function(message) {
+  save: async function(message, path) {
     const { client, guild, channel } = message;
     const { points }  = client;
     const players = [];
@@ -61,55 +56,28 @@ module.exports = {
       }
     }
 
-    return fs.writeFile('./data/players-backup.json', JSON.stringify(players), e => {
+    return fs.writeFile(path, JSON.stringify(players), e => {
       if (e) console.error(e);
       channel.send('Points backup saved.');
     });
   },
 
-  setPlayer: async function(message, EXP, RANKING, FLAIR) {
+  set: async function(message, args) {
+    /* args = [user, exp, ranking, flair] */
+    if (args.length < 2 || !message.mentions || isNaN(args[1]) || (args[2] && isNaN(args[2])))
+      return messenger.sendArgumentError(message, this, 'Wrong argument usage');
+
     const player = message.mentions.users.first();
     const { points } = message.client;
 
-    const em = emoji.getEmoji(FLAIR, message.client);
-
     playerManager.setPlayer(message, player, {
-      exp: EXP,
-      ranking: RANKING,
-      flair: em,
+      exp: args[1],
+      ranking: args[2],
+      flair: emoji.getEmoji(args[3], message.client),
     });
 
     const { exp, level, ranking, flair } = points.get(player.id);
 
     return message.channel.send(`Set <@${player.id}>'s exp to ${exp}, level ${level}, ${ranking} ER ${flair ? flair : ''}`);
-  },
-
-  countdown: async function(message, num, start) {
-    /*
-    if (num === start)
-      await message.delete().catch(console.error);
-    if (num === 0) return;
-
-    await message.channel.send(num).then(msg => msg.delete(1000).catch(console.error))
-      .catch(console.error);
-    */
-    if (num <= 0) {
-      await message.delete().catch(() => {});
-      return;
-    }
-    if (start) {
-      const msg = await message.channel.send(`Time left: ${num} ${num != 1 ? 'seconds' : 'second'}`);
-
-      setTimeout(() => {
-        return this.countdown(msg, num - 1);
-      }, 1500);
-    }
-    else {
-      message.edit(`Time left: ${num} ${num != 1 ? 'seconds' : 'second'}`);
-
-      setTimeout(() => {
-        return this.countdown(message, num - 1);
-      }, 1500);
-    }
   },
 };

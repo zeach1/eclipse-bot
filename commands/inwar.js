@@ -14,6 +14,9 @@ module.exports = {
     const { args } = param;
     const inwar = message.guild.roles.find('name', r.inwar[0]);
 
+    if (args[0] === 'add' || args[0] === 'remove' || args[0] === 'clear')
+      await message.channel.send('If you don\'t see `Done` at the end of this, run the command again until you do.').catch(console.error);
+
     switch (args[0]) {
       case 'list':   return this.listRoles(message, inwar);
       case 'add':    return this.addRoles(message, args, inwar);
@@ -33,8 +36,6 @@ module.exports = {
   },
 
   addRoles: async function(message, args, role) {
-    await message.channel.send('If you don\'t see `Done` at the end of this, run the command again until you do.').catch(console.error);
-
     for (const member of message.mentions.members.array())
       this.addRole(message, member, role);
 
@@ -48,8 +49,6 @@ module.exports = {
   },
 
   removeRoles: async function(message, args, role) {
-    await message.channel.send('If you don\'t see `Done` at the end of this, run the command again until you do.').catch(console.error);
-
     for (const member of message.mentions.members.array())
       this.removeRole(message, member, role);
 
@@ -63,8 +62,6 @@ module.exports = {
   },
 
   clearRoles: async function(message, role) {
-    await message.channel.send('If you don\'t see `Done` at the end of this, run the command again until you do.').catch(console.error);
-
     const { members } = message.guild.roles.get(role.id);
 
     for (const m of members)

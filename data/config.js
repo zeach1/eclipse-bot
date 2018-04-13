@@ -1,6 +1,6 @@
 module.exports = {
   clanName: 'Reddit Eclipse',
-  rules: '',
+  rules: 'https://docs.google.com/document/d/1mXGBzkv_RpjSy_V3dlRa2wJ20Sx55FlJeFl1DvfcBXw',
   password: 'https://www.reddit.com/r/redditclansystem/wiki/official_reddit_clan_system',
   subreddit: 'https://www.reddit.com/r/RedditEclipse/',
 
@@ -20,7 +20,8 @@ module.exports = {
   },
 
   channel: {
-    test: process.env.BOT_TESTING,
+    leadership: process.env.LEADERSHIPCHANNEL,
+    test: process.env.DEVELOPMENT,
     welcome: process.env.WELCOME,
     wmbot: process.env.WMBOT,
   },
@@ -37,8 +38,6 @@ module.exports = {
     prototype: process.env.PROTOTYPE,
   },
 
-  blacklisted: [],
-
   prefix: '+',
   multiplier: 0.24,
   token: process.env.TOKEN,
@@ -48,6 +47,6 @@ module.exports = {
   ],
 
   badWords: [
-    'fuck', 'shit', 'gay', 'bitch', 'tits', 'poach', 'nigger',
+    'fuck', 'shit', 'gay', 'bitch', 'tits', 'poach', 'nigger', 'cunt', 'cock', 'dick', 'retard',
   ],
 };

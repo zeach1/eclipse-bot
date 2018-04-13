@@ -24,7 +24,7 @@ module.exports = {
     if (!commandHandler.verifyPermission(message, command))
       return messenger.sendPermissionError(message);
 
-    return messenger.sendCommandHelp(message, command);
+    return messenger.sendCommandHelp(message, commandName, command);
   },
 
   sendAllCommandHelp: async function(message) {
