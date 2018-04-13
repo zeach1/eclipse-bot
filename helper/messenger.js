@@ -143,7 +143,7 @@ module.exports = {
   sendDeveloperError: async function(message) {
     return this.sendError(message, {
       message: 'Oops',
-      submessage: 'Something went wrong. Please let development team know',
+      submessage: 'Something went wrong. Please let dev team know',
     });
   },
 

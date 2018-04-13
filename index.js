@@ -43,8 +43,8 @@ client.on('guildMemberRemove', member => {
 
 /* When a member sends a message */
 client.on('message', async message =>
-  await commandHandler.handleCommand(message).catch(() => {
-    console.error;
+  await commandHandler.handleCommand(message).catch((e) => {
+    console.error(e);
     messenger.sendDeveloperError(message).catch(console.error);
 }));
 

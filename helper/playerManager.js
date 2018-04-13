@@ -7,8 +7,6 @@ module.exports = {
   updatePoints: function(message) {
     const { client, author } = message;
 
-    if (blacklisted.includes(author.id)) return;
-
     let score = message.client.points.get(author.id);
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
 
