@@ -4,11 +4,11 @@ const Discord = require('discord.js');
 const { rules, password, channelCategory, channel, group, prefix } = require('../data/config.js');
 
 module.exports = {
-  sendCommandHelp: async function(message, command) {
+  sendCommandHelp: async function(message, commandName, command) {
     const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
 
     const embed =  new Discord.RichEmbed()
-      .setAuthor(`${prefix}${command.name} | Eclipse Bot Help`)
+      .setAuthor(`${prefix}${commandName} | Eclipse Bot Help`)
       .setColor(0xe7a237)
       .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`)
       .setDescription(outdent`
@@ -18,6 +18,7 @@ module.exports = {
         **Type**: ${command.type === 'essentials' ? 'Essentials' : command.type === 'misc' ? 'Miscellaneous' : command.type === 'leadership' ? 'Leadership' : command.type === 'developer' ? 'Developer' : 'Default'}
         **Usage**: ${prefix}${command.name} ${command.usage ? command.usage : ''}
         ${command.aliases ? `**Aliases**: ${command.aliases.map(c => c = `${prefix}${c}`).join(', ')}` : ''}
+        \u200b
       `);
 
     return message.channel.send(embed);
@@ -83,7 +84,7 @@ module.exports = {
   },
 
   sendKickMessage: async function(message, member, reason) {
-    return this.sendMessage(message, {
+    return this.sendMessage({ channel: channel.leadership }, {
       title: '📛 Kicked Member',
       description: outdent`
         ${outdent}

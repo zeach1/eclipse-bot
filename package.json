@@ -1,6 +1,6 @@
 {
   "name": "eclipse-bot",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "description": "Reddit Eclipse custom Discord bot",
   "main": "index.js",
   "dependencies": {

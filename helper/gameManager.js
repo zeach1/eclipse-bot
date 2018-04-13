@@ -1,8 +1,14 @@
-const rooms = [];
+/* const Discord = require('discord.js');
+
+const rooms = new Discord.Collection();
 
 module.exports = {
-  createNewRoom: function() {
-    rooms.push([]);
-    console.log(rooms);
+  createNewRoom: function(message) {
+    rooms.set(message.member.displayName, new Discord.Collection());
+  },
+
+  addPlayer: function(message, roomID) {
+    const room = rooms.get(roomID);
   },
 };
+*/
