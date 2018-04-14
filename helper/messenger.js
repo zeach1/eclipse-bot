@@ -10,7 +10,7 @@ module.exports = {
     const embed =  new Discord.RichEmbed()
       .setAuthor(`${prefix}${commandName} | Eclipse Bot Help`)
       .setColor(0xe7a237)
-      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`)
+      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`, message.author.avatarURL)
       .setDescription(outdent`
         ${outdent}
         *${command.description}*
@@ -18,7 +18,6 @@ module.exports = {
         **Type**: ${command.type === 'essentials' ? 'Essentials' : command.type === 'misc' ? 'Miscellaneous' : command.type === 'leadership' ? 'Leadership' : command.type === 'developer' ? 'Developer' : 'Default'}
         **Usage**: ${prefix}${command.name} ${command.usage ? command.usage : ''}
         ${command.aliases ? `**Aliases**: ${command.aliases.map(c => c = `${prefix}${c}`).join(', ')}` : ''}
-        \u200b
       `);
 
     return message.channel.send(embed);
@@ -31,7 +30,7 @@ module.exports = {
       .setAuthor('Eclipse Bot Help')
       .setDescription('**<mandatory argument> [optional argument]**\n\u200b')
       .setColor(0xe7a237)
-      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`);
+      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`, message.author.avatarURL);
 
     for (const commandCategory of commands) {
       if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership)
@@ -46,7 +45,7 @@ module.exports = {
 
       embed.addField(header[0], header[1]);
       for (const command of commandCategory.commandList)
-        embed.addField(`${prefix}${command.name} ${command.usage ? command.usage : ''}`, command == commandCategory.commandList[commandCategory.commandList.length - 1] ? `${command.description} \n\u200b` : command.description);
+        embed.addField(`${prefix}${command.name} ${command.usage ? command.usage : ''}`, command == commandCategory.commandList[commandCategory.commandList.length - 1] && commandCategory !== commands[commands.length - 1] ? `${command.description} \n\u200b` : command.description);
     }
 
     return message.channel.send(embed);
@@ -84,13 +83,11 @@ module.exports = {
   },
 
   sendKickMessage: async function(message, member, reason) {
-    return this.sendMessage({ channel: channel.leadership }, {
-      title: '📛 Kicked Member',
+    return this.sendMessage({ channel: message.guild.channels.get(channel.leadership) }, {
       description: outdent`
         ${outdent}
         **${member.displayName}** is kicked by ${message.member.displayName}
-
-        ${reason ? `*Reason*: ${reason}` : ''}
+        ${reason ? `*${reason}*` : ''}
       `,
       color: 0xf04747,
     });
@@ -143,7 +140,7 @@ module.exports = {
   sendDeveloperError: async function(message) {
     return this.sendError(message, {
       message: 'Oops',
-      submessage: 'Something went wrong. Please let development team know',
+      submessage: 'Something went wrong. Please let dev team know',
     });
   },
 

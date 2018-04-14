@@ -23,7 +23,7 @@ module.exports = {
 
     const { avatarURL, bot, id } = player.user;
 
-    if (bot) return messenger.sendBotTagError(message, member);
+    if (bot) return messenger.sendBotTagError(message, player);
 
     const title = check.verifyLeadership({ member: player }) ? 'Leadership' :
                   check.verifyEclipse({ member: player }) ? 'Reddit Eclipse' :

@@ -5,11 +5,11 @@
   "main": "index.js",
   "dependencies": {
     "discord.js": "^11.3.2",
-    "enmap": "^2.0.1",
-    "enmap-level": "^2.0.0",
+    "enmap": "^2.1.0",
+    "enmap-level": "^2.0.2",
     "eslint": "^4.19.1",
     "express": "^4.16.3",
-    "outdent": "^0.4.1",
+    "outdent": "^0.5.0",
     "twemoji": "^2.5.1"
   },
   "engines": {
