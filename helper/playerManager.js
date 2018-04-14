@@ -1,4 +1,4 @@
-const { multiplier, blacklisted } = require('../data/config.js');
+const { multiplier } = require('../data/config.js');
 
 const messenger = require('./messenger.js');
 
@@ -12,13 +12,16 @@ module.exports = {
 
     score.exp++;
 
-    if (score.level < this.getLevel(score.exp)) {
-      score.level++;
-      messenger.sendMessage(message, {
-        title: '🎉 Level Up',
-        color: 0x3ea92e,
-        description: `${author} has leveled up to level ${score.level}! Cheers! ${score.flair}`,
-      }).catch(console.error);
+    const level = this.getLevel(score.exp);
+    if (score.level !== level) {
+      if (level > score.level)
+        messenger.sendMessage(message, {
+          title: '🎉 Level Up',
+          color: 0x3ea92e,
+          description: `${author} has leveled up to level ${level}! Cheers! ${score.flair}`,
+        }).catch(console.error);
+
+      score.level = level;
     }
 
     client.points.set(author.id, score);
