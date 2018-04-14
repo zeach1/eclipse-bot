@@ -6,7 +6,7 @@ const emoji = require('../misc/emoji.js');
 module.exports = {
   name: 'flair',
   type: 'essentials',
-  usage: '<emoji>',
+  usage: '<emoji | emojiname | list>',
   description: 'Set a flair which will be displayed on your rank and on games',
 
   args: 1,

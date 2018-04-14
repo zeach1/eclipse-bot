@@ -29,6 +29,7 @@ module.exports = {
   listRoles: async function(message, role) {
     const members = message.guild.roles.get(role.id).members.map(m => m.displayName).sort((a, b) => { return a.toLowerCase() > b.toLowerCase() ? 1 : a.toLowerCase() < b.toLowerCase() ? -1 : 0; }).join('\n');
 
+    message.channel.send('<:29665543_2438544376171770_163465:434604521759703043>');
     return messenger.sendMessage(message, {
       title: 'Members in war',
       description: members.length ? members : 'None',
