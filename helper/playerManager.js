@@ -3,7 +3,10 @@ const { multiplier } = require('../data/config.js');
 const messenger = require('./messenger.js');
 
 module.exports = {
-  /* Increments player's exp by 1 per message */
+  /**
+   * Increments player exp by 1 every message sent.
+   * @param {Discord.Message} message The message sent
+   */
   updatePoints: function(message) {
     const { client, author } = message;
 
@@ -27,7 +30,11 @@ module.exports = {
     client.points.set(author.id, score);
   },
 
-  /* Updates players' ER after finishing a game */
+  /**
+   * Updates players' ER after finishing a game
+   * @param {Discord.Message} message The message sent
+   * @param {Array<Discord.GuildMember} players Array of players in game
+   */
   updateRankings: function(message, players) {
     const scores = [];
     for (const player of players) {
@@ -38,16 +45,21 @@ module.exports = {
 
     for (let i = 0; i < scores.length; i++) {
       const score = scores[i];
-      const lostTo = scores.map(res => res.ranking).slice(0, i);
-      const wonTo = scores.map(res => res.ranking).slice(i + 1);
+      const lostTo = scores.map(info => info.ranking).slice(0, i);
+      const wonTo = scores.map(info => info.ranking).slice(i + 1);
 
       const amount = this.getERAdd(score.ranking, wonTo, lostTo);
       this.updateRanking(message, players[i], score, amount);
     }
-
-
   },
 
+  /**
+   * Updates a player ER after finishing a game
+   * @param {Discord.Message} message The message sent
+   * @param {Discord.GuildMember} player
+   * @param {Object} score Player score
+   * @param {number} amount Amount of ER to add/deduct from player ER
+   */
   updateRanking: function(message, player, score, amount) {
     score.ranking += amount;
     score.ranking = score.ranking > 9999 ? 9999 : (score.ranking < 1 ? 1 : score.ranking);
@@ -55,6 +67,11 @@ module.exports = {
     message.client.points.set(player.id, score);
   },
 
+  /**
+   * Updates a player's flair. Flair is represented by an emoji.
+   * @param {Discord.Message} message The message sent
+   * @param {string} flair New flair
+   */
   updateFlair: function(message, flair) {
     const { id, client } = message.author;
 
@@ -66,15 +83,28 @@ module.exports = {
     message.client.points.set(id, score);
   },
 
-  /* Called by ../index.js when user leaves the server */
+  /**
+   * Called when player leaves the server.
+   * @param {Discord.GuildMember} member The player that left the server
+   * @param {Discord.Client} client Discord client
+   */
   removePlayer: function(member, client) { client.points.delete(member.user.id); },
 
-  /* Gets current rank of a player based on exp/ranking */
+  /**
+   * Gets player rank from all others. Rank can be sorted by exp or ER.
+   * @param {Discord.Message} message The message sent
+   * @param {Discord.GuildMember} player
+   * @param {string} type Can be exp or ranking, ranking = ER
+   */
   getPlayerRank: function(message, player, type) {
     return this.getRankList(message, type).findIndex(score => { return player.id === score.id; }) + 1;
   },
 
-  /* Gets list of player ranks by exp or ranking */
+  /**
+   * Gets list of player ranks by exp or ranking
+   * @param {Discord.Message} message The message sent
+   * @param {string} type Can be exp or ranking, ranking = ER
+   */
   getRankList: function(message, type) {
       const ids = message.client.points.keyArray();
 
@@ -99,7 +129,12 @@ module.exports = {
       return -1;
     },
 
-  /* Function to manually change player data */
+  /**
+   * Manually update player data. Called from dev command.
+   * @param {Discord.Message} message The message sent
+   * @param {Discord.GuildMember} player
+   * @param {Object} info Data to put to player's score
+   */
   setPlayer: function(message, player, info) {
     let score = message.client.points.get(player.id);
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
@@ -118,12 +153,27 @@ module.exports = {
     message.client.points.set(player.id, score);
   },
 
-  /* Helper functions to interchange exp and level*/
+  /**
+   * Gets level based on certain exp.
+   * @param {number} level
+   * @return {number} exp
+   */
   getExp: function(level) { return Math.ceil(Math.pow(1 / multiplier * level, 2)); },
 
+  /**
+   * Gets lowest exp needed for a certain level.
+   * @param {number} exp
+   * @return {number} level
+   */
   getLevel: function(exp) { return Math.floor(multiplier * Math.sqrt(exp)); },
 
-  /* Helper functions to get ER to add/deduct for a player */
+  /**
+   * Calculate ER to add or remove from player score.
+   * @param {number} ranking Player ranking, in ER
+   * @param {Array<number>} wonTo Other ranking
+   * @param {Array<number>} lostTo Other ranking
+   * @return {number}
+   */
   getERAdd: function(ranking, wonTo, lostTo) {
     function e(x)    { return Math.pow(10, x); }
     function p(x, y) { return Math.pow(x, y); }

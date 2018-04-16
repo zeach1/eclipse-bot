@@ -4,6 +4,7 @@ const messenger = require('../helper/messenger.js');
 const playerManager = require('../helper/playerManager.js');
 
 const check = require('../misc/check.js');
+const memberMention = require('../misc/memberMention.js');
 
 module.exports = {
   name: 'rank',
@@ -12,37 +13,40 @@ module.exports = {
   aliases: ['info', 'level'],
   description: 'Displays experience, level, and ranking (ER) of a player',
 
+  /**
+   * @param {Discord.Message} message The message sent
+   * @param {Object} param Contains arguments and options
+   * @return {Promise<Discord.Message>}
+   */
   execute: async function(message, param) {
     const { args } = param;
+    const name = args[0];
 
-    const { client, mentions, member } = message;
-    const mentionedTag = mentions.members.first();
-    const mentionedNoTag = message.guild.members.find(m => m.displayName.toLowerCase().startsWith(args[0]) || m.displayName.toLowerCase().includes(args[0]));
+    const { client, mentions, member: author } = message;
 
-    const player = mentionedTag || mentionedNoTag || member;
+    const player = mentions.members.first() || memberMention.getMemberByName(message, message.guild.members, name) || author;
 
-    const { avatarURL, bot, id } = player.user;
-
-    if (bot) return messenger.sendBotTagError(message, player);
+    if (player.user.bot) return messenger.sendBotTagError(message, player);
 
     const title = check.verifyLeadership({ member: player }) ? 'Leadership' :
                   check.verifyEclipse({ member: player }) ? 'Reddit Eclipse' :
                   check.verifyFriends({ member: player }) ? 'Friends of Eclipse' : 'Noob';
 
-    let score = client.points.get(id);
+    let score = client.points.get(player.id);
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
-
     const { exp, level, ranking, flair } = score;
+
     const expToLevelUp = playerManager.getExp(level + 1) - exp - 1;
     const rank = playerManager.getPlayerRank(message, player.user, 'exp');
 
     return messenger.sendMessage(message, {
       title: `${player.displayName} | ${title}`,
-      avatar: avatarURL ? avatarURL : 'https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png',
+      avatar: player.user.avatarURL ? player.user.avatarURL : 'https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png',
       color: rank === 1 ? 0xcfb53b :
              rank === 2 ? 0xc0c0c0 :
              rank === 3 ? 0xa67d3d : 0x696969,
-      description: outdent({ 'trimLeadingNewline': true })`
+      description: outdent`
+        ${outdent}
         Level ${level} | **${ranking}** ER
 
         ${expToLevelUp} exp. to level up (${exp}) ${flair}

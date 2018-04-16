@@ -9,10 +9,16 @@ module.exports = {
   type: 'essentials',
   description: 'Tips for a scout in war',
 
+  /**
+   * @param {Discord.Message} message The message sent
+   * @param {Object} param Contains arguments and options
+   * @return {Promise<Discord.Message>}
+   */
   execute: async function(message) {
     /* Command output message bound to change soon */
     if (message.channel.parentID === channelCategory.war_room)
-      return message.channel.send(outdent({ 'trimLeadingNewline': true })`
+      return message.channel.send(outdent`
+        ${outdent}
         \:arrow_forward: Bring 4 archers to test each corner of the base for teslas
         \:arrow_forward: Make sure to pull all cc, ground and air. If you're going air, bring a couple of hogs for mid/end raid to pull the ground cc.
         \:arrow_forward: 2 stars and 51% destruction

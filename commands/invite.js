@@ -7,6 +7,10 @@ module.exports = {
   type: 'essentials',
   description: 'Shows invite link for this server',
 
+  /**
+   * @param {Discord.Message} message The message sent
+   * @return {Promise<Discord.Message>}
+   */
   execute: async function(message) {
     const invites = await message.guild.fetchInvites();
 

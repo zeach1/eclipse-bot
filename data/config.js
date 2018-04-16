@@ -7,7 +7,6 @@ module.exports = {
   role: {
     leadership: ['Leadership'],
     developer: ['Bot Developer'],
-    inwar: ['in war'],
     eclipse: ['Eclipse'],
     friends: ['Friends of Eclipse'],
     member: ['Friends of Eclipse', 'Eclipse', 'Visitor'],
@@ -20,6 +19,7 @@ module.exports = {
   },
 
   channel: {
+    leadernotes: process.env.LEADERNOTES,
     leadership: process.env.LEADERSHIPCHANNEL,
     test: process.env.DEVELOPMENT,
     welcome: process.env.WELCOME,

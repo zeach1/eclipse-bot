@@ -4,6 +4,13 @@ const Discord = require('discord.js');
 const { rules, password, channelCategory, channel, group, prefix } = require('../data/config.js');
 
 module.exports = {
+  /**
+   * Called from help command.
+   * @param {Discord.Message} message The message sent
+   * @param {string} commandName The name of the command, that the user sent, can be an alias name
+   * @param {Object} command The command
+   * @return {Promise<Discord.Message>}
+   */
   sendCommandHelp: async function(message, commandName, command) {
     const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
 
@@ -23,6 +30,12 @@ module.exports = {
     return message.channel.send(embed);
   },
 
+  /**
+   * Called from help command.
+   * @param {Discord.Message} message The message sent
+   * @param {Array<Object>} commands All commands (that are not in development)
+   * @return {Promise<Discord.Message>}
+   */
   sendAllCommandHelp: async function(message, commands) {
     const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
 
@@ -51,12 +64,23 @@ module.exports = {
     return message.channel.send(embed);
   },
 
+  /**
+   * Sends an image to the channel.
+   * @param {Discord.Message} message The message sent
+   * @param {Array<string> | string} info The image(s) link(s)
+   * @return {Promise<Discord.Message>}
+   */
   sendImage: async function(message, info) {
     const { description, url } = info;
 
     return message.channel.send(description ? description : '', { files: Array.isArray(url) ? url : [ url ] });
   },
 
+  /**
+   * Called when a new member joins the server.
+   * @param {Discord.GuildMember} member The member that joined
+   * @return {Promise<Discord.Message>}
+   */
   sendWelcomeMessage: async function(member) {
     const message = { channel: member.guild.channels.get(channel.welcome) };
 
@@ -73,6 +97,11 @@ module.exports = {
     });
   },
 
+  /**
+   * Called when a new member leaves the server.
+   * @param {Discord.GuildMember} member The member that left
+   * @return {Promise<Discord.Message>}
+   */
   sendLeaveMessage: async function(member) {
     const message = { channel: member.guild.channels.get(channel.welcome) };
 
@@ -82,8 +111,15 @@ module.exports = {
     });
   },
 
+  /**
+   * Called when a member is kicked from the server.
+   * @param {Discord.Message} message The message used to kick the member
+   * @param {Discord.GuildMember} member The member that is kicked
+   * @param {string} reason Reason for kicking
+   * @return {Promise<Discord.Message>}
+   */
   sendKickMessage: async function(message, member, reason) {
-    return this.sendMessage({ channel: message.guild.channels.get(channel.leadership) }, {
+    return this.sendMessage({ channel: message.guild.channels.get(channel.leadernotes) }, {
       description: outdent`
         ${outdent}
         **${member.displayName}** is kicked by ${message.member.displayName}
@@ -93,6 +129,12 @@ module.exports = {
     });
   },
 
+  /**
+   * Sends a message to the channel.
+   * @param {Discord.Message} message The message sent
+   * @param {Object} info Data to put in rich embed
+   * @return {Promise<Discord.Message>}
+   */
   sendMessage: async function(message, info) {
     return this.send(message, {
       title: info.title ? info.title : '',
@@ -103,6 +145,11 @@ module.exports = {
     });
   },
 
+  /**
+   * Sent when member types inexistent command.
+   * @param {Discord.Message} message The message sent
+   * @return {Promise<Discord.Message>}
+   */
   sendCommandDoesNotExistError: async function(message) {
     return this.sendError(message, {
       color: 0xf06c00,
@@ -111,15 +158,27 @@ module.exports = {
     });
   },
 
+  /**
+   * Sent when member types wrgong argument for command.
+   * @param {Discord.Message} message The message sent
+   * @param {Object} command The command itself
+   * @param {string} [warning] The warning for member
+   * @return {Promise<Discord.Message>}
+   */
   sendArgumentError: async function(message, command, warning) {
     return this.sendError(message, {
       title: '❌ Argument Error',
       color: 0xf06c00,
-      message: warning,
+      message: warning ? warning : 'This argument does not exist',
       submessage: `Proper usage is ${prefix}${command.name} ${command.usage ? command.usage : ''}`,
     });
   },
 
+  /**
+   * Sent when member does not enough permissions to execute command.
+   * @param {Discord.Message} message The message sent
+   * @return {Promise<Discord.Message>}
+   */
   sendPermissionError: async function(message) {
     return this.sendError(message, {
       title: '🚫 Permission Denied',
@@ -128,6 +187,12 @@ module.exports = {
     });
   },
 
+  /**
+   * Sent when member tries to use a command on a bot.
+   * @param {Discord.Message} message The message sent
+   * @param {Discord.GuildMember} bot The bot details
+   * @return {Promise<Discord.Message>}
+   */
   sendBotTagError: async function(message, bot) {
     return this.sendError(message, {
       title: '🤖 Error',
@@ -137,6 +202,11 @@ module.exports = {
     });
   },
 
+  /**
+   * Sent when an error arises in this code.
+   * @param {Discord.Message} message The message sent
+   * @return {Promise<Discord.Message>}
+   */
   sendDeveloperError: async function(message) {
     return this.sendError(message, {
       message: 'Oops',
@@ -144,6 +214,12 @@ module.exports = {
     });
   },
 
+  /**
+   * Sent when an error happens, any type of error.
+   * @param {Discord.Message} message The message sent
+   * @param {Object} error Data to put into rich embed
+   * @return {Promise<Discord.Message>}
+   */
   sendError: async function(message, error) {
     return this.send(message, {
       title: error.title ? error.title : '❌ Error',
@@ -153,6 +229,12 @@ module.exports = {
     });
   },
 
+  /**
+   * Sends a rich embed text.
+   * @param {Discord.Message} message The message sent
+   * @param {Object} info Data to put into rich embed
+   * @return {Promise<Discord.Message>}
+   */
   send: async function(message, info) {
     const embed = new Discord.RichEmbed()
       .setAuthor(info.title ? info.title : '', info.avatar ? info.avatar : '')

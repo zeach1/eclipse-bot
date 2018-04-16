@@ -9,6 +9,11 @@ module.exports = {
   args: 1,
   tag: 1,
 
+  /**
+   * @param {Discord.Message} message The message sent
+   * @param {Object} param Contains arguments and options
+   * @return {Promise<Discord.Message>}
+   */
   execute: async function(message, param) {
     const member = message.mentions.members.first();
     const reason = param.args.slice(1).join(' ');

@@ -13,21 +13,29 @@ module.exports = {
   args: 1,
   tag: 1,
 
+  /**
+   * @param {Discord.Message} message The message sent
+   * @param {Object} param Contains arguments and options
+   * @return {Promise<Discord.Message>}
+   */
   execute: async function(message, param) {
+    const { args, options } = param;
     const member = message.mentions.members.first();
 
     if (member.user.bot) return messenger.sendBotTagError(message, member);
 
-    return message.channel.send(outdent({ 'trimLeadingNewline': true })`
+    const name = args[1] ? `#${args[1].replace(/#/g, '')}` : member.displayName;
+    return message.channel.send(outdent`
+        ${outdent}
         ${member}, register your account in WarMatch.
         ⚔️ Go to <#${channel.wmbot}>
-        ⚔️ Type \`!wm identify ${param.args[1] ? param.args[1].toUpperCase() : member.displayName}\`
+        ⚔️ Type \`!wm identify ${name}\`
 
         *Ignore when the bot asks to add your war weight*
       `)
       .then(() => {
-        if (param.options.includes('d') || param.options.includes('delete'))
-          message.delete().catch(console.error);
+        if (options.includes('d') || options.includes('delete'))
+          message.delete().catch(() => {});
       });
   },
 };

@@ -7,6 +7,11 @@ module.exports = {
   type: 'essentials',
   description: `Shows ${clanName}'s subreddit link`,
 
+  /**
+   * @param {Discord.Message} message The message sent
+   * @param {Object} param Contains arguments and options
+   * @return {Promise<Discord.Message>}
+   */
   execute: async function(message) {
     return messenger.sendMessage(message, {
       title: `${clanName} subreddit`,

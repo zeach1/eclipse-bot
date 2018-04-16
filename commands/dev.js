@@ -13,18 +13,28 @@ module.exports = {
 
   args: 1,
 
+  /**
+   * @param {Discord.Message} message The message sent
+   * @param {Object} param Contains arguments and options
+   * @return {Promise<Discord.Message>}
+   */
   execute: async function(message, param) {
     const { args } = param;
-
     switch (args[0]) {
-      case 'load': return this.load(message, './data/players.json');
-      case 'save': return this.save(message, './data/players.json');
-      case 'set': return this.set(message, args.slice(1));
-      default: return messenger.sendArgumentError(message, this, 'This argument does not exist');
+      case 'load': return this._load(message, './data/players.json');
+      case 'save': return this._save(message, './data/players-backup.json');
+      case 'set': return this._set(message, args.slice(1));
+      default: return messenger.sendArgumentError(message, this);
     }
   },
 
-  load: async function(message, path) {
+  /**
+   * Loads player data from file.
+   * @param {Discord.Message} message The message sent
+   * @param {string} path Path to load file
+   * @return {Promise<Discord.Message>}
+   */
+  _load: async function(message, path) {
     const players = JSON.parse(fs.readFileSync(path, 'utf8'));
 
     for (const { id, exp, ranking, flair } of players) {
@@ -38,7 +48,13 @@ module.exports = {
     return message.channel.send('Player backup loaded.');
   },
 
-  save: async function(message, path) {
+  /**
+   * Saves player data to file.
+   * @param {Discord.Message} message The message sent
+   * @param {string} path Path to save file
+   * @return {Promise<Discord.Message>}
+   */
+  _save: async function(message, path) {
     const { client, guild, channel } = message;
     const { points }  = client;
     const players = [];
@@ -56,14 +72,17 @@ module.exports = {
       }
     }
 
-    return fs.writeFile(path, JSON.stringify(players), e => {
-      if (e) console.error(e);
-      channel.send('Points backup saved.');
-    });
+    return fs.writeFile(path, JSON.stringify(players), () => channel.send('Points backup saved.'));
   },
 
-  set: async function(message, args) {
-    /* args = [user, exp, ranking, flair] */
+  /**
+   * Manually sets player data.
+   * @param {Discord.Message} message The message sent
+   * @param {Array<string>} args Array of arguments
+   * @return {Promise<Discord.Message>}
+   */
+  _set: async function(message, args) {
+    // guide: args = [user, exp, ranking, flair]
     if (args.length < 2 || !message.mentions || isNaN(args[1]) || (args[2] && isNaN(args[2])))
       return messenger.sendArgumentError(message, this, 'Wrong argument usage');
 

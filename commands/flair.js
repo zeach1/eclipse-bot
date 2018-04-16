@@ -11,6 +11,11 @@ module.exports = {
 
   args: 1,
 
+  /**
+   * @param {Discord.Message} message The message sent
+   * @param {Object} param Contains arguments and options
+   * @return {Promise<Discord.Message>}
+   */
   execute: async function(message, param) {
     const name = param.args[0];
     const flair = emoji.getEmoji(name, message.client);
