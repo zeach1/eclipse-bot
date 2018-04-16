@@ -1,3 +1,5 @@
+/*
+
 module.exports = {
   name: 'donation',
   type: 'developer',
@@ -7,3 +9,5 @@ module.exports = {
     return message.channel.send('WIP');
   },
 };
+
+*/

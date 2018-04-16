@@ -1,4 +1,6 @@
-/* const Discord = require('discord.js');
+/*
+
+const Discord = require('discord.js');
 
 const rooms = new Discord.Collection();
 
@@ -11,4 +13,5 @@ module.exports = {
     const room = rooms.get(roomID);
   },
 };
+
 */

@@ -7,15 +7,24 @@ module.exports = {
   usage: '[command]',
   description: 'Gives the list of available commands',
 
+  /**
+   * @param {Discord.Message} message The message sent
+   * @param {Object} param Contains arguments and options
+   * @return {Promise<Discord.Message>}
+   */
   execute: async function(message, param) {
     const { args } = param;
 
-    if (args[0]) return this.sendCommandHelp(message, args[0]);
-
-    return this.sendAllCommandHelp(message);
+    return args[0] ? this._sendCommandHelp(message, args[0]) : this._sendAllCommandHelp(message);
   },
 
-  sendCommandHelp: async function(message, commandName) {
+  /**
+   * Sends help message on specific command
+   * @param {Discord.Message} message The message sent
+   * @param {string} commandName The name of command
+   * @return {Promise<Discord.Message>}
+   */
+  _sendCommandHelp: async function(message, commandName) {
     const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
     if (!command)
@@ -27,7 +36,12 @@ module.exports = {
     return messenger.sendCommandHelp(message, commandName, command);
   },
 
-  sendAllCommandHelp: async function(message) {
+  /**
+   * Sends help message on all commands
+   * @param {Discord.Message} message The message sent
+   * @return {Promise<Discord.Message>}
+   */
+  _sendAllCommandHelp: async function(message) {
     const commands = message.client.commands.array();
 
     const essentials = { type: 'essentials', commandList: commands.filter(command => command.type === 'essentials') };

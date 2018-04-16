@@ -2,13 +2,18 @@ const { prefix } = require('../data/config.js');
 
 const check = require('../misc/check.js');
 
-const automator = require('./automator.js');
+// const automator = require('./automator.js');
 const filterer = require('./filterer.js');
 const messenger = require('./messenger.js');
 const moderator = require('./moderator.js');
 const playerManager = require('./playerManager.js');
 
 module.exports = {
+  /**
+   * Processes each message sent in server. Focuses mainly on commands though.
+   * @param {Discord.Message} message The message sent
+   * @return {Promise<Discord.Message>}
+   */
   handleCommand: async function(message) {
     /* Checks if message has bad word, or user is bot/non-member */
     if (moderator.moderateBadWords(message) || filterer.filterUser(message)) return;
@@ -17,21 +22,25 @@ module.exports = {
     playerManager.updatePoints(message);
 
     moderator.moderateNoU(message);
-    automator.automate();
 
-    /* Filters out message that aren't commands */
+    /* Filters out messages that aren't commands */
     if (filterer.filterMessage(message)) return;
 
-    const { command, args, options } = this.getCommand(message);
+    const { command, args, options } = this._getCommand(message);
 
     /* Verifies command for permission and format */
-    if (!this.verifyCommand(message, command, args)) return;
+    if (!this._verifyCommand(message, command, args)) return;
 
     /* Execute command */
     return command.execute(message, { args: args, options: options });
   },
 
-  getCommand: function(message) {
+  /**
+   * Gets command from message.
+   * @param {Discord.Message} message The message sent
+   * @return {Object} The command
+   */
+  _getCommand: function(message) {
     let args = message.content.toLowerCase().slice(prefix.length).trim().split(/ +/);
 
     const options = args.filter(arg => arg.startsWith('-')).map(arg => arg.slice(1));
@@ -43,13 +52,20 @@ module.exports = {
     return { command: command, args: args, options: options };
   },
 
-  verifyCommand: function(message, command, args) {
+  /**
+   * Verifies user permissions to use command.
+   * @param {Discord.Message} message The message sent
+   * @param {Object} command The command
+   * @param {Array<string>} args Array of arguments
+   * @return {boolean} True if all command conditions are met
+   */
+  _verifyCommand: function(message, command, args) {
     if (!command) {
       messenger.sendCommandDoesNotExistError(message).catch(console.error);
       return false;
     }
 
-    if (!this.verifyPermission(message, command)) {
+    if (!check.verifyPermission(message, command)) {
       messenger.sendPermissionError(message).catch(console.error);
       return false;
     }
@@ -65,11 +81,5 @@ module.exports = {
     }
 
     return true;
-  },
-
-  verifyPermission: function(message, command) {
-    return command.type === 'essentials' || command.type === 'misc' ||
-           command.type === 'leadership' && check.verifyLeadership(message) ||
-           command.type === 'developer' && check.verifyDeveloper(message);
   },
 };

@@ -1,7 +1,11 @@
 const { badWords, noUWords } = require('../data/config.js');
 
 module.exports = {
-  /* Returns true if user said a bad word */
+  /**
+   * Removes bad words.
+   * @param {Discord.Message} message The message sent
+   * @return {boolean} True if user sent a bad word
+   */
   moderateBadWords: function(message) {
     if (badWords.some(word => message.content.toLowerCase().replace(/[^a-z]/, '').includes(word))) {
       message.delete()
@@ -13,7 +17,10 @@ module.exports = {
     return false;
   },
 
-  /* Sends NO U */
+  /**
+   * Responds to noU words.
+   * @param {Discord.Message} message The message sent
+   */
   moderateNoU: function(message) {
     if (noUWords.find(m => message.content.toLowerCase().includes(m)))
       message.channel.send('**NO U**').catch(console.error);
