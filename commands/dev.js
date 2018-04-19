@@ -8,7 +8,7 @@ const emoji = require('../misc/emoji.js');
 module.exports = {
   name: 'dev',
   type: 'developer',
-  usage: '<load | save | set <user> <exp> [ranking] [flair]',
+  usage: '<load | save | set <user> <exp> [ranking] [flair]>',
   description: 'Developer commands, used for maintenance and testing',
 
   args: 1,

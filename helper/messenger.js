@@ -68,12 +68,19 @@ module.exports = {
    * Sends an image to the channel.
    * @param {Discord.Message} message The message sent
    * @param {Array<string> | string} info The image(s) link(s)
+   * @param {number} delay The delay of this message to send
    * @return {Promise<Discord.Message>}
    */
-  sendImage: async function(message, info) {
+  sendImage: async function(message, info, delay) {
     const { description, url } = info;
-
-    return message.channel.send(description ? description : '', { files: Array.isArray(url) ? url : [ url ] });
+    
+    if (!delay || isNaN(delay)) delay = 0;
+        
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(message.channel.send(description ? description : '', { files: Array.isArray(url) ? url : [ url ] }));
+      }, delay)
+    });
   },
 
   /**

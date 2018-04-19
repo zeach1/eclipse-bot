@@ -4,6 +4,7 @@ const messenger = require('../helper/messenger.js');
 const playerManager = require('../helper/playerManager.js');
 
 const check = require('../misc/check.js');
+const name = require('../misc/name.js');
 const memberMention = require('../misc/memberMention.js');
 
 module.exports = {
@@ -20,9 +21,9 @@ module.exports = {
    */
   execute: async function(message, param) {
     const { args } = param;
-    const name = args[0];
-
     const { client, mentions, member: author } = message;
+    
+    const name = args[0] ? args[0] : author.displayName;
 
     const player = mentions.members.first() || memberMention.getMemberByName(message, message.guild.members, name) || author;
 

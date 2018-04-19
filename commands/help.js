@@ -1,6 +1,8 @@
 const commandHandler = require('../helper/commandHandler.js');
 const messenger = require('../helper/messenger.js');
 
+const check = require('../misc/check.js');
+
 module.exports = {
   name: 'help',
   type: 'essentials',
@@ -28,9 +30,9 @@ module.exports = {
     const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
     if (!command)
-      return this.sendAllCommandHelp(message);
+      return this._sendAllCommandHelp(message);
 
-    if (!commandHandler.verifyPermission(message, command))
+    if (!check.verifyPermission(message, command))
       return messenger.sendPermissionError(message);
 
     return messenger.sendCommandHelp(message, commandName, command);

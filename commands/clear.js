@@ -49,7 +49,7 @@ module.exports = {
           return message.channel.send(`🖍 Deleted ${numDeleted} ${numDeleted != 1 ? 'messages' : 'message'}.`)
             .then(msg => msg.delete(3000).catch(() => {}));
 
-        return this.clear(message, num - 100, numDeleted);
+        return this._clear(message, num - 100, numDeleted);
       }
     }
 

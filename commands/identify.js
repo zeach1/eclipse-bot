@@ -24,7 +24,7 @@ module.exports = {
 
     if (member.user.bot) return messenger.sendBotTagError(message, member);
 
-    const name = args[1] ? `#${args[1].replace(/#/g, '')}` : member.displayName;
+    const name = args[1] ? `#${args[1].replace(/[^a-z0-9]/g, '', '').toUpperCase()}` : member.displayName;
     return message.channel.send(outdent`
         ${outdent}
         ${member}, register your account in WarMatch.

@@ -9,7 +9,7 @@ module.exports = {
   match: function(name, targetName) {
     name = name.toLowerCase();
     targetName = targetName.toLowerCase();
-
+    
     return name === targetName || name.startsWith(targetName) || name.includes(targetName);
   },
 
@@ -19,18 +19,19 @@ module.exports = {
    * @return {Array<string>} same array without mentions
    */
   filterTags: function(names) {
-    return names.filter(name => name.startsWith('<'));
+    return names.filter(name => !name.startsWith('<'));
   },
 
   /**
    * Orders an array of string, ignoring case
-   * @param {Array<string>} array`
+   * @param {Array<string>} array
+   * @param {boolean} isGuildMembers true if array is of guild members
    * @return {Array<string>}
    */
-  inOrder: function(array) {
+  inOrder: function(array, isGuildMember) {
     return array.sort((a, b) => {
-      a = a.toLowerCase();
-      b = b.toLowerCase();
+      a = isGuildMember ? a.displayName.toLowerCase() : a.toLowerCase();
+      b = isGuildMember ? b.displayName.toLowerCase() : b.toLowerCase();
       return a > b ? 1 : a < b ? -1 : 0;
     });
   },

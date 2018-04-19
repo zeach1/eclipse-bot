@@ -10,12 +10,18 @@ module.exports = {
    * @return {Promise<Discord.Message>}
    */
   listRoles: async function(message, role) {
-    let members = message.guild.roles.get(role.id).members.map(member => member.displayName);
-    members = name.inOrder(members).join('\n');
+    let members = message.guild.roles.get(role.id).members.array();
+    members = name.inOrder(members, true);
+    
+    let players = [];
+    for (const { id, displayName } of members) {
+      const { flair } = message.client.points.get(id);
+      players.push(`${flair ? `${flair} ` : ''}${displayName}`);
+    }
 
     return messenger.sendMessage(message, {
-      title: `Members with role ${role.name}`,
-      description: members.length > 0 ? members : 'None',
+      title: `List of members: ${role.name}`,
+      description: players.length > 0 ? players : '✌️ None',
     });
   },
 
@@ -56,3 +62,4 @@ module.exports = {
         .catch(console.error);
   },
 };
+
