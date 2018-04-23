@@ -22,6 +22,7 @@ module.exports = {
     leadernotes: process.env.LEADERNOTES,
     leadership: process.env.LEADERSHIPCHANNEL,
     test: process.env.DEVELOPMENT,
+    wardiscussion: process.env.WARDISCUSSION,
     welcome: process.env.WELCOME,
     wmbot: process.env.WMBOT,
   },

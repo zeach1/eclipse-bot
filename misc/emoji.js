@@ -36,7 +36,10 @@ module.exports = {
     if (!name.startsWith('<'))
       return null;
 
-    const serveremoji = client.emojis.get(name.substring(2, name.length - 2));
+    let id = name.substring(2);
+    id = id.substring(id.indexOf(':')+1, id.length-1);
+    
+    const serveremoji = client.emojis.get(id);
     return serveremoji ? `<:${serveremoji.name}:${serveremoji.id}>` : null;
   },
 
@@ -47,7 +50,7 @@ module.exports = {
    * @return {string}
    */
   _getCustomEmoji: function(name, client) {
-    const emojiNames = nameFunctions.inOrder(client.emojis.map(emoji => emoji.name));
+    const emojiNames = nameFunctions.inOrderLength(client.emojis.map(emoji => emoji.name));
 
     name = name.replace(/[^a-z0-9]/g, '');
     const customemojiName = emojiNames.find(emojiName => {

@@ -73,13 +73,13 @@ module.exports = {
    */
   sendImage: async function(message, info, delay) {
     const { description, url } = info;
-    
+
     if (!delay || isNaN(delay)) delay = 0;
-        
+
     return new Promise(resolve => {
       setTimeout(() => {
         resolve(message.channel.send(description ? description : '', { files: Array.isArray(url) ? url : [ url ] }));
-      }, delay)
+      }, delay);
     });
   },
 

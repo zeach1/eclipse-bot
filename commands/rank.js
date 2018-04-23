@@ -1,10 +1,9 @@
 const outdent = require('outdent');
 
 const messenger = require('../helper/messenger.js');
-const playerManager = require('../helper/playerManager.js');
+const rankManager = require('../helper/rankManager.js');
 
 const check = require('../misc/check.js');
-const name = require('../misc/name.js');
 const memberMention = require('../misc/memberMention.js');
 
 module.exports = {
@@ -22,10 +21,11 @@ module.exports = {
   execute: async function(message, param) {
     const { args } = param;
     const { client, mentions, member: author } = message;
-    
-    const name = args[0] ? args[0] : author.displayName;
 
-    const player = mentions.members.first() || memberMention.getMemberByName(message, message.guild.members, name) || author;
+    const displayName = args[0] ? args[0] : author.displayName;
+
+    /* I write author again, because args[0] doesnt necessarily have to be a display name */
+    const player = mentions.members.first() || memberMention.getMemberByName(message, message.guild.members, displayName) || author;
 
     if (player.user.bot) return messenger.sendBotTagError(message, player);
 
@@ -37,8 +37,8 @@ module.exports = {
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
     const { exp, level, ranking, flair } = score;
 
-    const expToLevelUp = playerManager.getExp(level + 1) - exp - 1;
-    const rank = playerManager.getPlayerRank(message, player.user, 'exp');
+    const expToLevelUp = rankManager.getExp(level + 1) - exp - 1;
+    const rank = rankManager.getPlayerRank(message, player.user, 'exp');
 
     return messenger.sendMessage(message, {
       title: `${player.displayName} | ${title}`,

@@ -17,7 +17,7 @@ module.exports = {
    * @return {Promise<Discord.Message>}
    */
   execute: async function(message, param) {
-    const name = param.args[0];
+    const name = param.args.join(' '); 
     const flair = emoji.getEmoji(name, message.client);
 
     if (!flair) return messenger.sendArgumentError(message, this, 'This emoji is not supported by the server');

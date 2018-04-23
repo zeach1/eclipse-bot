@@ -35,4 +35,14 @@ module.exports = {
       return a > b ? 1 : a < b ? -1 : 0;
     });
   },
+  
+  inOrderLength: function(array, isGuildMember) {
+    return array.sort((a, b) => {
+      if (isGuildMember) { a = a.displayName; b = b.displayName; }
+      
+      a = a.length;
+      b = b.length;
+      return a > b ? 1 : a < b ? -1 : 0;
+    });
+  },
 };
