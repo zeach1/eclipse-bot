@@ -36,10 +36,9 @@ module.exports = {
     if (!name.startsWith('<'))
       return null;
 
-    let id = name.substring(2);
-    id = id.substring(id.indexOf(':')+1, id.length-1);
-    
+    const id = name.slice(name.lastIndexOf(':') + 1, -1);
     const serveremoji = client.emojis.get(id);
+
     return serveremoji ? `<:${serveremoji.name}:${serveremoji.id}>` : null;
   },
 
@@ -60,7 +59,7 @@ module.exports = {
     });
 
     if (!customemojiName) return null;
-    
+
     const customemoji = client.emojis.find('name', customemojiName);
     return `<:${customemoji.name}:${customemoji.id}>`;
   },

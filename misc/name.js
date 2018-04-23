@@ -9,7 +9,7 @@ module.exports = {
   match: function(name, targetName) {
     name = name.toLowerCase();
     targetName = targetName.toLowerCase();
-    
+
     return name === targetName || name.startsWith(targetName) || name.includes(targetName);
   },
 
@@ -35,11 +35,14 @@ module.exports = {
       return a > b ? 1 : a < b ? -1 : 0;
     });
   },
-  
+
   inOrderLength: function(array, isGuildMember) {
     return array.sort((a, b) => {
-      if (isGuildMember) { a = a.displayName; b = b.displayName; }
-      
+      if (isGuildMember) {
+        a = a.displayName;
+        b = b.displayName;
+      }
+
       a = a.length;
       b = b.length;
       return a > b ? 1 : a < b ? -1 : 0;

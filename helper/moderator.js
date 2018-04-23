@@ -7,7 +7,7 @@ module.exports = {
    * @return {boolean} True if user sent a bad word
    */
   moderateBadWords: function(message) {
-    if (badWords.some(word => message.content.toLowerCase().replace(/[^a-z]/, '').includes(word))) {
+    if (badWords.some(word => message.content.toLowerCase().replace(/[^a-z ]/g, '').replace(/ +/g, ' ').split(' ').includes(word))) {
       message.delete()
         .then(message.channel.send(`💢 Watch your language ${message.author}`)
           .then(msg => msg.delete(3000).catch(() => {}))

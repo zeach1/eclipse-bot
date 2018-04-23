@@ -1,4 +1,3 @@
-const commandHandler = require('../helper/commandHandler.js');
 const messenger = require('../helper/messenger.js');
 
 const check = require('../misc/check.js');

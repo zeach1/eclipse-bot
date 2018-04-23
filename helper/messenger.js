@@ -3,6 +3,10 @@ const Discord = require('discord.js');
 
 const { rules, password, channelCategory, channel, group, prefix } = require('../data/config.js');
 
+const TIMEZONE = 'PST';
+const dateOptions = { year: 'numeric', month: 'short', day: 'numeric', timeZone: TIMEZONE };
+const timeOptions = { hour: 'numeric', minute: 'numeric', timeZone: TIMEZONE };
+
 module.exports = {
   /**
    * Called from help command.
@@ -12,12 +16,13 @@ module.exports = {
    * @return {Promise<Discord.Message>}
    */
   sendCommandHelp: async function(message, commandName, command) {
-    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
+    const date = message.createdAt.toLocaleString('en-US', dateOptions);
+    const time = message.createdAt.toLocaleString('en-US', timeOptions);
 
     const embed =  new Discord.RichEmbed()
       .setAuthor(`${prefix}${commandName} | Eclipse Bot Help`)
       .setColor(0xe7a237)
-      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`, message.author.avatarURL)
+      .setFooter(`Requested by ${message.member.displayName} on ${date} at ${time}`, message.author.avatarURL)
       .setDescription(outdent`
         ${outdent}
         *${command.description}*
@@ -37,13 +42,14 @@ module.exports = {
    * @return {Promise<Discord.Message>}
    */
   sendAllCommandHelp: async function(message, commands) {
-    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC', timeZoneName: 'short' };
+    const date = message.createdAt.toLocaleString('en-US', dateOptions);
+    const time = message.createdAt.toLocaleString('en-US', timeOptions);
 
     const embed =  new Discord.RichEmbed()
       .setAuthor('Eclipse Bot Help')
       .setDescription('**<mandatory argument> [optional argument]**\n\u200b')
       .setColor(0xe7a237)
-      .setFooter(`Requested by ${message.member.displayName} on ${message.createdAt.toLocaleString('en-US', options)}`, message.author.avatarURL);
+      .setFooter(`Requested by ${message.member.displayName} on ${date} at ${time}`, message.author.avatarURL);
 
     for (const commandCategory of commands) {
       if (commandCategory.type === 'leadership' && message.channel.parentID !== channelCategory.leadership)

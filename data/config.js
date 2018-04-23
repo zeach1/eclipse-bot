@@ -48,6 +48,6 @@ module.exports = {
   ],
 
   badWords: [
-    'fuck', 'shit', 'gay', 'bitch', 'tits', 'poach', 'nigger', 'cunt', 'cock', 'dick', 'retard',
+    'fuck', 'shit', 'gay', 'bitch', 'tits', 'poach', 'nigger', 'cunt', 'cock', 'dick', 'retard', 'ass',
   ],
 };

@@ -11,7 +11,7 @@ const { token } = require('./data/config.js');
 
 const commandHandler = require('./helper/commandHandler.js');
 const messenger = require('./helper/messenger.js');
-const playerManager = require('./helper/playerManager.js');
+const rankManager = require('./helper/rankManager.js');
 
 const client = new Discord.Client();
 
@@ -37,7 +37,7 @@ client.on('guildMemberAdd', member => messenger.sendWelcomeMessage(member).catch
 /* When member leaves the server */
 
 client.on('guildMemberRemove', member => {
-  playerManager.removePlayer(member, client);
+  rankManager.removePlayer(member, client);
   messenger.sendLeaveMessage(member).catch(console.error);
 });
 

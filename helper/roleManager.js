@@ -12,8 +12,8 @@ module.exports = {
   listRoles: async function(message, role) {
     let members = message.guild.roles.get(role.id).members.array();
     members = name.inOrder(members, true);
-    
-    let players = [];
+
+    const players = [];
     for (const { id, displayName } of members) {
       const { flair } = message.client.points.get(id);
       players.push(`${flair ? `${flair} ` : ''}${displayName}`);
@@ -62,4 +62,3 @@ module.exports = {
         .catch(console.error);
   },
 };
-

@@ -6,7 +6,7 @@ const check = require('../misc/check.js');
 const filterer = require('./filterer.js');
 const messenger = require('./messenger.js');
 const moderator = require('./moderator.js');
-const playerManager = require('./playerManager.js');
+const rankManager = require('./rankManager.js');
 
 module.exports = {
   /**
@@ -19,7 +19,7 @@ module.exports = {
     if (moderator.moderateBadWords(message) || filterer.filterUser(message)) return;
 
     /* Updates player points */
-    playerManager.updatePoints(message);
+    rankManager.updatePoints(message);
 
     moderator.moderateNoU(message);
 

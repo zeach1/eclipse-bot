@@ -7,7 +7,6 @@ module.exports = {
 
   /**
    * @param {Discord.Message} message The message sent
-   * @param {Object} param Contains arguments and options
    * @return {Promise<Discord.Message>}
    */
   execute: async function(message) {

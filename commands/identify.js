@@ -25,7 +25,7 @@ module.exports = {
     if (member.user.bot) return messenger.sendBotTagError(message, member);
 
     const name = args[1] ? `#${args[1].replace(/[^a-z0-9]/g, '', '').toUpperCase()}` : member.displayName;
-    
+
     const wardiscussion = message.guild.channels.get(channel.wardiscussion);
     return wardiscussion.send(outdent`
         ${outdent}
