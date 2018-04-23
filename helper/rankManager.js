@@ -1,19 +1,30 @@
+const Discord = require('discordjs');
+
 const { multiplier } = require('../data/config.js');
 
 const messenger = require('./messenger.js');
 
+const COOLDOWN = 60000;
+const rankQueue = new Discord.Collection();
+
 module.exports = {
   /**
-   * Increments player exp by 1 every message sent.
+   * Increments player exp by random (10-15 exp) every minute, if player sends a message on that minute.
    * @param {Discord.Message} message The message sent
    */
   updatePoints: function(message) {
     const { client, author } = message;
 
+    if (rankQueue.has(author.id)) return;
+
+    rankQueue.set(author.id, author);
+    setTimeout(() => rankQueue.delete(author.id), COOLDOWN);
+
     let score = message.client.points.get(author.id);
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
 
-    score.exp++;
+    const random = Math.floor(Math.random() * 6) + 10;
+    score.exp += random;
 
     const level = this.getLevel(score.exp);
     if (score.level !== level) {

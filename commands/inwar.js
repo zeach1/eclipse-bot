@@ -68,7 +68,7 @@ module.exports = {
    */
   _removeRoles: async function(message, names, inwar) {
     for (const member of message.mentions.members.array())
-      await roleManager.addRole(message, member, inwar).catch(console.error);
+      await roleManager.removeRole(message, member, inwar).catch(console.error);
 
     const players = message.guild.roles.find(role => warRole.includes(role.name)).members;
 

@@ -24,14 +24,16 @@ module.exports = {
 
     if (member.user.bot) return messenger.sendBotTagError(message, member);
 
-    const name = args[1] ? `#${args[1].replace(/#/g, '')}` : member.displayName;
-    return message.channel.send(outdent`
+    const name = args[1] ? `#${args[1].replace(/[^a-z0-9]/g, '', '').toUpperCase()}` : member.displayName;
+
+    const wardiscussion = message.guild.channels.get(channel.wardiscussion);
+    return wardiscussion.send(outdent`
         ${outdent}
         ${member}, register your account in WarMatch.
         ⚔️ Go to <#${channel.wmbot}>
         ⚔️ Type \`!wm identify ${name}\`
 
-        *Ignore when the bot asks to add your war weight*
+        *Ignore when <@185112286308990991> asks to add your war weight*
       `)
       .then(() => {
         if (options.includes('d') || options.includes('delete'))

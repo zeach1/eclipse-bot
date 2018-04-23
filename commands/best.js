@@ -1,5 +1,5 @@
 const messenger = require('../helper/messenger.js');
-const playerManager = require('../helper/playerManager.js');
+const rankManager = require('../helper/rankManager.js');
 
 module.exports = {
   name: 'best',
@@ -24,7 +24,7 @@ module.exports = {
 
     let numScores = !isNaN(args[0]) ? parseInt(args[0]) : !isNaN(args[1]) ? parseInt(args[1]) : 10;
 
-    const scores = playerManager.getRankList(message, type);
+    const scores = rankManager.getRankList(message, type);
     numScores = numScores > 30 ? 30 :
                 numScores < 0 ? 10 :
                 numScores > scores.length ? scores.length : numScores;

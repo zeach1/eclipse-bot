@@ -22,7 +22,7 @@ module.exports = {
       case 'quote':     return message.channel.send('`He can\'t code ****`');
       case 'summon':    return this._summonPeril(message, !isNaN(args[1]) ? parseInt(args[1]) : 1);
       case 'reference': return this._referencePeril(message);
-      default:          return messenger.sendArgumentError(message, this, 'This argument does not exist');
+      default:          return messenger.sendArgumentError(message, this);
     }
   },
 
@@ -40,11 +40,11 @@ module.exports = {
     if (message.author.id != user.prototype)
       return message.channel.send('Nah you can\'t do this fam.');
 
-    message.channel.send('Can I code **** bro? <:think:426636057082331136>');
+    message.channel.send('Can I code `****` bro? <:think:426636057082331136>');
 
     setTimeout(() => {
-      return this.summonPeril(message, num - 1);
-    }, 1000);
+      return this._summonPeril(message, num - 1);
+    }, 2000);
   },
 
   /**
@@ -59,7 +59,7 @@ module.exports = {
       return messenger.send(message, {
         title: peril.displayName,
         avatar: peril.user.avatarURL,
-        description: 'Proto can\'t code ****',
+        description: 'Proto can\'t code `****`',
         footer: 'Today at 1:12 PM',
         color: 0xcccccc,
       });

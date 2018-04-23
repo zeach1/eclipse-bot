@@ -36,7 +36,9 @@ module.exports = {
     if (!name.startsWith('<'))
       return null;
 
-    const serveremoji = client.emojis.get(name.substring(2, name.length - 2));
+    const id = name.slice(name.lastIndexOf(':') + 1, -1);
+    const serveremoji = client.emojis.get(id);
+
     return serveremoji ? `<:${serveremoji.name}:${serveremoji.id}>` : null;
   },
 
@@ -47,16 +49,18 @@ module.exports = {
    * @return {string}
    */
   _getCustomEmoji: function(name, client) {
-    const emojis = nameFunctions.inOrder(client.emojis.array);
+    const emojiNames = nameFunctions.inOrderLength(client.emojis.map(emoji => emoji.name));
 
-    const nameTrimmed = name.replace(/ /g, '');
-    const customemoji = emojis.find(emoji => {
-      const emoji1 = emoji.name.replace(/[-_]/g, ' ');
-      const emoji2 = emoji1.replace(/ /g, '');
+    name = name.replace(/[^a-z0-9]/g, '');
+    const customemojiName = emojiNames.find(emojiName => {
+      emojiName = emojiName.replace(/[^a-zA-Z0-9]/g, '');
 
-      return nameFunctions.match(emoji.name, name) || nameFunctions.match(emoji2, nameTrimmed) || nameFunctions.match(emoji1, name);
+      return nameFunctions.match(emojiName, name);
     });
 
-    return customemoji ? `<:${customemoji.name}:${customemoji.id}>` : null;
+    if (!customemojiName) return null;
+
+    const customemoji = client.emojis.find('name', customemojiName);
+    return `<:${customemoji.name}:${customemoji.id}>`;
   },
 };

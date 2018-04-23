@@ -1,14 +1,14 @@
 const fs = require('fs');
 
 const messenger = require('../helper/messenger.js');
-const playerManager = require('../helper/playerManager.js');
+const rankManager = require('../helper/rankManager.js');
 
 const emoji = require('../misc/emoji.js');
 
 module.exports = {
   name: 'dev',
   type: 'developer',
-  usage: '<load | save | set <user> <exp> [ranking] [flair]',
+  usage: '<load | save | set <user> <exp> [ranking] [flair]>',
   description: 'Developer commands, used for maintenance and testing',
 
   args: 1,
@@ -38,7 +38,7 @@ module.exports = {
     const players = JSON.parse(fs.readFileSync(path, 'utf8'));
 
     for (const { id, exp, ranking, flair } of players) {
-      playerManager.setPlayer(message, { id: id }, {
+      rankManager.setPlayer(message, { id: id }, {
         exp: exp,
         ranking: ranking,
         flair: flair,
@@ -89,7 +89,7 @@ module.exports = {
     const player = message.mentions.users.first();
     const { points } = message.client;
 
-    playerManager.setPlayer(message, player, {
+    rankManager.setPlayer(message, player, {
       exp: args[1],
       ranking: args[2],
       flair: emoji.getEmoji(args[3], message.client),
