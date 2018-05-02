@@ -119,12 +119,12 @@ class Messenger {
     });
   }
 
-  static sendArgumentError(message, command, warning) {
+  static sendArgumentError(message, command, warning, commandName) {
     Messenger.sendError(message, {
       title: '❌ Argument Error',
       color: 0xf06c00,
       message: warning ? warning : 'This argument does not exist',
-      submessage: `Proper usage is ${prefix}${command.name} ${command.usage ? command.usage : ''}`,
+      submessage: `Proper usage is ${prefix}${commandName || command.name} ${command.usage ? command.usage : ''}`,
     });
   }
 

@@ -48,10 +48,10 @@ function getCommand(message) {
   const commandName = args.shift();
   const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-  return { command: command, args: args, options: options };
+  return { commandName: commandName, command: command, args: args, options: options };
 }
 
-function checkCommand(message, command, args) {
+function checkCommand(message, commandName, command, args) {
   if (!command) {
     Messenger.sendCommandDoesNotExistError(message);
     return false;
@@ -63,12 +63,12 @@ function checkCommand(message, command, args) {
   }
 
   if (command.args && !Check.verifyArgument(args, command)) {
-    Messenger.sendArgumentError(message, command, `You must provide ${command.args === 1 ? 'an argument' : `${command.args} arguments`}`);
+    Messenger.sendArgumentError(message, command, `You must provide ${command.args === 1 ? 'an argument' : `${command.args} arguments`}`, commandName);
     return false;
   }
 
   if (command.tag && !Check.verifyTag(message.mentions.members.size, command)) {
-    Messenger.sendArgumentError(message, command, `You need to tag ${command.tag > 1 ? `${command.tag}  members` : 'a member'}`);
+    Messenger.sendArgumentError(message, command, `You need to tag ${command.tag > 1 ? `${command.tag}  members` : 'a member'}`, commandName);
     return false;
   }
 
@@ -91,8 +91,8 @@ class HandleMessage {
 
     if (!isCommand(message)) return;
 
-    const { command, args, options } = getCommand(message);
-    if (!checkCommand(message, command, args)) return;
+    const { commandName, command, args, options } = getCommand(message);
+    if (!checkCommand(message, commandName, command, args)) return;
 
     message.args = args;
     message.options = options;
