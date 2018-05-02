@@ -15,8 +15,15 @@ function test() {
 }
 
 function load(message, path) {
-  const players = JSON.parse(fs.readFileSync(path, 'utf8'));
+  let file;
+  try {
+    file = fs.readFileSync(path, 'utf8');
+  } catch (e) {
+    message.channel.send('Backup file not found!').catch(console.error);
+    return;
+  }
 
+  const players = JSON.parse(file);
   for (const { id, exp, ranking, flair } of players) {
     Rank.setPlayer(message, { id: id }, {
       exp: exp,
@@ -44,11 +51,11 @@ function save(message, path) {
         flair: flair,
       });
     }
-
-    fs.writeFile(path, JSON.stringify(players), () => {
-      channel.send('Points backup saved.').catch(console.error);
-    });
   }
+
+  fs.writeFile(path, JSON.stringify(players), () => {
+    channel.send('Points backup saved.').catch(console.error);
+  });
 }
 
 function set(message, args) {

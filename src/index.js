@@ -39,7 +39,7 @@ client.on('message', message => {
     HandleMessage.handle(message);
   } catch (e) {
     console.error(e);
-    Messenger.sendDeveloperError();
+    Messenger.sendDeveloperError(message);
   }
 });
 

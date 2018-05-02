@@ -43,7 +43,7 @@ class Util {
       timeZoneName: options.timeZoneName,
     } : {};
 
-    if (options.timeZone) {
+    if (options && options.timeZone) {
       dateOptions.timeZone = options.timeZone;
       timeOptions.timeZone = options.timeZone;
     }

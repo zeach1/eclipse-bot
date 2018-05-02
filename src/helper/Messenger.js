@@ -147,8 +147,9 @@ class Messenger {
 
   static sendDeveloperError(message) {
     Messenger.sendError(message, {
-      message: '😅 Oops',
-      submessage: 'Something went wrong\nSend an issues through the [GitHub issues page](https://github.com/Luis729/reddit-eclipse-bot)',
+      title: '😅 Oops',
+      message: 'Something went wrong',
+      submessage: 'Send an issues through the our [issues page](https://github.com/Luis729/reddit-eclipse-bot)',
     });
   }
 
