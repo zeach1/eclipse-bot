@@ -59,7 +59,7 @@ class Messenger {
         embed.addField(title, description);
       }
     }
-    embed.addField('\n\u200bHave a request or found an issue?', '*Create one in our [GitHub issues page](https://github.com/Luis729/eclipse-bot-issues)*');
+    embed.addField('\n\u200bHave a request or found an issue?', '*Create one in our [GitHub issues page](https://github.com/Luis729/reddit-eclipse-bot)*');
 
     message.channel.send(embed).catch(console.error);
   }
@@ -148,7 +148,7 @@ class Messenger {
   static sendDeveloperError(message) {
     Messenger.sendError(message, {
       message: '😅 Oops',
-      submessage: 'Something went wrong\nSend an issues through the [GitHub issues page](https://github.com/Luis729/eclipse-bot-issues)',
+      submessage: 'Something went wrong\nSend an issues through the [GitHub issues page](https://github.com/Luis729/reddit-eclipse-bot)',
     });
   }
 
