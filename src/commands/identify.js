@@ -1,6 +1,6 @@
 'use strict';
 
-const { channel } = require('../data/config.js');
+const { channel } = require('../config/config.js');
 const outdent = require('outdent');
 
 class Command {

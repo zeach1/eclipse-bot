@@ -1,7 +1,7 @@
 'use strict';
 
 const Discord = require('discord.js');
-const { multiplier } = require('../data/config.js');
+const { multiplier } = require('../config/config.js');
 const Messenger = require('./Messenger.js');
 
 const COOLDOWN = 60000;

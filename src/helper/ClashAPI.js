@@ -1,6 +1,6 @@
 'use strict';
 
-const { api_token, clanTag } = require('../data/config.js');
+const { api_token, clanTag } = require('../config/config.js');
 const clash = require('clash-of-clans-api');
 
 const client = clash({ token: api_token });

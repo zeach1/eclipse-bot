@@ -1,6 +1,6 @@
 'use strict';
 
-const { clanName, subreddit } = require('../data/config.js');
+const { clanName, subreddit } = require('../config/config.js');
 const Messenger = require('../helper/Messenger.js');
 
 class Command {

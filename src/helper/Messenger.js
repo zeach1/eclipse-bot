@@ -1,6 +1,6 @@
 'use strict';
 
-const { categoryChannel, channel, role, rules, password, prefix } = require('../data/config.js');
+const { categoryChannel, channel, role, rules, password, prefix } = require('../config/config.js');
 const Discord = require('discord.js');
 const outdent = require('outdent');
 const Util = require('./Util.js');

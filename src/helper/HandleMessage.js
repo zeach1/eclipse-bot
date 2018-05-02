@@ -2,8 +2,8 @@
 
 const Check = require('./Check.js');
 const Messenger = require('./Messenger.js');
-const { prefix } = require('../data/config.js');
-const { profanity, slang } = require('../data/words.js');
+const { prefix } = require('../config/config.js');
+const { profanity, slang } = require('../config/words.js');
 const Rank = require('./Rank.js');
 const Util = require('./Util.js');
 

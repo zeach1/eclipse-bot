@@ -1,7 +1,7 @@
 'use strict';
 
 const Messenger = require('../helper/Messenger.js');
-const { user } = require('../data/config.js');
+const { user } = require('../config/config.js');
 
 function summon(message, num) {
   if (num <= 0) return;

@@ -2,7 +2,7 @@
 
 require('./misc/ping.js');
 
-const { clanName, token } = require('./data/config.js');
+const { clanName, token } = require('./config/config.js');
 const Discord = require('discord.js');
 const Enmap = require('enmap');
 const EnmapLevel = require('enmap-level');
