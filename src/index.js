@@ -1,8 +1,14 @@
 'use strict';
 
-require('./misc/ping.js');
+const devMode = false;
 
-const { clanName, token } = require('./config/config.js');
+if (devMode) {
+  require('dotenv').config();
+} else {
+  require('./misc/ping.js');
+}
+
+const { clanName, token, user } = require('./config/config.js');
 const Discord = require('discord.js');
 const Enmap = require('enmap');
 const EnmapLevel = require('enmap-level');
@@ -23,6 +29,7 @@ for (const file of fs.readdirSync('./src/commands')) {
 
 client.on('ready', () => {
   console.log('Connected.');
+
   unmuteEveryone();
   client.user.setActivity('the Eclipse', { type: 'WATCHING' });
 });
@@ -35,6 +42,8 @@ client.on('guildMemberRemove', member => {
 });
 
 client.on('message', message => {
+  if (devMode && message.author.id !== user.paul) return;
+
   try {
     HandleMessage.handle(message);
   } catch (e) {

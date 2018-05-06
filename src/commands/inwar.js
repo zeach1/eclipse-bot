@@ -18,10 +18,6 @@ const mini = [
     mini: ['Gee Gee', 'White Beard'],
   },
   {
-    main: 'Luigi',
-    mini: ['Zero'],
-  },
-  {
     main: 'rickgrimes',
     mini: ['carlgrimes'],
   },
@@ -82,8 +78,15 @@ async function refresh(message) {
 
   const current = Member.getMembersByRole(message, inwar);
   let lineup = await ClashAPI.getLineup().catch(console.error);
+
   for (let i = 0; i < lineup.length; i++) {
-    lineup[i] = Member.findMemberByName(warElegible, lineup[i].name) || matchMiniAccounts(warElegible, lineup[i].name);
+    const member = Member.findMemberByName(warElegible, lineup[i].name) || matchMiniAccounts(warElegible, lineup[i].name);
+    if (lineup.includes(member)) {
+      lineup.splice(i, 1);
+      i--;
+    } else {
+      lineup[i] = member;
+    }
   }
   lineup = Util.sort(lineup.filter(m => m), true);
 
@@ -152,7 +155,7 @@ class Command {
 
     this.args = 1;
     this.description = 'Manage `in war` role for members in war';
-    this.type = 'developer';
+    this.type = 'leadership';
     this.usage = '<list | add <members> | remove <members> | clear>';
   }
 

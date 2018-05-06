@@ -1,9 +1,9 @@
 module.exports = {
   slang: [
-    'stupid', 'frick', 'crap', 'succ',
+    'stupid', 'frick', 'succ',
   ],
 
   profanity: [
-    'fuck', 'shit', 'gay', 'bitch', 'tits', 'poach', 'nigger', 'cunt', 'cock', 'dick', 'retard', 'ass',
+    'fuck', 'fucking', 'fucked', 'fucker', 'shit', 'shitty', 'gay', 'bitch', 'tits', 'titty', 'poach', 'nigger', 'cunt', 'cock', 'dick', 'retard', 'ass',
   ],
 };

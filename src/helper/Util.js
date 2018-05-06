@@ -10,7 +10,8 @@ class Util {
       targetString = targetString.replace(/[^a-z0-9]/g, '');
     }
 
-    return string === targetString || string.startsWith(targetString) || string.includes(targetString) || targetString.includes(string);
+    // targetString should be longer than string, if they're not the same
+    return string === targetString || targetString.startsWith(string) || targetString.includes(string);
   }
 
   static sort(array, guildMemberCollection, sortByLength) {

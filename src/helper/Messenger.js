@@ -37,11 +37,12 @@ class Messenger {
       .setColor(0xe7a237)
       .setFooter(`Requested by ${message.member.displayName} on ${date} at ${time}`);
 
+    if (message.channel.parentID !== categoryChannel.leadership) {
+      commands.pop();
+    }
+
     for (let i = 0; i < commands.length; i++) {
       const commandCategory = commands[i];
-      if (commandCategory.type === 'leadership' && message.channel.parentID !== categoryChannel.leadership) {
-        continue;
-      }
 
       let categoryHeader = [];
       switch (commandCategory.type) {
@@ -149,7 +150,7 @@ class Messenger {
     Messenger.sendError(message, {
       title: '😅 Oops',
       message: 'Something went wrong',
-      submessage: 'Send an issues through the our [issues page](https://github.com/Luis729/reddit-eclipse-bot)',
+      submessage: 'Send an issue through the our [issues page](https://github.com/Luis729/reddit-eclipse-bot)',
     });
   }
 

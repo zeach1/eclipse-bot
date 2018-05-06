@@ -7,7 +7,5 @@ shrinkwrap.yaml
 
 # folders
 .config
+data
 node_modules
-
-# collective files
-data/players/*

@@ -8,6 +8,8 @@ const COOLDOWN = 60000;
 const rankQueue = new Discord.Collection();
 
 function updateRanking(message, player, score, amount) {
+  amount = parseInt(amount);
+
   score.ranking += amount;
   score.ranking = score.ranking > 9999 ? 9999 : score.ranking < 1 ? 1 : score.ranking;
 
@@ -42,6 +44,8 @@ class Rank {
 
     let score = message.client.points.get(author.id);
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
+
+    score.exp = parseInt(score.exp);
 
     const random = Math.floor(Math.random() * 6) + 10;
     score.exp += random;
@@ -95,14 +99,20 @@ class Rank {
   }
 
   static getRankList(message, type) {
-    const ids = message.client.points.keyArray();
+    const scores = [];
 
-    const scores = message.client.points.array();
+    for (const id of message.client.points.keyArray()) {
+      const member = message.guild.members.get(id);
+      const score = message.client.points.get(id);
 
-    for (let i = 0; i < scores.length; i++) {
-      const member = message.guild.members.get(ids[i]);
-      scores[i].name = member.displayName;
-      scores[i].id = member.id;
+      scores.push({
+        exp: score.exp,
+        level: score.level,
+        ranking: score.ranking,
+        flair: score.flair,
+        name: member.displayName,
+        id: member.id,
+      });
     }
 
     return scores.sort((a, b) =>
@@ -118,12 +128,12 @@ class Rank {
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
 
     if (data.exp) {
-      score.exp = data.exp;
+      score.exp = parseInt(data.exp) || 0;
       score.level = this.getLevel(data.exp);
     }
 
     if (data.ranking) {
-      score.ranking = data.ranking > 9999 ? 9999 : data.ranking < 1 ? 1 : data.ranking;
+      score.ranking = data.ranking > 9999 ? 9999 : data.ranking < 1 ? 1 : parseInt(data.ranking) || 5000;
     }
 
     if (data.flair) {

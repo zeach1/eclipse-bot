@@ -1,6 +1,5 @@
 'use strict';
 
-const ClashAPI = require('../helper/ClashAPI.js');
 const Emoji = require('../helper/Emoji.js');
 const fs = require('fs');
 const Messenger = require('../helper/Messenger.js');
@@ -8,27 +7,41 @@ const Rank = require('../helper/Rank.js');
 
 
 const loadPath = './data/players.json';
-const savePath = './data/players-backup.json';
+const savePath = './data/players.json';
 
-function test() {
-  ClashAPI.getLineup();
+function fix(message) {
+  for (const id of message.client.points.keyArray()) {
+    let score = message.client.points.get(id);
+    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
+
+    message.client.points.set(id, {
+      exp: parseInt(score.exp) || 0,
+      level: Rank.getLevel(score.exp),
+      ranking: parseInt(score.ranking) || 5000,
+      flair: score.flair || '',
+    });
+  }
+
+  message.channel.send('Player scores fixed.').catch(console.error);
 }
 
 function load(message, path) {
-  let file;
+  let players;
   try {
-    file = fs.readFileSync(path, 'utf8');
+    const file = fs.readFileSync(path, 'utf8');
+    players = JSON.parse(file);
+    players = Array.isArray(players) ? players : [players];
   } catch (e) {
-    message.channel.send('Backup file not found!').catch(console.error);
+    message.channel.send('Player backup failed!').catch(console.error);
+    console.error(e);
     return;
   }
 
-  const players = JSON.parse(file);
   for (const { id, exp, ranking, flair } of players) {
     Rank.setPlayer(message, { id: id }, {
-      exp: exp,
-      ranking: ranking,
-      flair: flair,
+      exp: parseInt(exp) || 0,
+      ranking: parseInt(ranking) || 5000,
+      flair: flair || '',
     });
   }
 
@@ -36,21 +49,18 @@ function load(message, path) {
 }
 
 function save(message, path) {
-  const { client, guild, channel } = message;
+  const { client, channel } = message;
   const { points } = client;
   const players = [];
 
-  for (const { user } of guild.members.array()) {
-    if (points.get(user.id)) {
-      const { exp, ranking, flair } = points.get(user.id);
-
-      players.push({
-        id: user.id,
-        exp: exp,
-        ranking: ranking,
-        flair: flair,
-      });
-    }
+  for (const id of points.keyArray()) {
+    const score = points.get(id);
+    players.push({
+      id: id,
+      exp: parseInt(score.exp) || 0,
+      ranking: parseInt(score.ranking) || 5000,
+      flair: score.flair || '',
+    });
   }
 
   fs.writeFile(path, JSON.stringify(players), () => {
@@ -88,12 +98,12 @@ class Command {
     this.args = 1;
     this.description = 'Developer commands, used for maintenance and testing';
     this.type = 'developer';
-    this.usage = '<load | save | set <user> <exp> [ranking] [flair]>';
+    this.usage = '<fix | load | save | set <user> <exp> [ranking] [flair]>';
   }
 
   execute(message) {
     switch (message.args[0]) {
-      case 'test': test(message); break;
+      case 'fix': fix(message); break;
       case 'load': load(message, loadPath); break;
       case 'save': save(message, savePath); break;
       case 'set': set(message, message.args.slice(1)); break;

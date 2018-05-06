@@ -9,11 +9,11 @@ function verifyDeveloper(member) {
 }
 
 function verifyEclipse(member) {
-  return member.roles.some(r => r.name === 'Eclipse');
+  return member && member.roles.some(r => r.name === 'Eclipse');
 }
 
 function verifyFriends(member) {
-  return member.roles.some(r => r.name === 'Friends of Eclipse');
+  return member && member.roles.some(r => r.name === 'Friends of Eclipse');
 }
 
 class Check {
