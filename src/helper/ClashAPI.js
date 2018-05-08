@@ -12,7 +12,7 @@ function getCurrentWar(tag) {
 class ClashAPI {
   static async getLineup(tag) {
     const war = await getCurrentWar(tag).catch(console.error);
-    if (!war) return [];
+    if (!war || war.state === 'warEnded') return [];
 
     return war.clan.members;
   }

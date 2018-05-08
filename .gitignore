@@ -7,5 +7,5 @@ shrinkwrap.yaml
 
 # folders
 .config
-data
+data/players
 node_modules
