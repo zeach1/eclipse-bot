@@ -5,9 +5,8 @@ const fs = require('fs');
 const Messenger = require('../helper/Messenger.js');
 const Rank = require('../helper/Rank.js');
 
-
 const loadPath = './data/players.json';
-const savePath = './data/players.json';
+const savePath = './data/players-backup.json';
 
 function fix(message) {
   for (const id of message.client.points.keyArray()) {

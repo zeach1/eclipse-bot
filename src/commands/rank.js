@@ -20,7 +20,7 @@ class Command {
     const name = message.args[0] ? message.args[0] : message.member.displayName;
 
     // I write author again, because args[0] doesnt necessarily have to be a display name
-    const player = message.mentions.members.first() || Member.findMemberByName(message.guild.members, name) || message.author;
+    const player = message.mentions.members.first() || Member.findMemberByName(message, message.guild.members, name) || message.author;
 
     if (player.user.bot) {
       Messenger.sendBotTagError(message, player);

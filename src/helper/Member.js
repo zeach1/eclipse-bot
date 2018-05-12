@@ -13,15 +13,7 @@ function getRole(message, role) {
 }
 
 class Member {
-  static findMemberByName(members, name) {
-    return members.find(member => Util.match(name, member.displayName, true));
-  }
-
-  static getMembersByRole(message, role) {
-    role = getRole(message, role);
-    let members = role.members.array();
-    members = Util.sort(members, true);
-
+  static addScoreToMembers(message, members) {
     for (const member of members) {
       const score = message.client.points.get(member.id);
       if (score) {
@@ -34,26 +26,43 @@ class Member {
     return members;
   }
 
+  // should include flair on object returned
+  static findMemberByName(message, members, name) {
+    let m = members.find(member => Util.match(name, member.displayName, true));
+    if (!m) return null;
+
+    m = Member.addScoreToMembers(message, [m])[0];
+
+    return m;
+  }
+
+  // should include flair on object returned
+  static getMembersByRole(message, role) {
+    role = getRole(message, role);
+    let members = role.members.array();
+    members = Util.sort(members, true);
+    members = Member.addScoreToMembers(message, members);
+
+    return members;
+  }
+
   static listMembersWithRole(message, role) {
     if (working) return;
 
-    const members = Member.getMembersByRole(message, role);
-
-    const players = [];
-    for (const player of members) {
-      players.push(`${player.displayName}${player.flair ? player.flair : ''}`);
-    }
+    const members = Member.getMembersByRole(message, role)
+      .map(member => `${member.displayName} ${member.flair ? member.flair : ''}`);
 
     Messenger.sendMessage(message, {
       title: `📝 List of members with role: ${getRole(message, role).name}`,
       color: 0xf5f513,
-      description: players.length > 0 ? players : 'None',
+      description: members.length > 0 ? members.join('\n') : 'None',
     });
   }
 
   static async clearMembersOfRole(message, role) {
     const members = Member.getMembersByRole(message, role);
-    const removed = await Member.removeRoleFromMembers(message, members, role).catch(console.error);
+    let removed = await Member.removeRoleFromMembers(message, members, role).catch(console.error);
+    removed = removed.map(member => `${member.displayName}${member.flair ? member.flair : ''}`);
 
     Messenger.sendMessage(message, {
       title: `❎ Cleared all members from role: ${getRole(message, role).name}`,
@@ -61,6 +70,7 @@ class Member {
     });
   }
 
+  // this is not where I should check if objects have flair or not
   static async addRoleToMembers(message, members, role) {
     if (working) return null;
     working = true;
@@ -74,7 +84,7 @@ class Member {
         complete.push(member.addRole(role));
 
         if (!adding.includes(member.displayName)) {
-          adding.push(member.displayName);
+          adding.push(member);
         }
 
         if (complete.length >= 5) {
@@ -92,6 +102,7 @@ class Member {
     return adding;
   }
 
+  // this is not where I should check if objects have flair or not
   static async removeRoleFromMembers(message, members, role) {
     if (working) return null;
     working = true;
@@ -105,7 +116,7 @@ class Member {
         complete.push(member.removeRole(role));
 
         if (!removing.includes(member.displayName)) {
-          removing.push(member.displayName);
+          removing.push(member);
         }
 
         if (complete.length >= 5) {

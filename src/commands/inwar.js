@@ -7,7 +7,7 @@ const outdent = require('outdent');
 const Util = require('../helper/Util.js');
 
 const inwar = 'in war';
-const elegible = ['50v50', 'Eclipse'];
+const elegible = ['50v50', 'Eclipse', inwar];
 const mini = [
   {
     main: 'jwoelmer2',
@@ -49,38 +49,42 @@ function getWarElegible(message) {
   return warElegible;
 }
 
+// will include flair in object returned
 function getMembers(message, names) {
   const members = [];
   for (const member of message.mentions.members.array()) {
-    members.push(member);
+    members.push(Member.addScoreToMembers(message, [member])[0]);
   }
 
   const warElegible = getWarElegible(message);
-
   for (const name of names.filter(n => !n.startsWith('<'))) {
-    members.push(Member.findMemberByName(warElegible, name));
+    members.push(Member.findMemberByName(message, warElegible, name));
   }
 
   return members;
 }
 
-function matchMiniAccounts(warElegible, name) {
+function matchMiniAccounts(message, warElegible, name) {
   for (const account of mini) {
     if (account.mini.includes(name)) {
-      return Member.findMemberByName(warElegible, account.main);
+      return Member.findMemberByName(message, warElegible, account.main);
     }
   }
   return null;
 }
 
 async function refresh(message) {
+  // will have flair
   const warElegible = getWarElegible(message);
 
+  // will have flair
   const current = Member.getMembersByRole(message, inwar);
+
+  // will have flair
   let lineup = await ClashAPI.getLineup().catch(console.error);
 
   for (let i = 0; i < lineup.length; i++) {
-    const member = Member.findMemberByName(warElegible, lineup[i].name) || matchMiniAccounts(warElegible, lineup[i].name);
+    const member = Member.findMemberByName(message, warElegible, lineup[i].name) || matchMiniAccounts(message, warElegible, lineup[i].name);
     if (lineup.includes(member)) {
       lineup.splice(i, 1);
       i--;
@@ -116,20 +120,22 @@ async function refresh(message) {
     description: outdent`
       ${outdent}
       **Added**
-      ${adding.length > 0 ? adding.map(m => m.displayName).join('\n') : 'None'}
+      ${adding.length > 0 ? adding.map(m => `${m.displayName} ${m.flair ? m.flair : ''}`).join('\n') : 'None'}
 
       **Removed**
-      ${removing.length > 0 ? removing.map(m => m.displayName).join('\n') : 'None'}
+      ${removing.length > 0 ? removing.map(m => `${m.displayName} ${m.flair ? m.flair : ''}`).join('\n') : 'None'}
 
       **Current lineup**
-      ${lineup.length > 0 ? lineup.map(member => member.displayName).join('\n') : 'None'}
+      ${lineup.length > 0 ? lineup.map(m => `${m.displayName} ${m.flair ? m.flair : ''}`).join('\n') : 'None'}
     `,
   });
 }
 
 async function addRoles(message) {
+  // will have flair
   const members = getMembers(message, message.args.slice(1));
-  const added = await Member.addRoleToMembers(message, members, inwar).catch(console.error);
+  let added = await Member.addRoleToMembers(message, members, inwar).catch(console.error);
+  added = added.map(m => `${m.displayName} ${m.flair ? m.flair : ''}`);
 
   Messenger.sendMessage(message, {
     title: `✅ Added members to role: ${inwar}`,
@@ -139,8 +145,10 @@ async function addRoles(message) {
 }
 
 async function removeRoles(message) {
+  // will have flair
   const members = getMembers(message, message.args.slice(1));
-  const removed = await Member.removeRoleFromMembers(message, members, inwar).catch(console.error);
+  let removed = await Member.removeRoleFromMembers(message, members, inwar).catch(console.error);
+  removed = removed.map(m => `${m.displayName} ${m.flair ? m.flair : ''}`);
 
   Messenger.sendMessage(message, {
     title: `❎ Removed members from role: ${inwar}`,

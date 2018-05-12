@@ -11,10 +11,20 @@ class Command {
     this.args = 1;
     this.description = 'Set an emoji as your flair which will be displayed on your rank and on games. Supports server emojis plus more custom emojis (including Clash emojis!)';
     this.type = 'essentials';
-    this.usage = '<emoji>';
+    this.usage = '<emoji | clear>';
   }
 
   execute(message) {
+    if (message.args[0] === 'clear') {
+      Rank.updateFlair(message, '');
+      Messenger.sendMessage(message, {
+        title: '🎉 Flair Cleared',
+        color: 0x3ea92e,
+        description: `You are now ${message.member.displayName}`,
+      });
+      return;
+    }
+
     const name = message.args.join(' ');
     const flair = Emoji.getEmoji(name, message.client);
 

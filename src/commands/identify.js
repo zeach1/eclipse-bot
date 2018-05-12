@@ -17,9 +17,13 @@ class Command {
   execute(message) {
     const member = message.mentions.members.first();
 
-    const clashTag = `#${message.args[1].replace(/[^a-z0-9]/g, '').toUpperCase()}` || member.displayName;
+    let clashTag = member.displayName;
+    if (message.args[1]) {
+      clashTag = `#${message.args[1].replace(/[^a-z0-9]/g, '').toUpperCase()}`;
+    }
 
-    message.channel.send(outdent`
+    const wardiscussion = message.guild.channels.get(channel.war_discussion);
+    wardiscussion.send(outdent`
       ${outdent}
       ${member}, register your account in WarMatch.
       ⚔️ Go to <#${channel.wmbot}>
