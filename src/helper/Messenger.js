@@ -146,6 +146,25 @@ class Messenger {
     });
   }
 
+  static sendMaintenanceError(message, error) {
+    Messenger.sendError(message, {
+      title: '⚠️ Maintenance Needed',
+      color: 0xecd94a,
+      message: 'I need some small tweaks',
+      submessage: 'I sent a request to my developers. I will be back up soon - I promise',
+    });
+
+    const development = message.guild.channels.get(channel.development);
+    const emsg = error.message;
+    Messenger.sendError({ channel: development }, {
+      title: '⚠️ Maintenance Needed',
+      color: 0xEc7e4a,
+      message: 'Time to fix me up!',
+      // following checks if the error is a IP error or an API key error
+      submessage: `${error.reason.includes('invalidIp') ? `I need a new token for IP **${emsg.slice(emsg.indexOf('IP') + 3)}**` : 'The token we are using is invalid'}`,
+    });
+  }
+
   static sendDeveloperError(message) {
     Messenger.sendError(message, {
       title: '😅 Oops',

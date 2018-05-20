@@ -1,5 +1,6 @@
 'use strict';
 
+const Check = require('../helper/Check.js');
 const ClashAPI = require('../helper/ClashAPI.js');
 const Member = require('../helper/Member.js');
 const Messenger = require('../helper/Messenger.js');
@@ -81,7 +82,10 @@ async function refresh(message) {
   const current = Member.getMembersByRole(message, inwar);
 
   // will have flair
-  let lineup = await ClashAPI.getLineup().catch(console.error);
+  let lineup = await ClashAPI.getLineup(message).catch(console.error);
+
+  // access issues
+  if (!lineup) return;
 
   for (let i = 0; i < lineup.length; i++) {
     const member = Member.findMemberByName(message, warElegible, lineup[i].name) || matchMiniAccounts(message, warElegible, lineup[i].name);
@@ -115,7 +119,7 @@ async function refresh(message) {
   await Member.removeRoleFromMembers(message, removing, inwar).catch(console.error);
 
   Messenger.sendMessage(message, {
-    title: `✅ Lineup refreshed from in-game`,
+    title: '✅ Lineup refreshed from in-game',
     color: 0x157676,
     description: outdent`
       ${outdent}
@@ -162,12 +166,20 @@ class Command {
     this.name = 'inwar';
 
     this.args = 1;
-    this.description = 'Manage `in war` role for members in war';
-    this.type = 'leadership';
+    this.description = 'See/manage who is in war';
+    this.type = 'essentials';
     this.usage = '<list | add <members> | remove <members> | clear>';
   }
 
   execute(message) {
+    switch (message.args[0]) {
+      case 'add': case 'remove': case 'clear':
+        if (!Check.hasPermissions(message.member, this)) {
+          Messenger.sendPermissionError(message);
+          return;
+        }
+    }
+
     switch (message.args[0]) {
       case 'list': Member.listMembersWithRole(message, inwar); break;
       case 'add': addRoles(message).catch(console.error); break;
