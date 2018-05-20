@@ -174,7 +174,7 @@ class Command {
   execute(message) {
     switch (message.args[0]) {
       case 'add': case 'remove': case 'clear':
-        if (!Check.hasPermissions(message.member, this)) {
+        if (!Check.hasPermissions(message.member, { type: 'leadership' })) {
           Messenger.sendPermissionError(message);
           return;
         }
