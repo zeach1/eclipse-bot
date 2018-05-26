@@ -25,7 +25,7 @@ class ClashAPI {
     }
 
     // no war happening
-    if (war.state === 'warEnded') return [];
+    if (war.state === 'warEnded' || war.state === 'notInWar') return [];
 
     return war.clan.members;
   }
