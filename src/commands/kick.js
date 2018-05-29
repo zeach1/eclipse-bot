@@ -15,7 +15,8 @@ class Command {
 
   execute(message) {
     const member = message.mentions.members.first();
-    const reason = message.args.slice(1).join(' ');
+    const reason = message.content.trim().split(/ +/).slice(2).join(' '); // eslint-disable-line
+
 
     if (member.user.bot) {
       Messenger.sendBotTagError(message, member);
