@@ -5,6 +5,7 @@ const Member = require('../helper/Member.js');
 const Messenger = require('../helper/Messenger.js');
 const Rank = require('../helper/Rank.js');
 const outdent = require('outdent');
+const Util = require('../helper/Util.js');
 
 class Command {
   constructor() {
@@ -17,10 +18,14 @@ class Command {
   }
 
   execute(message) {
-    const name = message.args[0] ? message.args[0] : message.member.displayName;
+    const name = message.args[0];
 
-    // I write author again, because args[0] doesnt necessarily have to be a display name
-    const player = message.mentions.members.first() || Member.findMemberByName(message, message.guild.members, name) || message.author;
+    let player;
+    if (message.args[0]) {
+      player = message.mentions.members.first() || Member.findMemberByName(message, Util.sort(message.guild.members, true), name) || message.member;
+    } else {
+      player = message.member;
+    }
 
     if (player.user.bot) {
       Messenger.sendBotTagError(message, player);

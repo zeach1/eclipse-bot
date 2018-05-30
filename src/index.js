@@ -1,6 +1,6 @@
 'use strict';
 
-const devMode = true;
+const devMode = false;
 
 if (devMode) {
   require('dotenv').config();
