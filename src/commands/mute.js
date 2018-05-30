@@ -19,10 +19,30 @@ async function mute(message, member, duration) {
     return;
   }
 
+  let time = '';
+  if (duration === 1440) {
+    time += '1 day';
+  } else {
+    if (duration > 60) {
+      const hours = Math.floor(duration / 60);
+      time += `${hours} ${duration === 1 ? 'hour' : 'hours'}`;
+    }
+
+    const minutes = Math.floor(duration % 60);
+    if (minutes !== 0) {
+      time += `${duration > 60 ? ' ' : ''}${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+    }
+
+    const seconds = Math.floor((duration % 1) * 60);
+    if (seconds !== 0) {
+      time += `${duration > 60 || minutes !== 0 ? ' ' : ''}${seconds} ${seconds === 1 ? 'second' : 'seconds'}`;
+    }
+  }
+
   Messenger.sendMessage(message, {
     title: '🔇 Success',
     color: 0x9e3612,
-    description: `**${added[0]}** is muted for ${duration} ${duration === 1 ? 'minute' : 'minutes'}`,
+    description: `**${added[0]}** is muted for ${time}`,
   });
 
   setTimeout(async () => {
@@ -70,7 +90,10 @@ class Command {
     const member = message.mentions.members.first();
 
     // duration unit in minutes
-    const duration = parseFloat(message.args[1]) || DURATION;
+    let duration = parseFloat(message.args[1]) || DURATION;
+
+    // max mute is 1 day = 1440 minutes
+    if (duration > 1440) duration = 1440;
 
     switch (commandName) {
       case 'mute': mute(message, member, duration); break;

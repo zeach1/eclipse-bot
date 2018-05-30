@@ -28,19 +28,21 @@ class Messenger {
     message.channel.send(embed).catch(console.error);
   }
 
-  static sendAllCommandHelp(message, commands) {
+  static async sendAllCommandHelp(message, commands) {
     const { date, time } = Util.getDateTimeLocale(message.createdAt, 'en-US', options);
 
     const embed = new Discord.RichEmbed()
       .setAuthor('Eclipse Bot Help', message.client.user.avatarURL)
-      .setDescription(`*${prefix}commandName <mandatory> [optional]*\n\u200b`)
-      .setColor(0xe7a237)
-      .setFooter(`Requested by ${message.member.displayName} on ${date} at ${time}`);
+      .setDescription('Have a request or found an issue?', '*Create one in our [GitHub issues page](https://github.com/Luis729/reddit-eclipse-bot)*')
+      .addField('Command Format', `${prefix}commandName <mandatory> [optional]`)
+      .setColor(0xe7a237);
 
+    // commands -> [essentials, misc, leadership]
     if (message.channel.parentID !== categoryChannel.leadership) {
       commands.pop();
     }
 
+    const embeds = [];
     for (let i = 0; i < commands.length; i++) {
       const commandCategory = commands[i];
 
@@ -51,18 +53,31 @@ class Messenger {
         case 'misc': categoryHeader = ['😂 Miscellaneous', '*Random stuff for our members*']; break;
       }
 
-      embed.addField(categoryHeader[0], categoryHeader[1]);
+      const commandEmbed = new Discord.RichEmbed()
+        .setAuthor(categoryHeader[0])
+        .setDescription(categoryHeader[1])
+        .setColor(0xe7a237);
+
+      if (i === commands.length - 1) {
+        commandEmbed.setFooter(`Requested by ${message.member.displayName} on ${date} at ${time}`);
+      }
+
       for (let j = 0; j < commandCategory.commands.length; j++) {
         const command = commandCategory.commands[j];
         const title = `${prefix}${command.name} ${command.usage ? command.usage : ''}`;
         const description = i === commands.length - 1 && j === commandCategory.commands.length - 1 ?
           `${command.description}\n\u200b` : command.description;
-        embed.addField(title, description);
-      }
-    }
-    embed.addField('\n\u200bHave a request or found an issue?', '*Create one in our [GitHub issues page](https://github.com/Luis729/reddit-eclipse-bot)*');
 
-    message.channel.send(embed).catch(console.error);
+        commandEmbed.addField(title, description);
+      }
+
+      embeds.push(commandEmbed);
+    }
+
+    await message.channel.send(embed).catch(console.error);
+    for (const commandEmbed of embeds) {
+      await message.channel.send(commandEmbed).catch(console.error); // eslint-disable-line
+    }
   }
 
   static sendImage(message, data, delay) {

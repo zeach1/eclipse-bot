@@ -33,7 +33,7 @@ module.exports = {
     ranch: process.env.RANCH,
   },
 
-  prefix: '+',
+  prefix: '~',
   multiplier: 0.24,
   token: process.env.TOKEN,
   api_token: process.env.CLASHAPI_TOKEN,
