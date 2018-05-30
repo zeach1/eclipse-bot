@@ -33,7 +33,7 @@ class Messenger {
 
     const embed = new Discord.RichEmbed()
       .setAuthor('Eclipse Bot Help', message.client.user.avatarURL)
-      .setDescription('Have a request or found an issue? Create one in our [GitHub issues page](https://github.com/Luis729/reddit-eclipse-bot')
+      .setDescription('Have a request or found an issue? Create one in our [GitHub issues page](https://github.com/Luis729/reddit-eclipse-bot)')
       .addField('Command Format', `${prefix}commandName <mandatory> [optional]`)
       .setColor(0xe7a237);
 
