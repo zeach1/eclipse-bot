@@ -7,7 +7,7 @@ class Command {
     this.name = 'kick';
 
     this.args = 1;
-    this.description = 'Kicks a person from this server';
+    this.description = 'Kicks a person from the server';
     this.tag = 1;
     this.type = 'leadership';
     this.usage = '<user> [reason]';

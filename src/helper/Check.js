@@ -1,11 +1,13 @@
 'use strict';
 
+const { user } = require('../config/config.js');
+
 function verifyLeadership(member) {
   return verifyEclipse(member) && member.roles.some(r => r.name === 'Leadership');
 }
 
 function verifyDeveloper(member) {
-  return verifyEclipse(member) && member.roles.some(r => r.name === 'Bot Developer');
+  return member.id === user.paul;
 }
 
 function verifyEclipse(member) {

@@ -19,6 +19,7 @@ async function mute(message, member, duration) {
     return;
   }
 
+  // max time is 1 day
   let time = '';
   if (duration === 1440) {
     time += '1 day';
@@ -78,7 +79,7 @@ class Command {
     this.description = 'Mutes/unmutes a member from speaking in clan channels';
     this.tag = 1;
     this.type = 'leadership';
-    this.usage = '<member> [duration in minutes, if muting]';
+    this.usage = '<member> [duration in minutes]';
   }
 
   execute(message) {

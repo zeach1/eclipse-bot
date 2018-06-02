@@ -8,24 +8,21 @@ class Command {
     this.name = 'best';
 
     this.aliases = ['top'];
-    this.args = 1;
     this.description = 'Gets top players by experience or ranking';
     this.type = 'essentials';
     this.usage = '<exp | ranking> [number]';
   }
 
   execute(message) {
-    const type = message.args[0];
-
-    if (type !== 'exp' && type !== 'ranking') {
-      Messenger.sendArgumentError(message, this);
-      return;
+    let type = message.args[0];
+    if (!type || (type !== 'exp' && type !== 'ranking')) {
+      type = 'exp';
     }
 
     let numScores = parseInt(message.args[1]) || 10;
     const scores = Rank.getRankList(message, type);
 
-    numScores = numScores > 30 ? 30 :
+    numScores = numScores > 50 ? 50 :
       numScores < 0 ? 10 :
         numScores > scores.length ? scores.length : numScores;
 

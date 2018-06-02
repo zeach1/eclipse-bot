@@ -28,6 +28,8 @@ class Member {
 
   // should include flair on object returned
   static findMemberByName(message, members, name) {
+    // search algorithm: put member names from shortest to longest
+    members = Util.sort(members, true, true);
     let m = members.find(member => Util.match(name, member.displayName, true));
     if (!m) return null;
 

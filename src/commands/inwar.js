@@ -166,9 +166,9 @@ class Command {
     this.name = 'inwar';
 
     this.args = 1;
-    this.description = 'See/manage who is in war';
+    this.description = 'Manage members in war';
     this.type = 'essentials';
-    this.usage = '<list | add <members> | remove <members> | clear>';
+    this.usage = '<list | refresh | add/remove <members> | clear>';
   }
 
   execute(message) {

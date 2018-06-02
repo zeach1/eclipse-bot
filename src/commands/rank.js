@@ -5,7 +5,6 @@ const Member = require('../helper/Member.js');
 const Messenger = require('../helper/Messenger.js');
 const Rank = require('../helper/Rank.js');
 const outdent = require('outdent');
-const Util = require('../helper/Util.js');
 
 class Command {
   constructor() {
@@ -22,7 +21,7 @@ class Command {
 
     let player;
     if (message.args[0]) {
-      player = message.mentions.members.first() || Member.findMemberByName(message, Util.sort(message.guild.members, true), name) || message.member;
+      player = message.mentions.members.first() || Member.findMemberByName(message, message.guild.members, name) || message.member;
     } else {
       player = message.member;
     }

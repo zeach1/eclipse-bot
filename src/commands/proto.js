@@ -3,16 +3,20 @@
 const Messenger = require('../helper/Messenger.js');
 const { user } = require('../config/config.js');
 
-function summon(message, num) {
-  if (num <= 0) return;
+let done = true;
 
-  console.log(num);
+function summon(message, num) {
+  if (num <= 0) {
+    done = true;
+    return;
+  }
+
   if (message.author.id !== user.prototype) {
     message.channel.send('Nah you can\'t do this fam.').catch(console.error);
     return;
   }
 
-  message.channel.send('Can I code `****` bro? <:think:426636057082331136>').catch(console.error);
+  message.channel.send(`<@${user.peril}>: Can I code \`****\` bro? <:think:426636057082331136>`).catch(console.error);
 
   setTimeout(() => summon(message, num - 1), 2000);
 }
@@ -47,9 +51,11 @@ class Command {
     switch (message.args[0]) {
       case 'quote': message.channel.send('`He can\'t code ****`').catch(console.error); break;
       case 'summon': {
+        if (!done) return;
+
+        done = false;
         let num = parseInt(message.args[1]);
         num = !num ? 1 : num > 10 ? 10 : num;
-
         summon(message, num);
         break;
       }
