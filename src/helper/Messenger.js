@@ -1,6 +1,6 @@
 'use strict';
 
-const { categoryChannel, channel, role, rules, password, prefix } = require('../config/config.js');
+const { categoryChannel, channel, clanName, role, rules, password, prefix } = require('../config/config.js');
 const Discord = require('discord.js');
 const outdent = require('outdent');
 const Util = require('./Util.js');
@@ -97,14 +97,22 @@ class Messenger {
     Messenger.sendMessage(message, {
       description: outdent`
         ${outdent}
-        Welcome **${member.displayName}** to the ${member.guild.name} Discord server!
+        Welcome **${member.displayName}** to the ${clanName} Discord server!
 
-        1. If you want to apply, make sure to read the [clan rules](${rules}), and fill out the form in the end. Apply in-game with the [RCS password](${password}).
+        Change your Discord nickname to your Clash of Clans IGN.
 
-        2. Tag <@&${role.leadership}> to get your roles.
+        Tag <@&${role.leadership}> to get your roles.
+
+        If you are applying:
+          1. Apply in-game with the [RCS password](${password}).
+          2. Read the [clan rules](${rules}) and fill out the form in the end.
       `,
       color: 0x43b581,
     });
+
+    message.channel.send(`<@${member.id}>`)
+      .then(msg => msg.delete(1000).catch(() => {}))
+      .catch(console.error);
   }
 
   static sendLeaveMessage(member) {
