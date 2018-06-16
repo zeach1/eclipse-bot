@@ -1,5 +1,3 @@
-'use strict';
-
 const Check = require('./Check.js');
 const Messenger = require('./Messenger.js');
 const { prefix } = require('../config/config.js');

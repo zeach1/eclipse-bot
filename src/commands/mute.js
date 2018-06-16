@@ -1,5 +1,3 @@
-'use strict';
-
 const Member = require('../helper/Member.js');
 const Messenger = require('../helper/Messenger.js');
 const { prefix } = require('../config/config.js');

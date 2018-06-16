@@ -1,5 +1,3 @@
-'use strict';
-
 const twemoji = require('twemoji');
 const Util = require('./Util.js');
 

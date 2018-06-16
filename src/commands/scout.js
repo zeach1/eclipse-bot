@@ -1,5 +1,3 @@
-'use strict';
-
 const { categoryChannel } = require('../config/config.js');
 const Messenger = require('../helper/Messenger.js');
 const outdent = require('outdent');

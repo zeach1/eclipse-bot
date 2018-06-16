@@ -1,5 +1,3 @@
-'use strict';
-
 const { channel } = require('../config/config.js');
 const outdent = require('outdent');
 

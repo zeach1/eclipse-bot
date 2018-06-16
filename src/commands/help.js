@@ -1,5 +1,3 @@
-'use strict';
-
 const Check = require('../helper/Check.js');
 const Messenger = require('../helper/Messenger.js');
 

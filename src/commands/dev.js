@@ -1,5 +1,3 @@
-'use strict';
-
 const Emoji = require('../helper/Emoji.js');
 const fs = require('fs');
 const Messenger = require('../helper/Messenger.js');
@@ -21,7 +19,11 @@ function fix(message) {
     });
   }
 
-  message.channel.send('Player scores fixed.').catch(console.error);
+  require('./poison.js').fix();
+  require('./proto.js').fix();
+  require('../helper/Member.js').fix();
+
+  message.channel.send('Player scores fixed. Asyncronous commands reset.').catch(console.error);
 }
 
 function load(message, path) {

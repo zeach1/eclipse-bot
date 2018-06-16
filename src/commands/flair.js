@@ -1,5 +1,3 @@
-'use strict';
-
 const Emoji = require('../helper/Emoji.js');
 const Messenger = require('../helper/Messenger.js');
 const Rank = require('../helper/Rank.js');

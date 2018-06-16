@@ -1,5 +1,3 @@
-'use strict';
-
 const { api_token, clanTag } = require('../config/config.js');
 const clash = require('clash-of-clans-api');
 const Messenger = require('./Messenger.js');

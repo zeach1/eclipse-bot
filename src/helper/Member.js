@@ -1,5 +1,3 @@
-'use strict';
-
 const Messenger = require('./Messenger.js');
 const Util = require('./Util.js');
 
@@ -30,7 +28,7 @@ class Member {
   static findMemberByName(message, members, name) {
     // search algorithm: put member names from shortest to longest
     members = Util.sort(members, true, true);
-    let m = members.find(member => Util.match(name, member.displayName, true));
+    let m = members.find(member => Util.match(name.split(' ')[0], member.displayName, true, true));
     if (!m) return null;
 
     m = Member.addScoreToMembers(message, [m])[0];
@@ -135,6 +133,8 @@ class Member {
     working = false;
     return removing;
   }
+
+  fix() { working = false; }
 }
 
 module.exports = Member;

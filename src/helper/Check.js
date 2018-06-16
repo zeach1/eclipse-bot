@@ -1,5 +1,3 @@
-'use strict';
-
 const { user } = require('../config/config.js');
 
 function verifyLeadership(member) {

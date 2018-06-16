@@ -1,5 +1,3 @@
-'use strict';
-
 const { channel, clanName } = require('../config/config.js');
 const Messenger = require('../helper/Messenger.js');
 

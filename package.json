@@ -6,19 +6,21 @@
   "dependencies": {
     "clash-of-clans-api": "^0.4.0",
     "discord.js": "^11.3.2",
-    "dotenv": "^5.0.1",
     "enmap": "^2.6.0",
     "enmap-level": "^2.1.0",
-    "eslint": "^4.19.1",
     "express": "^4.16.3",
     "outdent": "^0.5.0",
     "twemoji": "^2.5.1"
+  },
+  "devDependencies": {
+    "dotenv": "^5.0.1",
+    "eslint": "^4.19.1"
   },
   "engines": {
     "node": "9.8.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix --ext .js src",
     "start": "node ./src/index.js"
   },
   "repository": {

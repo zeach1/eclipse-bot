@@ -1,13 +1,12 @@
-'use strict';
-
 class Util {
-  static match(string, targetString, excludeSymbols) {
+  static match(string, targetString, excludeSymbols, excludeNumber) {
     string = string.toLowerCase().replace(/ /g, '');
     targetString = targetString.toLowerCase().replace(/ /g, '');
 
     if (excludeSymbols) {
-      string = string.replace(/[^a-z0-9]/g, '');
-      targetString = targetString.replace(/[^a-z0-9]/g, '');
+      const regex = excludeNumber ? /[^a-z]/g : /[^a-z0-9]/g;
+      string = string.replace(regex, '');
+      targetString = targetString.replace(regex, '');
     }
 
     // targetString should be longer than string, if they're not the same

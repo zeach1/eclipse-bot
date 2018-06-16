@@ -1,5 +1,3 @@
-'use strict';
-
 const Discord = require('discord.js');
 const { multiplier } = require('../config/config.js');
 const Messenger = require('./Messenger.js');

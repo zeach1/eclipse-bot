@@ -1,11 +1,9 @@
-'use strict';
-
 const { categoryChannel, channel, clanName, role, rules, password, prefix } = require('../config/config.js');
 const Discord = require('discord.js');
 const outdent = require('outdent');
 const Util = require('./Util.js');
 
-const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short' };
+const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'America/New_York', timeZoneName: 'short' };
 
 class Messenger {
   static sendCommandHelp(message, command) {

@@ -1,5 +1,3 @@
-'use strict';
-
 const Messenger = require('../helper/Messenger.js');
 const Rank = require('../helper/Rank.js');
 
