@@ -18,7 +18,7 @@ function filterProfanity(message) {
   return false;
 }
 
-function replySlang(message) {
+function replySlang(message) { // eslint-disable-line
   const content = Util.cleanString(message.content).split(' ');
 
   if (slang.some(word => content.includes(word))) {
@@ -85,7 +85,7 @@ class HandleMessage {
     if (!Check.isMember(message.member)) return;
 
     Rank.updatePoints(message);
-    replySlang(message);
+    // replySlang(message);
 
     if (!isCommand(message)) return;
 

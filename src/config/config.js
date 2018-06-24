@@ -33,6 +33,12 @@ module.exports = {
     ranch: process.env.RANCH,
   },
 
+  clash: {
+    achievementName: {
+      clanGames: 'Games Champion',
+    },
+  },
+
   prefix: '~',
   multiplier: 0.24,
   token: process.env.TOKEN,

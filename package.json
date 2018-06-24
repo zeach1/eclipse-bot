@@ -20,7 +20,7 @@
     "node": "9.8.0"
   },
   "scripts": {
-    "lint": "eslint --fix --ext .js src",
+    "lint": "eslint . --fix .js",
     "start": "node ./src/index.js"
   },
   "repository": {

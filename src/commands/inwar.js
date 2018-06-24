@@ -1,23 +1,11 @@
-const accounts = require('../config/accounts.js');
 const Check = require('../helper/Check.js');
 const ClashAPI = require('../helper/ClashAPI.js');
 const Member = require('../helper/Member.js');
 const Messenger = require('../helper/Messenger.js');
 const outdent = require('outdent');
-const Util = require('../helper/Util.js');
 
 const inwar = 'in war';
 const elegible = ['50v50', 'Eclipse', inwar];
-
-function getWarElegible(message) {
-  const warElegible = [];
-  for (const eleg of elegible) {
-    for (const member of Member.getMembersByRole(message, eleg)) {
-      warElegible.push(member);
-    }
-  }
-  return warElegible;
-}
 
 // will include flair in object returned
 function getMembers(message, names) {
@@ -26,7 +14,7 @@ function getMembers(message, names) {
     members.push(Member.addScoreToMembers(message, [member])[0]);
   }
 
-  const warElegible = getWarElegible(message);
+  const warElegible = Member.getMembersByRole(message, inwar);
   for (const name of names.filter(n => !n.startsWith('<'))) {
     members.push(Member.findMemberByName(message, warElegible, name));
   }
@@ -34,38 +22,21 @@ function getMembers(message, names) {
   return members;
 }
 
-function matchAccounts(message, warElegible, name) {
-  for (const account of accounts) {
-    if (account.alias.includes(name)) {
-      return Member.findMemberByName(message, warElegible, account.main);
-    }
-  }
-  return null;
-}
-
 async function refresh(message) {
   // will have flair
-  const warElegible = getWarElegible(message);
+  const warElegible = Member.getMembersByRole(message, elegible);
 
   // will have flair
   const current = Member.getMembersByRole(message, inwar);
 
-  // will have flair
+  // in-game account details
   let lineup = await ClashAPI.getLineup(message).catch(console.error);
 
-  // access issues
+  // API login issues
   if (!lineup) return;
 
-  for (let i = 0; i < lineup.length; i++) {
-    const member = Member.findMemberByName(message, warElegible, lineup[i].name) || matchAccounts(message, warElegible, lineup[i].name);
-    if (lineup.includes(member)) {
-      lineup.splice(i, 1);
-      i--;
-    } else {
-      lineup[i] = member;
-    }
-  }
-  lineup = Util.sort(lineup.filter(m => m), true);
+  // will have flair
+  lineup = Member.matchAccountsToMembers(message, lineup, warElegible);
 
   // keep naming consistent with addRoles() and removeRoles()
   let added = [];

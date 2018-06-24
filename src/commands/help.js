@@ -24,7 +24,7 @@ function sendAllCommandHelp(message) {
   const leadership = { type: 'leadership', commands: commands.filter(command => command.type === 'leadership') };
   const misc = { type: 'misc', commands: commands.filter(command => command.type === 'misc') };
 
-  Messenger.sendAllCommandHelp(message, [essentials, misc, leadership]);
+  Messenger.sendAllCommandHelp(message, [essentials, misc, leadership]).catch(console.error);
 }
 
 class Command {

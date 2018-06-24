@@ -3,7 +3,19 @@ const Discord = require('discord.js');
 const outdent = require('outdent');
 const Util = require('./Util.js');
 
-const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'America/New_York', timeZoneName: 'short' };
+const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short' };
+
+function createEmbed(info) {
+  const embed = new Discord.RichEmbed()
+    .setAuthor(info.title ? info.title : '', info.avatar ? info.avatar : '')
+    .setDescription(info.description ? info.description : '')
+    .setColor(info.color ? info.color : 0xcccccc)
+    .setFooter(info.footer ? info.footer : '');
+
+  if (info.message && info.submessage) embed.addField(info.message, info.submessage);
+
+  return embed;
+}
 
 class Messenger {
   static sendCommandHelp(message, command) {
@@ -113,6 +125,12 @@ class Messenger {
       .catch(console.error);
   }
 
+  static sendSuccessMessage(message, info) {
+    info.color = 0x3ea92e;
+    info.title = info.title ? info.title : '✅ Success';
+    Messenger.sendMessage(message, info);
+  }
+
   static sendLeaveMessage(member) {
     const message = { channel: member.guild.channels.get(channel.welcome) };
 
@@ -214,15 +232,29 @@ class Messenger {
   }
 
   static send(message, info) {
-    const embed = new Discord.RichEmbed()
-      .setAuthor(info.title ? info.title : '', info.avatar ? info.avatar : '')
-      .setDescription(info.description ? info.description : '')
-      .setColor(info.color ? info.color : 0xcccccc)
-      .setFooter(info.footer ? info.footer : '');
-
-    if (info.message && info.submessage) embed.addField(info.message, info.submessage);
-
+    const embed = createEmbed(info);
     message.channel.send(embed).catch(console.error);
+  }
+
+  static reply(message, info) {
+    if (!info.embed && !info.content) return Promise.reject(new Error('no message content'));
+
+    const { author } = message;
+
+    return new Promise((resolve, reject) => {
+      message.channel.send(info.content, {
+        embed: info.embed ? createEmbed(info.embed) : null,
+      })
+        .then(() => {
+          message.channel.awaitMessages(msg => msg.author === author, {
+            max: 1,
+            time: info.time || 10000,
+            errors: ['time'],
+          }).then(collected => resolve(collected.first()))
+            .catch(reject);
+        })
+        .catch(console.error);
+    });
   }
 }
 

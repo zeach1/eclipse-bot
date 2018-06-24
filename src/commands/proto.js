@@ -27,7 +27,7 @@ function reference(message) {
       color: 0xcccccc,
     });
   } else {
-    message.channel.send('```PERIL - Today at 1:12 PM\nProto can\'t code ****```');
+    message.channel.send('```PERIL - Today at 1:12 PM\nProto can\'t code ****```').catch(console.error);
   }
 }
 

@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 class Util {
   static match(string, targetString, excludeSymbols, excludeNumber) {
     string = string.toLowerCase().replace(/ /g, '');
@@ -31,6 +33,9 @@ class Util {
   }
 
   static getDateTimeLocale(date, locale, options) {
+    const defaultTimeZone = 'America/New_York';
+    const defaultLocale = 'en-US';
+
     const dateOptions = options ? {
       year: options.year,
       month: options.month,
@@ -43,15 +48,41 @@ class Util {
       timeZoneName: options.timeZoneName,
     } : {};
 
-    if (options && options.timeZone) {
-      dateOptions.timeZone = options.timeZone;
-      timeOptions.timeZone = options.timeZone;
-    }
+    dateOptions.timeZone = options && options.timeZone ? options.timeZone : defaultTimeZone;
+    timeOptions.timeZone = options && options.timeZone ? options.timeZone : defaultTimeZone;
 
     return {
-      date: date.toLocaleDateString(locale, dateOptions),
-      time: date.toLocaleTimeString(locale, timeOptions),
+      date: date.toLocaleDateString(locale || defaultLocale, dateOptions),
+      time: date.toLocaleTimeString(locale || defaultLocale, timeOptions),
     };
+  }
+
+  static loadFromJSON(filePath) {
+    let data;
+    try {
+      const fileData = fs.readFileSync(filePath, 'utf8');
+      data = JSON.parse(fileData);
+    } catch (e) {} // eslint-disable-line
+
+    return data;
+  }
+
+  static saveToJSON(filePath, data) {
+    if (!data) {
+      console.error('Data being saved is null');
+      return false;
+    }
+
+    let successful;
+    try {
+      const fileData = JSON.stringify(data);
+      fs.writeFileSync(filePath, fileData);
+      successful = true;
+    } catch (e) {
+      successful = false;
+    }
+
+    return successful;
   }
 }
 

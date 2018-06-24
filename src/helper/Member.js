@@ -1,3 +1,4 @@
+const multiAccounts = require('../config/accounts.js');
 const Messenger = require('./Messenger.js');
 const Util = require('./Util.js');
 
@@ -8,6 +9,15 @@ function getRole(message, role) {
   if (role.id) return role;
 
   return message.guild.roles.find('name', role);
+}
+
+function matchAccount(message, members, name) {
+  for (const account of multiAccounts) {
+    if (account.alias.includes(name)) {
+      return Member.findMemberByName(message, members, account.main);
+    }
+  }
+  return null;
 }
 
 class Member {
@@ -38,12 +48,17 @@ class Member {
 
   // should include flair on object returned
   static getMembersByRole(message, role) {
-    role = getRole(message, role);
-    let members = role.members.array();
-    members = Util.sort(members, true);
-    members = Member.addScoreToMembers(message, members);
+    let allMembers = [];
+    role = Array.isArray(role) ? role : [role];
+    for (const r of role) {
+      const discordRole = getRole(message, r);
+      const members = discordRole.members.array();
+      allMembers = allMembers.concat(members);
+    }
 
-    return members;
+    allMembers = Util.sort(allMembers, true);
+    allMembers = Member.addScoreToMembers(message, allMembers);
+    return allMembers;
   }
 
   static listMembersWithRole(message, role) {
@@ -134,7 +149,25 @@ class Member {
     return removing;
   }
 
-  fix() { working = false; }
+  static matchAccountsToMembers(message, accounts, members) {
+    const matchedMembers = [];
+    for (const account of accounts) {
+      const member = Member.findMemberByName(message, members, account.name) || matchAccount(message, members, account.name);
+
+      // this will create an property called "accounts" appended to the GuildMember data, which contains any COC account info
+      // this info depends on the data that is taken in by ClashAPI, as war player data !== normal player data
+      if (matchedMembers.includes(member)) {
+        matchedMembers.find(m => m.id === member.id).accounts.push(account);
+      } else {
+        member.accounts = [account];
+        matchedMembers.push(member);
+      }
+    }
+
+    return matchedMembers;
+  }
+
+  static fix() { working = false; }
 }
 
 module.exports = Member;
