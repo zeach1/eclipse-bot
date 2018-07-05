@@ -3,9 +3,10 @@ const ClashAPI = require('../helper/ClashAPI.js');
 const Member = require('../helper/Member.js');
 const Messenger = require('../helper/Messenger.js');
 const outdent = require('outdent');
+const { role } = require('../config/config.js');
 
-const inwar = 'in war';
-const elegible = ['50v50', 'Eclipse', inwar];
+const INWAR = role.inwar;
+const ELEGIBLE = [role.war_guest, role.eclipse, role.inwar];
 
 // will include flair in object returned
 function getMembers(message, names) {
@@ -14,7 +15,7 @@ function getMembers(message, names) {
     members.push(Member.addScoreToMembers(message, [member])[0]);
   }
 
-  const warElegible = Member.getMembersByRole(message, inwar);
+  const warElegible = Member.getMembersByRole(message, ELEGIBLE);
   for (const name of names.filter(n => !n.startsWith('<'))) {
     members.push(Member.findMemberByName(message, warElegible, name));
   }
@@ -24,13 +25,13 @@ function getMembers(message, names) {
 
 async function refresh(message) {
   // will have flair
-  const warElegible = Member.getMembersByRole(message, elegible);
+  const warElegible = Member.getMembersByRole(message, ELEGIBLE);
 
   // will have flair
-  const current = Member.getMembersByRole(message, inwar);
+  const current = Member.getMembersByRole(message, INWAR);
 
   // in-game account details
-  let lineup = await ClashAPI.getLineup(message).catch(console.error);
+  let lineup = await ClashAPI.getLineup(message).catch(e => Messenger.sendDeveloperError(message, e));
 
   // API login issues
   if (!lineup) return;
@@ -56,8 +57,8 @@ async function refresh(message) {
     }
   }
 
-  added = await Member.addRoleToMembers(message, added, inwar).catch(console.error);
-  removed = await Member.removeRoleFromMembers(message, removed, inwar).catch(console.error);
+  added = await Member.addRoleToMembers(message, added, INWAR).catch(e => Messenger.sendDeveloperError(message, e));
+  removed = await Member.removeRoleFromMembers(message, removed, INWAR).catch(e => Messenger.sendDeveloperError(message, e));
 
   // means that Member is working
   if (!added && !removed) return;
@@ -86,7 +87,8 @@ async function refresh(message) {
 async function addRoles(message) {
   // will have flair
   const members = getMembers(message, message.args.slice(1));
-  let added = await Member.addRoleToMembers(message, members, inwar).catch(console.error);
+
+  let added = await Member.addRoleToMembers(message, members, INWAR).catch(e => Messenger.sendDeveloperError(message, e));
 
   // means that Member is working
   if (!added) return;
@@ -94,7 +96,7 @@ async function addRoles(message) {
   added = added.map(m => `${m.displayName} ${m.flair ? m.flair : ''}`);
 
   Messenger.sendMessage(message, {
-    title: `✅ Added members to role: ${inwar}`,
+    title: `✅ Added members to role: ${Member.findRole(message, INWAR).name}`,
     color: 0x157676,
     description: added.length > 0 ? added.join('\n') : 'None',
   });
@@ -103,7 +105,7 @@ async function addRoles(message) {
 async function removeRoles(message) {
   // will have flair
   const members = getMembers(message, message.args.slice(1));
-  let removed = await Member.removeRoleFromMembers(message, members, inwar).catch(console.error);
+  let removed = await Member.removeRoleFromMembers(message, members, INWAR).catch(e => Messenger.sendDeveloperError(message, e));
 
   // means that Member is working
   if (!removed) return;
@@ -111,7 +113,7 @@ async function removeRoles(message) {
   removed = removed.map(m => `${m.displayName} ${m.flair ? m.flair : ''}`);
 
   Messenger.sendMessage(message, {
-    title: `❎ Removed members from role: ${inwar}`,
+    title: `❎ Removed members from role: ${Member.findRole(message, INWAR).name}`,
     color: 0x157676,
     description: removed.length > 0 ? removed.join('\n') : 'None',
   });
@@ -137,13 +139,13 @@ class Command {
     }
 
     switch (message.args[0]) {
-      case 'list': Member.listMembersWithRole(message, inwar); break;
+      case 'list': Member.listMembersWithRole(message, INWAR); break;
       case 'add': {
         if (message.args.length < 2) {
           Messenger.sendArgumentError(message, this, 'You must specify at least one member');
           break;
         }
-        addRoles(message).catch(console.error);
+        addRoles(message).catch(e => Messenger.sendDeveloperError(message, e));
         break;
       }
       case 'remove': {
@@ -151,14 +153,14 @@ class Command {
           Messenger.sendArgumentError(message, this, 'You must specify at least one member');
           break;
         }
-        removeRoles(message).catch(console.error);
+        removeRoles(message).catch(e => Messenger.sendDeveloperError(message, e));
         break;
       }
-      case 'refresh': refresh(message).catch(console.error); break;
-      case 'clear': Member.clearMembersOfRole(message, inwar).catch(console.error); break;
+      case 'refresh': refresh(message).catch(e => Messenger.sendDeveloperError(message, e)); break;
+      case 'clear': Member.clearMembersOfRole(message, INWAR).catch(e => Messenger.sendDeveloperError(message, e)); break;
       default: Messenger.sendArgumentError(message, this, 'This argument does not exist');
     }
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

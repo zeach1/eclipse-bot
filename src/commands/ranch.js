@@ -1,11 +1,11 @@
 const { user } = require('../config/config.js');
 
-let done = true;
+let working = false;
 
 function callRanch(message, num) {
   if (num <= 0) {
     message.channel.send('Ok I\'m done');
-    done = true;
+    working = false;
     return;
   }
 
@@ -23,21 +23,25 @@ class Command {
   }
 
   execute(message) {
-    if (!done) return;
+    if (working) return;
 
-    done = false;
+    working = true;
     const num = parseInt(message.args[0]) || 0;
     message.channel.send('Well you wanted a command, and I personally had no better idea on what to send, so I\'ll just ping you instead...');
 
     setTimeout(() => {
       if (num === 0) {
         message.channel.send('or maybe not...');
-        done = true;
+        working = false;
         return;
       }
       callRanch(message, num > 10 ? 10 : num);
     }, 2000);
   }
+
+  fix() {
+    working = false;
+  }
 }
 
-module.exports = new Command();
+module.exports = Command;

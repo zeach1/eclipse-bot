@@ -37,13 +37,13 @@ class ClashAPI {
     // returns all clan members with regular player data, not clan player data (see developer.clashofclans.com for more info)
     await Promise.all(members)
       .then(complete => { members = complete; })
-      .catch(console.error);
+      .catch(e => Messenger.sendDeveloperError(message, e));
 
     return members;
   }
 
   static async getLineup(message, tag) {
-    const war = await getCurrentWar(tag).catch(console.error);
+    const war = await getCurrentWar(tag).catch(e => Messenger.sendDeveloperError(message, e));
 
     // API login issues
     if (war.error) return handleAccessError(message, war);

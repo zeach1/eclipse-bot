@@ -12,7 +12,7 @@ function filterProfanity(message) {
     message.delete()
       .then(message.channel.send(`💢 Watch your language ${message.author}`)
         .then(msg => msg.delete(3000).catch(() => {}))
-        .catch(console.error));
+        .catch(e => Messenger.sendDeveloperError(message, e)));
     return true;
   }
   return false;
@@ -22,7 +22,7 @@ function replySlang(message) { // eslint-disable-line
   const content = Util.cleanString(message.content).split(' ');
 
   if (slang.some(word => content.includes(word))) {
-    message.channel.send('**NO U**').catch(console.error);
+    message.channel.send('**NO U**').catch(e => Messenger.sendDeveloperError(message, e));
   }
 }
 

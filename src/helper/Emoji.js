@@ -15,6 +15,10 @@ function getServerEmoji(text, client) {
 }
 
 function getCustomEmoji(text, client) {
+  if (text.startsWith('<')) {
+    text = text.slice(2, text.lastIndexOf(':') + 1);
+  }
+
   let names = client.emojis.map(emoji => emoji.name);
   names = Util.sort(names, false, true);
 

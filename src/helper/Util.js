@@ -32,33 +32,8 @@ class Util {
       .replace(/ +/g, ' ');
   }
 
-  static getDateTimeLocale(date, locale, options) {
-    const defaultTimeZone = 'America/New_York';
-    const defaultLocale = 'en-US';
-
-    const dateOptions = options ? {
-      year: options.year,
-      month: options.month,
-      day: options.day,
-    } : {};
-
-    const timeOptions = options ? {
-      hour: options.hour,
-      minute: options.minute,
-      timeZoneName: options.timeZoneName,
-    } : {};
-
-    dateOptions.timeZone = options && options.timeZone ? options.timeZone : defaultTimeZone;
-    timeOptions.timeZone = options && options.timeZone ? options.timeZone : defaultTimeZone;
-
-    return {
-      date: date.toLocaleDateString(locale || defaultLocale, dateOptions),
-      time: date.toLocaleTimeString(locale || defaultLocale, timeOptions),
-    };
-  }
-
   static loadFromJSON(filePath) {
-    let data;
+    let data = null;
     try {
       const fileData = fs.readFileSync(filePath, 'utf8');
       data = JSON.parse(fileData);
@@ -79,6 +54,7 @@ class Util {
       fs.writeFileSync(filePath, fileData);
       successful = true;
     } catch (e) {
+      console.error(e);
       successful = false;
     }
 

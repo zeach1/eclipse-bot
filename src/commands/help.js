@@ -24,7 +24,7 @@ function sendAllCommandHelp(message) {
   const leadership = { type: 'leadership', commands: commands.filter(command => command.type === 'leadership') };
   const misc = { type: 'misc', commands: commands.filter(command => command.type === 'misc') };
 
-  Messenger.sendAllCommandHelp(message, [essentials, misc, leadership]).catch(console.error);
+  Messenger.sendAllCommandHelp(message, [essentials, misc, leadership]).catch(e => Messenger.sendDeveloperError(message, e));
 }
 
 class Command {
@@ -47,4 +47,4 @@ class Command {
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

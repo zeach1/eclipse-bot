@@ -41,4 +41,4 @@ class Command {
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

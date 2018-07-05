@@ -4,6 +4,11 @@ module.exports = {
   rules: 'https://docs.google.com/document/d/1mXGBzkv_RpjSy_V3dlRa2wJ20Sx55FlJeFl1DvfcBXw',
   password: 'https://www.reddit.com/r/redditclansystem/wiki/official_reddit_clan_system',
   subreddit: 'https://www.reddit.com/r/RedditEclipse/',
+  defaultTimeZone: 'America/New_York',
+
+  server: {
+    eclipse: process.env.ECLIPSE,
+  },
 
   categoryChannel: {
     clan: process.env.CLAN_CATEGORY,
@@ -12,16 +17,27 @@ module.exports = {
   },
 
   channel: {
+    development: process.env.DEVELOPMENT,
+    donation: process.env.DONATION,
     leader_notes: process.env.LEADERNOTES,
     leadership: process.env.LEADERSHIP,
-    development: process.env.DEVELOPMENT,
     war_discussion: process.env.WARDISCUSSION,
     welcome: process.env.WELCOME,
     wmbot: process.env.WMBOT,
   },
 
   role: {
+    admin: process.env.ADMIN_ROLE,
+    bots: process.env.BOTS_ROLE,
+    eclipse: process.env.ECLIPSE_ROLE,
+    friends: process.env.FRIENDS_ROLE,
+    inwar: process.env.INWAR_ROLE,
     leadership: process.env.LEADERSHIP_ROLE,
+    muted: process.env.MUTED_ROLE,
+    power_donator: process.env.POWERDONATOR_ROLE,
+    visitor: process.env.VISITOR_ROLE,
+    war_counselor: process.env.WARCOUNSELOR_ROLE,
+    war_guest: process.env.WARGUEST_ROLE,
   },
 
   user: {
@@ -36,7 +52,13 @@ module.exports = {
   clash: {
     achievementName: {
       clanGames: 'Games Champion',
+      donations: 'Friend in Need',
     },
+  },
+
+  reply: {
+    yes: ['y', 'yes', 'sure', 'ok', 'okay'],
+    no: ['n', 'no', 'nope', 'nah'],
   },
 
   prefix: '~',

@@ -10,8 +10,8 @@ class Command {
   }
 
   execute(message) {
-    Messenger.sendImage(message, { url: 'https://cdn.discordapp.com/attachments/390086345957179393/408337364868530206/trigger.gif' }).catch(console.error);
+    Messenger.sendImages(message, { url: 'https://cdn.discordapp.com/attachments/390086345957179393/408337364868530206/trigger.gif' }).catch(e => Messenger.sendDeveloperError(message, e));
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

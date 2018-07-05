@@ -1,23 +1,15 @@
 module.exports = [
   {
-    main: 'jwoelmer2',
-    alias: ['DRAGON BABY'],
-  },
-  {
-    main: 'Simon',
-    alias: ['Gee Gee', 'White Beard'],
-  },
-  {
-    main: 'rickgrimes',
-    alias: ['carlgrimes'],
+    main: 'Darren',
+    alias: ['tonto'],
   },
   {
     main: 'danny',
     alias: ['Mister'],
   },
   {
-    main: 'Darren',
-    alias: ['tonto'],
+    main: 'jwoelmer2',
+    alias: ['DRAGON BABY'],
   },
   {
     main: 'PERIL',
@@ -26,5 +18,9 @@ module.exports = [
   {
     main: 'Prototype',
     alias: ['Blitzking'],
+  },
+  {
+    main: 'Simon',
+    alias: ['Gee Gee', 'White Beard'],
   },
 ];

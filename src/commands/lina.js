@@ -1,3 +1,5 @@
+const Messenger = require('../helper/Messenger.js');
+
 class Command {
   constructor() {
     this.name = 'lina';
@@ -7,8 +9,8 @@ class Command {
   }
 
   execute(message) {
-    message.channel.send('**#ANGST**').catch(console.error);
+    message.channel.send('**#ANGST**').catch(e => Messenger.sendDeveloperError(message, e));
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

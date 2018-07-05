@@ -10,8 +10,8 @@ class Command {
   }
 
   execute(message) {
-    Messenger.sendImage(message, { url: 'https://i.imgur.com/WOjy315.gif' }).catch(console.error);
+    Messenger.sendImages(message, { url: 'https://i.imgur.com/WOjy315.gif' });
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

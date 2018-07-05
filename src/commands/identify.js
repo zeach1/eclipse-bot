@@ -1,4 +1,5 @@
 const { channel } = require('../config/config.js');
+const Messenger = require('../helper/Messenger.js');
 const outdent = require('outdent');
 
 class Command {
@@ -9,7 +10,7 @@ class Command {
     this.description = 'Tells a member to identify him/herself on WarMatch';
     this.tag = 1;
     this.type = 'leadership';
-    this.usage = '<member> [player id] [-d | -delete]';
+    this.usage = '<member> [player id [-d | -delete]]';
   }
 
   execute(message) {
@@ -33,8 +34,8 @@ class Command {
           message.delete().catch(() => {});
         }
       })
-      .catch(console.error);
+      .catch(e => Messenger.sendDeveloperError(message, e));
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

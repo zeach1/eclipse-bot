@@ -1,8 +1,8 @@
 const Messenger = require('../helper/Messenger.js');
-const Util = require('../helper/Util.js');
+const moment = require('moment-timezone');
 
-const COOLDOWN = 60000;
-const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short' };
+const COOLDOWN = 15000;
+const DATE_FORMAT = 'MMMM D, YYYY, h:mm A z';
 
 let working = false;
 
@@ -10,23 +10,25 @@ class Command {
   constructor() {
     this.name = 'time';
 
-    this.description = 'Displays current time in Eclipse Time';
+    this.description = 'Displays current time in Eclipse\'s default timezone';
     this.type = 'essentials';
   }
 
   execute(message) {
-    if (working) return;
+    if (working) {
+      message.delete().catch(() => {});
+      return;
+    }
 
     working = true;
     setTimeout(() => { working = false; }, COOLDOWN);
 
-    const { date, time } = Util.getDateTimeLocale(new Date(), 'en-US', options);
     Messenger.sendMessage(message, {
-      title: '⌚ Eclipse Time',
-      description: `${date}, ${time}`,
+      title: '⌚ Current Time',
+      description: moment().format(DATE_FORMAT),
       color: 0x00666f,
     });
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

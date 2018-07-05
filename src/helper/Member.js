@@ -1,14 +1,15 @@
+const ClashAPI = require('./ClashAPI.js');
+const { role: roleConfig } = require('../config/config.js');
 const multiAccounts = require('../config/accounts.js');
 const Messenger = require('./Messenger.js');
 const Util = require('./Util.js');
 
-let working = false;
 const DISCORD_COOLDDOWN = 3000;
 
-function getRole(message, role) {
-  if (role.id) return role;
+let working = false;
 
-  return message.guild.roles.find('name', role);
+function getRole(message, role) {
+  return role.id ? role : message.guild.roles.get(role);
 }
 
 function matchAccount(message, members, name) {
@@ -21,6 +22,10 @@ function matchAccount(message, members, name) {
 }
 
 class Member {
+  static findRole(message, role) {
+    return getRole(message, role);
+  }
+
   static addScoreToMembers(message, members) {
     for (const member of members) {
       const score = message.client.points.get(member.id);
@@ -38,6 +43,7 @@ class Member {
   static findMemberByName(message, members, name) {
     // search algorithm: put member names from shortest to longest
     members = Util.sort(members, true, true);
+
     let m = members.find(member => Util.match(name.split(' ')[0], member.displayName, true, true));
     if (!m) return null;
 
@@ -76,10 +82,10 @@ class Member {
 
   static async clearMembersOfRole(message, role) {
     const members = Member.getMembersByRole(message, role);
-    let removed = await Member.removeRoleFromMembers(message, members, role).catch(console.error);
+    let removed = await Member.removeRoleFromMembers(message, members, role).catch(e => Messenger.sendDeveloperError(message, e));
     removed = removed.map(member => `${member.displayName}${member.flair ? member.flair : ''}`);
 
-    Messenger.sendMessage(message, {
+    Messenger.sendSuccessMessage(message, {
       title: `❎ Cleared all members from role: ${getRole(message, role).name}`,
       description: removed.length > 0 ? removed.join('\n') : 'None',
     });
@@ -107,12 +113,12 @@ class Member {
           complete.push(new Promise(resolve => { setTimeout(resolve, DISCORD_COOLDDOWN); }));
           await Promise.all(complete) // eslint-disable-line
             .then(() => { complete.length = 0; })
-            .catch(console.error);
+            .catch(e => Messenger.sendDeveloperError(message, e));
         }
       }
     }
 
-    await Promise.all(complete).catch(console.error);
+    await Promise.all(complete).catch(e => Messenger.sendDeveloperError(message, e));
     working = false;
     return adding;
   }
@@ -139,12 +145,12 @@ class Member {
           complete.push(new Promise(resolve => { setTimeout(resolve, DISCORD_COOLDDOWN); }));
           await Promise.all(complete) // eslint-disable-line
             .then(() => { complete.length = 0; })
-            .catch(console.error);
+            .catch(e => Messenger.sendDeveloperError(message, e));
         }
       }
     }
 
-    await Promise.all(complete).catch(console.error);
+    await Promise.all(complete).catch(e => Messenger.sendDeveloperError(message, e));
     working = false;
     return removing;
   }
@@ -153,6 +159,8 @@ class Member {
     const matchedMembers = [];
     for (const account of accounts) {
       const member = Member.findMemberByName(message, members, account.name) || matchAccount(message, members, account.name);
+
+      if (!member) continue;
 
       // this will create an property called "accounts" appended to the GuildMember data, which contains any COC account info
       // this info depends on the data that is taken in by ClashAPI, as war player data !== normal player data
@@ -165,6 +173,27 @@ class Member {
     }
 
     return matchedMembers;
+  }
+
+  // this is when I want to match all members instead of a certain range
+  // members will have Eclipse role
+  static async matchAllClanAccountsToAllMembers(message) {
+    working = true;
+
+    const accounts = await ClashAPI.getClanMembers(message);
+
+    // API login issues
+    if (!accounts) {
+      working = false;
+      return null;
+    }
+
+    let members = Member.getMembersByRole(message, roleConfig.eclipse);
+
+    members = Member.matchAccountsToMembers(message, accounts, members);
+
+    working = false;
+    return members;
   }
 
   static fix() { working = false; }

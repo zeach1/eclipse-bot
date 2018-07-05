@@ -3,7 +3,7 @@ const { multiplier } = require('../config/config.js');
 const Messenger = require('./Messenger.js');
 
 const COOLDOWN = 60000;
-const rankQueue = new Discord.Collection();
+const QUEUE_COOLDOWN = new Discord.Collection();
 
 function updateRanking(message, player, score, amount) {
   amount = parseInt(amount);
@@ -35,10 +35,10 @@ class Rank {
   static updatePoints(message) {
     const { client, author } = message;
 
-    if (rankQueue.has(author.id)) return;
+    if (QUEUE_COOLDOWN.has(author.id)) return;
 
-    rankQueue.set(author.id, author);
-    setTimeout(() => rankQueue.delete(author.id), COOLDOWN);
+    QUEUE_COOLDOWN.set(author.id, author);
+    setTimeout(() => QUEUE_COOLDOWN.delete(author.id), COOLDOWN);
 
     let score = message.client.points.get(author.id);
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
@@ -51,11 +51,12 @@ class Rank {
     const level = this.getLevel(score.exp);
     if (score.level !== level) {
       if (level > score.level) {
+        // the true in the end means that the message will get deleted in 5 seconds
         Messenger.sendMessage(message, {
           title: '🎉 Level Up',
           color: 0x3ea92e,
           description: `${author} has leveled up to level ${level}! Cheers! ${score.flair}`,
-        });
+        }, true);
       }
       score.level = level;
     }
@@ -93,7 +94,7 @@ class Rank {
   }
 
   static removePlayer(member, client) {
-    client.points.delete(member.user.id);
+    client.points.delete(member.id);
   }
 
   static getRankList(message, type) {
@@ -113,27 +114,31 @@ class Rank {
       });
     }
 
-    return scores.sort((a, b) =>
-      a[type] < b[type] ? 1 :
+    return scores.sort((a, b) => {
+      const aName = a.name.toLowerCase();
+      const bName = b.name.toLowerCase();
+      return a[type] < b[type] ? 1 :
         a[type] > b[type] ? -1 :
-          a.name > b.name ? 1 :
-            a.name < b.name ? -1 : 0
-    );
+          aName > bName ? 1 :
+            aName < bName ? -1 : 0;
+    });
   }
 
   static setPlayer(message, player, data) {
     let score = message.client.points.get(player.id);
     if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
 
-    if (data.exp) {
-      score.exp = parseInt(data.exp) || 0;
+    if (!isNaN(data.exp)) {
+      const exp = parseInt(data.exp);
+      score.exp = parseInt(exp < 0 ? 0 : exp);
       score.level = this.getLevel(data.exp);
     }
 
-    if (data.ranking) {
-      score.ranking = data.ranking > 9999 ? 9999 : data.ranking < 1 ? 1 : parseInt(data.ranking) || 5000;
+    if (!isNaN(data.ranking)) {
+      score.ranking = data.ranking > 9999 ? 9999 : data.ranking < 1 ? 1 : parseInt(data.ranking);
     }
 
+    // change to emoji
     if (data.flair) {
       score.flair = data.flair;
     }

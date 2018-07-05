@@ -10,13 +10,13 @@ async function clear(message, num, numDeleted) {
   if (fetched && fetched.size > 0) {
     const deleted = await message.channel.bulkDelete(fetched).catch(() => {});
 
-    /* The following condition return false if the member is spamming 'clear' */
+    // the following condition return false if the member is spamming 'clear'
     if (deleted && deleted.size > 0) {
       numDeleted += deleted.size;
       if (deleted.size < 100 || numDeleted === num) {
         message.channel.send(`🖍 Deleted ${numDeleted} ${numDeleted !== 1 ? 'messages' : 'message'}.`)
           .then(msg => msg.delete(3000).catch(() => {}))
-          .catch(console.error);
+          .catch(e => Messenger.sendDeveloperError(message, e));
       } else {
         clear(message, num - 100, numDeleted);
       }
@@ -24,7 +24,7 @@ async function clear(message, num, numDeleted) {
   } else {
     message.channel.send('😰 There are no messages to delete')
       .then(msg => msg.delete(3000).catch(() => {}))
-      .catch(console.error);
+      .catch(e => Messenger.sendDeveloperError(message, e));
   }
 }
 
@@ -56,4 +56,4 @@ class Command {
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

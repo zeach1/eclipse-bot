@@ -1,12 +1,13 @@
 const Member = require('../helper/Member.js');
 const Messenger = require('../helper/Messenger.js');
-const { prefix } = require('../config/config.js');
+const outdent = require('outdent');
+const { prefix, role } = require('../config/config.js');
 
-const muted = 'Muted';
+const MUTED = role.muted;
 const DURATION = 5;
 
-async function mute(message, member, duration) {
-  const added = await Member.addRoleToMembers(message, [member], muted).catch(console.error);
+async function mute(message, member, duration, reason) {
+  const added = await Member.addRoleToMembers(message, [member], MUTED).catch(e => Messenger.sendDeveloperError(message, e));
 
   if (!added[0]) {
     Messenger.sendError(message, {
@@ -17,7 +18,7 @@ async function mute(message, member, duration) {
     return;
   }
 
-  // max time is 1 day
+  // max mute is 1 day
   let time = '';
   if (duration === 1440) {
     time += '1 day';
@@ -41,16 +42,20 @@ async function mute(message, member, duration) {
   Messenger.sendMessage(message, {
     title: '🔇 Success',
     color: 0x9e3612,
-    description: `**${added[0]}** is muted for ${time}`,
+    description: outdent`
+      ${outdent}
+      **${added[0]}** is muted for ${time}
+      ${reason ? `*${reason}*` : ''}
+    `,
   });
 
   setTimeout(async () => {
-    await Member.removeRoleFromMembers(message, [member], muted).catch(console.error);
+    await Member.removeRoleFromMembers(message, [member], MUTED).catch(e => Messenger.sendDeveloperError(message, e));
   }, duration * 60000);
 }
 
 async function unmute(message, member) {
-  const removed = await Member.removeRoleFromMembers(message, [member], muted).catch(console.error);
+  const removed = await Member.removeRoleFromMembers(message, [member], MUTED).catch(e => Messenger.sendDeveloperError(message, e));
 
   if (!removed[0]) {
     Messenger.sendError(message, {
@@ -77,28 +82,34 @@ class Command {
     this.description = 'Mutes/unmutes a member from speaking in clan channels';
     this.tag = 1;
     this.type = 'leadership';
-    this.usage = '<member> [duration in minutes]';
+    this.usage = '<member> [duration in minutes] [reason]';
   }
 
   execute(message) {
-    const commandName = message.content.slice(prefix.length)
-      .trim()
-      .split(/ +/)
-      .shift();
+    const commandName = message.content.slice(prefix.length).trim().split(/ +/).shift().toLowerCase(); // eslint-disable-line
 
     const member = message.mentions.members.first();
+    let reason;
 
     // duration unit in minutes
-    let duration = parseFloat(message.args[1]) || DURATION;
+    let duration = parseFloat(message.args[1]);
+
+    if (duration) {
+      reason = message.content.trim().split(/ +/).slice(3).join(' '); // eslint-disable-line
+    } else {
+      duration = DURATION;
+      reason = message.content.trim().split(/ +/).slice(2).join(' '); // eslint-disable-line
+    }
+
 
     // max mute is 1 day = 1440 minutes
     if (duration > 1440) duration = 1440;
 
     switch (commandName) {
-      case 'mute': mute(message, member, duration); break;
+      case 'mute': mute(message, member, duration, reason); break;
       case 'unmute': unmute(message, member); break;
     }
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

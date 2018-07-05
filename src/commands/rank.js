@@ -43,9 +43,12 @@ class Command {
     Messenger.sendMessage(message, {
       title: `${player.displayName} | ${title}`,
       avatar: player.user.avatarURL ? player.user.avatarURL : 'https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png',
-      color: rank === 1 ? 0xcfb53b :
+      color: rank === 1 ? 0xffd700 :
         rank === 2 ? 0xc0c0c0 :
-          rank === 3 ? 0xa67d3d : 0x696969,
+          rank === 3 ? 0xcd7f32 :
+            rank === 4 ? 0xb87333 :
+              rank === 5 ? 0xd3d4d5 :
+                rank >= 11 ? 0xeeeeee : 0x696969,
       description: outdent`
         ${outdent}
         Level ${level} | **${ranking}** ER
@@ -56,4 +59,4 @@ class Command {
   }
 }
 
-module.exports = new Command();
+module.exports = Command;

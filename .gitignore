@@ -1,7 +1,6 @@
 # files
 .DS_Store
 .env
-clan-games.json
 package-lock.json
 players.json
 
