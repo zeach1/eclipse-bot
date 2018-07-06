@@ -33,9 +33,11 @@ class Command {
     this.name = 'clear';
 
     this.args = 1;
-    this.description = 'Removes recent messages from the channel (500 max)';
+    this.description = 'Removes recent messages from the channel';
     this.type = 'leadership';
     this.usage = '<number>';
+
+    this.details = '`number |` number of messages to delete, max is 500 messages';
   }
 
   execute(message) {

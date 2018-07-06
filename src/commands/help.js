@@ -20,11 +20,30 @@ function sendCommandHelp(message, commandName) {
 function sendAllCommandHelp(message) {
   const commands = message.client.commands.array();
 
-  const essentials = { type: 'essentials', commands: commands.filter(command => command.type === 'essentials') };
-  const leadership = { type: 'leadership', commands: commands.filter(command => command.type === 'leadership') };
-  const misc = { type: 'misc', commands: commands.filter(command => command.type === 'misc') };
+  const commandCategories = [
+    {
+      type: 'essentials',
+      categoryHeader: ['⭐ Essentials', '*Important commands*'],
+    },
+    {
+      type: 'misc',
+      categoryHeader: ['😂 Miscellaneous', '*Random stuff for everyone to play with*'],
+    },
+    {
+      type: 'eclipse',
+      categoryHeader: ['🌙 Eclipse', '*The best just for our members*'],
+    },
+    {
+      type: 'leadership',
+      categoryHeader: ['🛑 Leadership', '*Must have the roles to use*'],
+    },
+  ];
 
-  Messenger.sendAllCommandHelp(message, [essentials, misc, leadership]).catch(e => Messenger.sendDeveloperError(message, e));
+  for (const commandCategory of commandCategories) {
+    commandCategory.commands = commands.filter(command => command.type === commandCategory.type);
+  }
+
+  Messenger.sendAllCommandHelp(message, commandCategories);
 }
 
 class Command {

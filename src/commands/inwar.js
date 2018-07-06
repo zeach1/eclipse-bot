@@ -125,7 +125,7 @@ class Command {
 
     this.args = 1;
     this.description = 'Manage members in war';
-    this.type = 'essentials';
+    this.type = 'eclipse';
     this.usage = '<list | refresh | add/remove <members> | clear>';
   }
 

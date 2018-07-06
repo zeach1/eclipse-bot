@@ -9,7 +9,7 @@ function verifyDeveloper(member) {
 }
 
 function verifyEclipse(member) {
-  return member && member.roles.get(role.eclipse);
+  return member && (member.roles.get(role.eclipse) || member.roles.get(role.war_guest));
 }
 
 function verifyFriends(member) {
@@ -20,6 +20,7 @@ class Check {
   static hasPermissions(member, command) {
     return command.type ? command.type === 'essentials' ||
            command.type === 'misc' ||
+           (command.type === 'eclipse' && verifyEclipse(member)) ||
            (command.type === 'leadership' && verifyLeadership(member)) ||
            (command.type === 'developer' && verifyDeveloper(member)) : true;
   }

@@ -4,6 +4,7 @@ const Check = require('../helper/Check.js');
 const fs = require('fs');
 const Messenger = require('../helper/Messenger.js');
 const moment = require('moment-timezone');
+const outdent = require('outdent');
 
 const DONATION_ACHIEVEMENT = clash.achievementName.donations;
 const LOAD_ERRORMSG = {
@@ -167,8 +168,13 @@ class Command {
     this.name = 'donate';
 
     this.description = 'Track donations of everyone in clan';
-    this.type = 'essentials';
+    this.type = 'eclipse';
     this.usage = '[update [-o | -overwrite]]';
+
+    this.details = outdent`
+      \`update    |\` type this command whenever a new member joins the clan
+      \`overwrite |\` overwrites the saved stats with current stats *(Leadership)*
+    `;
   }
 
   execute(message) {

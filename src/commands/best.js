@@ -1,4 +1,5 @@
 const Messenger = require('../helper/Messenger.js');
+const outdent = require('outdent');
 const Rank = require('../helper/Rank.js');
 
 const DEFAULTLENGTH = 10;
@@ -40,7 +41,13 @@ class Command {
     this.aliases = ['top'];
     this.description = 'Gets top players by experience or ranking';
     this.type = 'essentials';
-    this.usage = '<exp | ranking> [number]';
+    this.usage = '[exp | ranking] [number]';
+
+    this.details = outdent`
+      ${outdent}
+      \`exp     |\` measured from how much you chat in the server.
+      \`ranking |\` measured based on your performance on games *(coming soon)*
+    `;
   }
 
   execute(message) {

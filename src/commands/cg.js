@@ -240,8 +240,16 @@ class Command {
 
     this.args = 1;
     this.description = 'Keep track of Clan Games points of all players';
-    this.type = 'essentials';
+    this.type = 'eclipse';
     this.usage = '<start <player cap> | update | view | finish>';
+
+    this.details = outdent`
+      ${outdent}
+      \`start  |\` starts tracking a new Clan Games *(Leadership)*
+      \`update |\` type this command whenever a new member joins the clan
+      \`view   |\` see the current Clan Games stats
+      \`finish |\` stops tracking a new Clan Games, and logs it *(Leadership)*
+    `;
   }
 
   async execute(message) {

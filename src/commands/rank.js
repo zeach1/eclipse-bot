@@ -48,7 +48,7 @@ class Command {
           rank === 3 ? 0xcd7f32 :
             rank === 4 ? 0xb87333 :
               rank === 5 ? 0xd3d4d5 :
-                rank >= 11 ? 0xeeeeee : 0x696969,
+                rank >= 11 ? 0x696969 : 0xeee,
       description: outdent`
         ${outdent}
         Level ${level} | **${ranking}** ER

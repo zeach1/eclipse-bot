@@ -3,9 +3,12 @@ const Discord = require('discord.js');
 const moment = require('moment');
 const outdent = require('outdent');
 
+const COLOR_HELP = 0xe7a237;
 const DATE_FORMAT = 'MMM D, YYYY [at] h:mm A z';
 const DELETE_COOLDOWN = 5000;
 const DEFAULT_RANKINGEMBED = 25;
+
+const FOOTER_REQUEST = (message, timeRequest) => `Requested by ${message.member.displayName} ${timeRequest ? `on ${moment(message.createdAt).format(DATE_FORMAT)}` : ''}`;
 
 let working = false;
 
@@ -16,7 +19,15 @@ function createEmbed(info) {
     .setColor(info.color ? info.color : 0xcccccc)
     .setFooter(info.footer ? info.footer : '');
 
+  // generally for errors
   if (info.message && info.submessage) embed.addField(info.message, info.submessage);
+
+  // other uses, currently sendAllCommandHelp and scout
+  if (info.fields && info.fields.length > 0) {
+    for (const field of info.fields) {
+      embed.addField(field.title, field.description);
+    }
+  }
 
   return embed;
 }
@@ -33,121 +44,97 @@ function sendImage(message, data) {
 
 class Messenger {
   static sendCommandHelp(message, command) {
-    const type = { essentials: 'Essentials', misc: 'Miscellaneous', leadership: 'Leadership', developer: 'Developer' };
+    const type = {
+      essentials: 'Essentials',
+      misc: 'Miscellaneous',
+      eclipse: 'Eclipse',
+      leadership: 'Leadership',
+      developer: 'Developer',
+    };
 
-    const embed = new Discord.RichEmbed()
-      .setAuthor(`${command.name} | Eclipse Bot Help`, message.client.user.avatarURL)
-      .setColor(0xe7a237)
-      .setFooter(`Requested by ${message.member.displayName} on ${moment(message.createdAt).format(DATE_FORMAT)}`)
-      .setDescription(outdent`
-        ${outdent}
-        *${command.description}*
+    const description = outdent`
+      ${outdent}
+      ${command.description}${command.details ? `\n\n${command.details}` : ''}
 
-        **Type**: ${type[command.type] || 'Default'}
-        **Usage**: ${prefix}${command.name} ${command.usage ? command.usage : ''}
-        ${command.aliases ? `**Aliases**: ${command.aliases.map(c => `${prefix}${c}`).join(', ')}` : ''}
-      `);
+      **Type**: ${type[command.type] || 'Default'}
+      **Usage**: ${prefix}${command.name} ${command.usage ? command.usage : ''}
+      ${command.aliases ? `**Aliases**: ${command.aliases.map(c => `${prefix}${c}`).join(', ')}` : ''}
+    `;
 
-    message.channel.send(embed).catch(e => Messenger.sendDeveloperError(message, e));
+    Messenger.sendMessage(message, {
+      title: `${command.name} | Eclipse Bot Help`,
+      avatar: message.client.user.avatarURL,
+      description: description,
+      color: COLOR_HELP,
+      request: true,
+      requestTime: true,
+    });
   }
 
-  static async sendAllCommandHelp(message, commands) {
-    if (working) return;
-    working = true;
+  static sendAllCommandHelp(message, commandCategories) {
+    const description = [
+      [
+        {
+          title: 'Reddit Eclipse\'s custom Discord bot',
+          description: 'Have a request or found an issue? Create one in our [GitHub issues page](https://github.com/Luis729/reddit-eclipse-bot)',
+        },
+        {
+          title: 'Command Format',
+          description: `${prefix}commandName <mandatory> [optional]`,
+        },
+      ],
+    ];
 
-    const embed = new Discord.RichEmbed()
-      .setAuthor('Eclipse Bot Help', message.client.user.avatarURL)
-      .setDescription('Have a request or found an issue? Create one in our [GitHub issues page](https://github.com/Luis729/reddit-eclipse-bot)')
-      .addField('Command Format', `${prefix}commandName <mandatory> [optional]`)
-      .setColor(0xe7a237);
-
-    // commands -> [essentials, misc, leadership]
-    if (message.channel.parentID !== categoryChannel.leadership) {
-      commands.pop();
-    }
-
-    const embeds = [];
-    for (let i = 0; i < commands.length; i++) {
-      const commandCategory = commands[i];
-
-      let categoryHeader = [];
-      switch (commandCategory.type) {
-        case 'essentials': categoryHeader = ['⭐ Essentials', '*Important commands*']; break;
-        case 'leadership': categoryHeader = ['🛑 Leadership', '*Must have the roles to use*']; break;
-        case 'misc': categoryHeader = ['😂 Miscellaneous', '*Random stuff for our members*']; break;
+    let tempDescription = [];
+    for (const commandCategory of commandCategories) {
+      if (commandCategory.type === 'leadership' && message.channel.parentID !== categoryChannel.leadership) {
+        continue;
       }
 
-      const commandEmbed = new Discord.RichEmbed()
-        .setAuthor(categoryHeader[0])
-        .setDescription(categoryHeader[1])
-        .setColor(0xe7a237);
-
-      if (i === commands.length - 1) {
-        commandEmbed.setFooter(`Requested by ${message.member.displayName} on ${moment(message.createdAt).format(DATE_FORMAT)}`);
+      tempDescription.push({ title: commandCategory.categoryHeader[0], description: commandCategory.categoryHeader[1] });
+      for (const command of commandCategory.commands) {
+        tempDescription.push({
+          title: `${prefix}${command.name} ${command.usage ? command.usage : ''}`,
+          description: command.description,
+        });
       }
-
-      for (let j = 0; j < commandCategory.commands.length; j++) {
-        const command = commandCategory.commands[j];
-        const title = `${prefix}${command.name} ${command.usage ? command.usage : ''}`;
-        const description = i === commands.length - 1 && j === commandCategory.commands.length - 1 ?
-          `${command.description}\n\u200b` : command.description;
-
-        commandEmbed.addField(title, description);
-      }
-
-      embeds.push(commandEmbed);
+      description.push(tempDescription);
+      tempDescription = [];
     }
 
-    await message.channel.send(embed).catch(e => Messenger.sendDeveloperError(message, e));
-    for (const commandEmbed of embeds) {
-      await message.channel.send(commandEmbed).catch(e => Messenger.sendDeveloperError(message, e)); // eslint-disable-line
-    }
-    working = false;
+    Messenger.sendMessages(message, {
+      title: 'Eclipse Bot Help',
+      avatar: message.client.user.avatarURL,
+      description: description,
+      color: COLOR_HELP,
+      request: true,
+      requestTime: true,
+    });
   }
 
-  static async sendScoutMessage(message, guidelines, compositions) {
-    const introEmbed = createEmbed({
+  static sendScoutTips(message, details) {
+    const description = ['Use these tips to guide you in scouting a base'];
+
+    if (details.length === 0 || details.some(d => !d.fields)) {
+      description[0] = 'No tips have been made yet';
+    }
+
+    let tempDescription = [];
+    for (const detail of details) {
+      tempDescription.push({ title: detail.title, description: detail.description });
+      for (const field of detail.fields) {
+        tempDescription.push({ title: field.title, description: field.description && field.description.length > 0 ? field.description.map(desc => `- ${desc}`) : 'No tips have been made for this yet' });
+      }
+      description.push(tempDescription);
+      tempDescription = [];
+    }
+
+    Messenger.sendMessages(message, {
       title: '🛡️ Scout Guidelines',
-      description: 'Use these tips to guide you in scouting a base',
+      description: description,
       color: 0x84d6e7,
+      request: true,
     });
-
-    const guidelineEmbed = createEmbed({
-      title: 'Important Parts to Scout',
-      color: 0x84d6e7,
-    });
-
-    const armyEmbed = createEmbed({
-      title: 'Recommended Army Compositions',
-      color: 0x84d6e7,
-      footer: `Requested by ${message.member.displayName}`,
-    });
-
-    const embeds = [introEmbed, guidelineEmbed, armyEmbed];
-
-    if (!guidelines || guidelines.length === 0) guidelineEmbed.addField('Notice', 'No guidelines has been made yet');
-    if (!compositions || compositions.length === 0) armyEmbed.addField('Notice', 'No recommended army composition has been made yet');
-
-    for (const guideline of guidelines) {
-      if (guideline.topic && guideline.tips && guideline.tips.length > 0) {
-        guidelineEmbed.addField(guideline.topic, guideline.tips.map(tip => `- ${tip}`));
-      } else {
-        guidelineEmbed.addField(guideline.topic, 'No tips written for this yet');
-      }
-    }
-
-    for (const comp of compositions) {
-      console.log(comp);
-      if (comp.name && comp.armies && comp.armies.length > 0) {
-        armyEmbed.addField(comp.name, comp.armies.map(c => `- ${c}`));
-      } else {
-        armyEmbed.addField(comp.name, 'No armies written for this yet');
-      }
-    }
-
-    for (const embed of embeds) {
-      await message.channel.send(embed).catch(e => Messenger.sendDeveloperError(message, e)); // eslint-disable-line
-    }
   }
 
   static async sendImages(message, info) {
@@ -273,7 +260,8 @@ class Messenger {
       title: '❌ Argument Error',
       color: 0xf06c00,
       message: warning ? warning : 'This argument does not exist',
-      submessage: `Proper usage is ${prefix}${commandName || command.name} ${command.usage ? command.usage : ''}`,
+      submessage: message.args[0] === 'help' ? `Did you mean \`${prefix}help ${commandName || command.name}\`` : `Proper usage is ${prefix}${commandName || command.name} ${command.usage ? command.usage : ''}`,
+      submessageEnding: '?',
     });
   }
 
@@ -322,29 +310,41 @@ class Messenger {
     });
   }
 
-  static sendMessages(message, info, remove) {
+  // this supports fields or normal descriptions
+  static async sendMessages(message, info, remove, removeDelay) {
     for (let i = 0; i < info.description.length; i++) {
       const embedInfo = {
         title: i === 0 ? info.title : null,
         avatar: i === 0 ? info.avatar : null,
-        color: 0xdac31d,
-        description: info.description[i],
+        color: info.color,
         footer: i === info.description.length - 1 ? info.footer : null,
         request: i === info.description.length - 1 ? info.request : null,
         requestTime: info.requestTime,
       };
-      Messenger.sendMessage(message, embedInfo, remove);
+
+      // this means that the description is an array of fields, so
+      // we will convert it from description to fields
+      if (Array.isArray(info.description[i])) {
+        embedInfo.fields = info.description[i];
+      } else {
+        embedInfo.description = info.description[i];
+      }
+
+      await Messenger.sendMessage(message, embedInfo, remove, removeDelay); // eslint-disable-line
     }
   }
 
-  static sendMessage(message, info, remove) {
+  // this only supports normal descriptions
+  // fields are excluded for errors
+  static sendMessage(message, info, remove, removeDelay) {
     Messenger.send(message, {
       title: info.title ? info.title : '',
       avatar: info.avatar ? info.avatar : '',
       color: info.color ? info.color : 0x3498db,
+      fields: info.fields ? info.fields : '',
       description: info.description ? info.description : '',
-      footer: info.footer ? info.footer : info.request ? `Requested by ${message.member.displayName} ${info.requestTime ? `on ${moment(message.createdAt).format(DATE_FORMAT)}` : ''}` : '',
-    }, remove);
+      footer: info.footer ? info.footer : info.request ? FOOTER_REQUEST(message, info.requestTime) : '',
+    }, remove, removeDelay);
   }
 
   static sendError(message, error) {
@@ -352,7 +352,7 @@ class Messenger {
       title: error.title ? error.title : '❌ Error',
       color: error.color ? error.color : 0xff0000,
       message: error.message,
-      submessage: `${error.submessage}.`,
+      submessage: `${error.submessage}${error.submessageEnding || '.'}`,
     });
   }
 

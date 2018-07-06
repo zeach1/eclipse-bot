@@ -1,5 +1,7 @@
 const Emoji = require('../helper/Emoji.js');
 const Messenger = require('../helper/Messenger.js');
+const outdent = require('outdent');
+const { prefix } = require('../config/config.js');
 const Rank = require('../helper/Rank.js');
 
 class Command {
@@ -7,9 +9,15 @@ class Command {
     this.name = 'flair';
 
     this.args = 1;
-    this.description = 'Set an emoji as your flair which will be displayed on your rank and on games. Supports server emojis plus more custom emojis (including Clash emojis!)';
+    this.description = 'Set an emoji as your flair which will be displayed on your rank and on games';
     this.type = 'essentials';
     this.usage = '<emoji | clear>';
+
+    this.details = outdent`
+      ${outdent}
+      \`emoji |\` set your flair with an emoji. Your flair will be reflected in ranking boards and your rank (try ${prefix}rank). Supports all server emojis, any Clash of Clans troop/hero icon, and more!
+      \`clear |\` removes your flair
+    `;
   }
 
   execute(message) {

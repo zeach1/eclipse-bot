@@ -1,3 +1,4 @@
+const { clanName } = require('../config/config.js');
 const Messenger = require('../helper/Messenger.js');
 const moment = require('moment-timezone');
 
@@ -10,7 +11,7 @@ class Command {
   constructor() {
     this.name = 'time';
 
-    this.description = 'Displays current time in Eclipse\'s default timezone';
+    this.description = `Displays current time in ${clanName}'s default timezone`;
     this.type = 'essentials';
   }
 
