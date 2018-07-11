@@ -59,7 +59,11 @@ class Member {
     for (const r of role) {
       const discordRole = getRole(message, r);
       const members = discordRole.members.array();
-      allMembers = allMembers.concat(members);
+      for (const member of members) {
+        if (!allMembers.includes(member)) {
+          allMembers.push(member);
+        }
+      }
     }
 
     allMembers = Util.sort(allMembers, true);
@@ -188,7 +192,7 @@ class Member {
       return null;
     }
 
-    let members = Member.getMembersByRole(message, roleConfig.eclipse);
+    let members = Member.getMembersByRole(message, [roleConfig.eclipse, roleConfig.war_guest]);
 
     members = Member.matchAccountsToMembers(message, accounts, members);
 

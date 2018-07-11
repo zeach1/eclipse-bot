@@ -145,6 +145,10 @@ async function saveAPIDonations(message, info) {
   // do not turn on/off working status, this command is called from other commands
   // that are run by that status already
   const accountData = await Achievement.loadAPIData(message, DONATION_ACHIEVEMENT);
+
+  // API login issues
+  if (!accountData) return;
+
   Achievement.saveData(message, DONATION_ACHIEVEMENT, accountData, info);
 }
 
@@ -172,16 +176,14 @@ class Command {
     this.usage = '[update [-o | -overwrite]]';
 
     this.details = outdent`
+      ${outdent}
       \`update    |\` type this command whenever a new member joins the clan
       \`overwrite |\` overwrites the saved stats with current stats *(Leadership)*
     `;
   }
 
   execute(message) {
-    if (working) {
-      console.log('nope');
-      return;
-    }
+    if (working) return;
 
     switch (message.args[0]) {
       case 'update': {

@@ -1,9 +1,15 @@
 const Discord = require('discord.js');
+const Emoji = require('./Emoji.js');
 const { multiplier } = require('../config/config.js');
 const Messenger = require('./Messenger.js');
 
 const COOLDOWN = 60000;
 const QUEUE_COOLDOWN = new Discord.Collection();
+
+function getScore(score) {
+  const defaultScore = { exp: 0, level: 0, ranking: 5000, flair: '' };
+  return Object.assign(defaultScore, score);
+}
 
 function updateRanking(message, player, score, amount) {
   amount = parseInt(amount);
@@ -41,14 +47,12 @@ class Rank {
     setTimeout(() => QUEUE_COOLDOWN.delete(author.id), COOLDOWN);
 
     let score = message.client.points.get(author.id);
-    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
-
-    score.exp = parseInt(score.exp);
+    score = getScore(score);
 
     const random = Math.floor(Math.random() * 6) + 10;
     score.exp += random;
 
-    const level = this.getLevel(score.exp);
+    const level = Rank.getLevel(score.exp);
     if (score.level !== level) {
       if (level > score.level) {
         // the true in the end means that the message will get deleted in 5 seconds
@@ -68,7 +72,7 @@ class Rank {
     const scores = [];
     for (const player of players) {
       let score = message.client.points.get(player.id);
-      if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
+      score = getScore(score);
       scores.push(score);
     }
 
@@ -86,9 +90,9 @@ class Rank {
     const { id, client } = message.author;
 
     let score = client.points.get(id);
-    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
+    score = getScore(score);
 
-    score.flair = flair;
+    score.flair = Emoji.getEmoji(flair, message.client) || '';
 
     message.client.points.set(id, score);
   }
@@ -125,22 +129,23 @@ class Rank {
   }
 
   static setPlayer(message, player, data) {
+    if (!player.id) return;
+
     let score = message.client.points.get(player.id);
-    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
+    score = getScore(score);
 
     if (!isNaN(data.exp)) {
       const exp = parseInt(data.exp);
       score.exp = parseInt(exp < 0 ? 0 : exp);
-      score.level = this.getLevel(data.exp);
+      score.level = Rank.getLevel(data.exp);
     }
 
     if (!isNaN(data.ranking)) {
       score.ranking = data.ranking > 9999 ? 9999 : data.ranking < 1 ? 1 : parseInt(data.ranking);
     }
 
-    // change to emoji
     if (data.flair) {
-      score.flair = data.flair;
+      score.flair = Emoji.getEmoji(data.flair, message.client) || '';
     }
 
     message.client.points.set(player.id, score);

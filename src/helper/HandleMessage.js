@@ -65,6 +65,11 @@ function checkCommand(message, commandName, command, args) {
     return false;
   }
 
+  if (command.name !== 'help' && args && args[0] === 'help') {
+    Messenger.sendArgumentError(message, command, null, commandName, true);
+    return false;
+  }
+
   if (command.tag && !Check.verifyTag(message.mentions.members.size, command)) {
     Messenger.sendArgumentError(message, command, `You need to tag ${command.tag > 1 ? `${command.tag}  members` : 'a member'}`, commandName);
     return false;

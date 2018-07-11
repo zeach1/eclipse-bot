@@ -127,6 +127,14 @@ class Command {
     this.description = 'Manage members in war';
     this.type = 'eclipse';
     this.usage = '<list | refresh | add/remove <members> | clear>';
+
+    this.details = outdent`
+      ${outdent}
+      \`list       |\` display current membesr in war
+      \`refresh    |\` gets in-game data to add/remove players
+      \`add/remove |\` add or remove a player automatically
+      \`clear      |\` remove the in war role from everyone
+    `;
   }
 
   execute(message) {

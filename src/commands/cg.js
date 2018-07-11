@@ -153,8 +153,9 @@ async function view(message) {
 
 async function finish(message) {
   const { scores, playerCap } = await getScores(message);
-  displayScores(message, scores, playerCap, true);
+  await displayScores(message, scores, playerCap, true);
 
+  // should change this to the channel it should go to
   const logMessage = message;
 
   const success = await Messenger.confirm(message, {

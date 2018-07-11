@@ -1,7 +1,7 @@
 module.exports = {
   clanName: 'Reddit Eclipse',
   clanTag: '#9RVVPG2J',
-  rules: 'https://docs.google.com/document/d/1mXGBzkv_RpjSy_V3dlRa2wJ20Sx55FlJeFl1DvfcBXw',
+  rules: 'https://www.reddit.com/r/RedditEclipse/wiki/clan_rules',
   password: 'https://www.reddit.com/r/redditclansystem/wiki/official_reddit_clan_system',
   subreddit: 'https://www.reddit.com/r/RedditEclipse/',
   defaultTimeZone: 'America/New_York',
@@ -18,7 +18,7 @@ module.exports = {
 
   channel: {
     development: process.env.DEVELOPMENT,
-    donation: process.env.DONATION,
+    donations: process.env.DONATION,
     leader_notes: process.env.LEADERNOTES,
     leadership: process.env.LEADERSHIP,
     war_discussion: process.env.WARDISCUSSION,
@@ -54,11 +54,6 @@ module.exports = {
       clanGames: 'Games Champion',
       donations: 'Friend in Need',
     },
-  },
-
-  reply: {
-    yes: ['y', 'yes', 'sure', 'ok', 'okay'],
-    no: ['n', 'no', 'nope', 'nah'],
   },
 
   prefix: '~',

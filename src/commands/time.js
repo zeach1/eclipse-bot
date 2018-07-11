@@ -13,6 +13,8 @@ class Command {
 
     this.description = `Displays current time in ${clanName}'s default timezone`;
     this.type = 'essentials';
+
+    this.details = `Our clan's default timezone is ${moment().format('zz')}`;
   }
 
   execute(message) {

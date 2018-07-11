@@ -37,7 +37,7 @@ class Command {
     this.type = 'leadership';
     this.usage = '<number>';
 
-    this.details = '`number |` number of messages to delete, max is 500 messages';
+    this.details = '`number |` max number to delete is 500 messages';
   }
 
   execute(message) {

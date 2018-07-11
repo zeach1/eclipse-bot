@@ -1,5 +1,5 @@
-const Emoji = require('../helper/Emoji.js');
 const Messenger = require('../helper/Messenger.js');
+const outdent = require('outdent');
 const path = require('path');
 const Rank = require('../helper/Rank.js');
 const Util = require('../helper/Util.js');
@@ -16,20 +16,15 @@ function test(message) { // eslint-disable-line
 
 function fix(message) {
   for (const id of message.client.points.keyArray()) {
-    if (!message.guild.members.get(id)) {
-      Rank.removePlayer({ id: id }, message.client);
+    const player = { id: id };
+
+    if (!message.guild.members.get(player.id)) {
+      Rank.removePlayer(player, message.client);
       continue;
     }
 
-    let score = message.client.points.get(id);
-    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
-
-    message.client.points.set(id, {
-      exp: parseInt(score.exp) || 0,
-      level: Rank.getLevel(score.exp),
-      ranking: parseInt(score.ranking) || 5000,
-      flair: score.flair || '',
-    });
+    const score = message.client.points.get(player.id);
+    Rank.setPlayer(message, player, score);
   }
 
   message.channel.send('Player scores fixed.').catch(e => Messenger.sendDeveloperError(message, e));
@@ -49,11 +44,7 @@ function load(message, filePath) {
   players = Array.isArray(players) ? players : [players];
   for (const player of players) {
     if (!player || !player.id || !message.guild.members.get(player.id)) continue;
-    Rank.setPlayer(message, { id: player.id }, {
-      exp: parseInt(player.exp) || 0,
-      ranking: parseInt(player.ranking) || 5000,
-      flair: player.flair ? player.flair : '',
-    });
+    Rank.setPlayer(message, player, player);
   }
 
   Messenger.sendSuccessMessage(message, {
@@ -69,9 +60,9 @@ function save(message, filePath) {
     const score = points.get(id);
     players.push({
       id: id,
-      exp: parseInt(score.exp) || 0,
-      ranking: parseInt(score.ranking) || 5000,
-      flair: score.flair || '',
+      exp: score.exp,
+      ranking: score.ranking,
+      flair: score.flair,
     });
   }
 
@@ -93,18 +84,18 @@ function set(message, args) {
   const player = message.mentions.members.first();
   const exp = parseInt(args[1]);
   const ranking = parseInt(args[2]);
-  const flair = Emoji.getEmoji(args[3], message.client);
+  const flair = args[3] || args[2];
 
-  if (!player || isNaN(exp)) {
+  if (!player) {
+    Messenger.sendArgumentError(message, new Command(), 'You need to tag a member');
+    return;
+  }
+  if (isNaN(exp)) {
     Messenger.sendArgumentError(message, new Command(), 'Wrong argument usage');
     return;
   }
 
-  Rank.setPlayer(message, player, {
-    exp: exp,
-    ranking: ranking,
-    flair: flair,
-  });
+  Rank.setPlayer(message, player, { exp: exp, ranking: ranking, flair: flair });
 
   const points = message.client.points.get(player.id);
 
@@ -120,6 +111,14 @@ class Command {
     this.description = 'Developer commands, used for maintenance and fixing possible errors';
     this.type = 'developer';
     this.usage = '<fix | load | save | set <user> <exp> [ranking] [flair]>';
+
+    this.details = outdent`
+      ${outdent}
+      \`fix  |\` fix all scores and resets all commands
+      \`load |\` loads any backup data
+      \`save |\` saves all data to backup
+      \`set  |\` change member's exp/ranking/flair data
+    `;
   }
 
   execute(message) {

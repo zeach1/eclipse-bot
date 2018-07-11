@@ -5,7 +5,7 @@ function getTwemoji(text) {
   return twemoji.parse(text).startsWith('<img') ? text : null;
 }
 
-function getServerEmoji(text, client) {
+function getEmojiById(text, client) {
   if (!text.startsWith('<')) return null;
 
   const id = text.slice(text.lastIndexOf(':') + 1, -1);
@@ -14,7 +14,7 @@ function getServerEmoji(text, client) {
   return emoji ? `<:${emoji.name}:${id}>` : null;
 }
 
-function getCustomEmoji(text, client) {
+function getEmojiByName(text, client) {
   if (text.startsWith('<')) {
     text = text.slice(2, text.lastIndexOf(':') + 1);
   }
@@ -30,7 +30,7 @@ function getCustomEmoji(text, client) {
 
 class Emoji {
   static getEmoji(text, client) {
-    return text ? getTwemoji(text) || getServerEmoji(text, client) || getCustomEmoji(text, client) : null;
+    return text ? getTwemoji(text) || getEmojiById(text, client) || getEmojiByName(text, client) : null;
   }
 }
 

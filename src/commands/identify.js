@@ -10,7 +10,13 @@ class Command {
     this.description = 'Tells a member to identify him/herself on WarMatch';
     this.tag = 1;
     this.type = 'leadership';
-    this.usage = '<member> [player id [-d | -delete]]';
+    this.usage = '<member> [tag [-d | -delete]]';
+
+    this.details = outdent`
+      ${outdent}
+      \`member |\` member should have same display name as his/her Clash name
+      \`delete |\` hides the command you send, still tells the member
+    `;
   }
 
   execute(message) {

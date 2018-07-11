@@ -1,7 +1,8 @@
-const { categoryChannel, channel, clanName, role, rules, password, prefix, reply: replyConfig } = require('../config/config.js');
+const { categoryChannel, channel, clanName, role, rules, password, prefix } = require('../config/config.js');
 const Discord = require('discord.js');
 const moment = require('moment');
 const outdent = require('outdent');
+const { reply: replyConfig } = require('../config/words.js');
 
 const COLOR_HELP = 0xe7a237;
 const DATE_FORMAT = 'MMM D, YYYY [at] h:mm A z';
@@ -255,13 +256,13 @@ class Messenger {
     });
   }
 
-  static sendArgumentError(message, command, warning, commandName) {
+  static sendArgumentError(message, command, warning, commandName, helpError) {
     Messenger.sendError(message, {
       title: '❌ Argument Error',
       color: 0xf06c00,
-      message: warning ? warning : 'This argument does not exist',
-      submessage: message.args[0] === 'help' ? `Did you mean \`${prefix}help ${commandName || command.name}\`` : `Proper usage is ${prefix}${commandName || command.name} ${command.usage ? command.usage : ''}`,
-      submessageEnding: '?',
+      message: warning && warning.length > 0 ? warning : 'This argument does not exist',
+      submessage: helpError ? `Did you mean \`${prefix}help ${commandName || command.name}\`` : `Proper usage is ${prefix}${commandName || command.name} ${command.usage ? command.usage : ''}`,
+      submessageEnding: helpError ? '?' : null,
     });
   }
 
@@ -290,7 +291,9 @@ class Messenger {
       submessage: 'I sent a request to my developers. I will be back up soon - I promise',
     });
 
-    const logMessage = { channel: message.guild.channels.get(channel.development) };
+    // if there is no message.guild, the message should point to the development channel
+    const logMessage = message.guild ? { channel: message.guild.channels.get(channel.development) } : message;
+
     const eMsg = error.message;
     Messenger.sendError(logMessage, {
       title: '⚠️ Maintenance Needed',

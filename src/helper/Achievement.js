@@ -13,7 +13,7 @@ function getAchievementFilePath(achievementName) {
 }
 
 function displayResultMessage(message, check, info) {
-  // quietly exists if no description
+  // quietly exists if missing description
   if (!info || !info.success || !info.error || !info.success.title || !info.success.description || !info.error.message || !info.error.submessage) return;
 
   if (check) {
