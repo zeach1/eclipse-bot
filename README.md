@@ -1,5 +1,7 @@
-# eclipse-bot
+## Reddit Eclipse Discord | Eclipse Bot
 
-**issues:** [Luis729/reddit-eclipse-bot](https://github.com/Luis729/reddit-eclipse-bot)
+Reddit Eclipse *(one of the best RCS clans out there)* has its own bot? Why, yes it does!
 
-**server:** https://discord.gg/FzUNupJ
+Join our server and check the bot out! https://discord.gg/FzUNupJ
+
+The bot's prefix is `+`, so check out its commands by doing `+help`.
