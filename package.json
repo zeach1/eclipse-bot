@@ -2,36 +2,36 @@
   "name": "eclipse-bot",
   "version": "0.7.1",
   "description": "Reddit Eclipse custom Discord bot",
-  "main": "index.js",
   "dependencies": {
-    "clash-of-clans-api": "^0.4.0",
     "discord.js": "^11.3.2",
-    "enmap": "^2.6.3",
+    "dotenv": "^6.2.0",
+    "enmap": "^4.8.1",
     "enmap-level": "^2.1.0",
     "express": "^4.16.3",
     "moment-timezone": "^0.5.21",
-    "outdent": "^0.5.0",
+    "outdent": "^0.7.0",
     "twemoji": "^11.0.0"
   },
   "devDependencies": {
-    "dotenv": "^5.0.1",
-    "eslint": "^4.19.1"
-  },
-  "engines": {
-    "node": "9.8.0"
+    "@typescript-eslint/eslint-plugin": "^1.4.2",
+    "@typescript-eslint/parser": "^1.4.2",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.13.1",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.3.3333"
   },
   "scripts": {
-    "lint": "eslint . --fix .js",
-    "start": "node ./src/index.js"
+    "lint": "tslint -c tslint.json '**/*.ts'",
+    "start": "ts-node src/index.ts"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Luis729/eclipse-bot.git"
   },
   "author": "Paul Matthew Barrameda",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Luis729/reddit-eclipse-bot/issues"
+    "url": "https://github.com/Luis729/eclipse-bot/issues"
   },
   "homepage": "https://github.com/Luis729/eclipse-bot#readme"
 }
