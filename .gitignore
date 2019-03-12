@@ -2,9 +2,7 @@
 .DS_Store
 .env
 package-lock.json
-players.json
 
 # folders
-data/achievements
-data/players
+dist
 node_modules
