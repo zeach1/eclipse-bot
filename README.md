@@ -1,8 +1,8 @@
 # Eclipse Bot
 
-[![Build Status](https://travis-ci.com/Luis729/eclipse-bot.svg?brach=ts-restructure)](https://travis-ci.com/Luis729/eclipse-bot)
-[![Dependencies Status](https://david-dm.org/Luis729/eclipse-bot.svg)](https://david-dm.org/Luis729/eclipse-bot)
-[![devDependencies Status](https://david-dm.org/Luis729/eclipse-bot/dev-status.svg)](https://david-dm.org/Luis729/eclipse-bot?type=dev)
+[![Build Status](https://travis-ci.com/Luis729/eclipse-bot.svg?branch=ts-restructure)](https://travis-ci.com/Luis729/eclipse-bot)
+[![dependencies Status](https://david-dm.org/Luis729/eclipse-bot/ts-restructure/status.svg)](https://david-dm.org/Luis729/eclipse-bot/ts-restructure)
+[![devDependencies Status](https://david-dm.org/Luis729/eclipse-bot/ts-restructure/dev-status.svg)](https://david-dm.org/Luis729/eclipse-bot/ts-restructure?type=dev)
 
 Reddit Eclipse *(one of the best RCS clans out there)* has its own bot? Why, yes it does!
 
