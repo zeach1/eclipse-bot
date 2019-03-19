@@ -1,0 +1,8 @@
+language: node_js
+
+# Use latest version of Node.js to test
+node_js:
+  - node
+
+# Cache dependencies after testing
+cache: npm

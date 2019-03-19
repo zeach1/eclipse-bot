@@ -4,7 +4,7 @@
   "description": "Reddit Eclipse custom Discord bot",
   "dependencies": {
     "discord.js": "^11.3.2",
-    "dotenv": "^6.2.0",
+    "dotenv": "^7.0.0",
     "enmap": "^4.8.1",
     "enmap-level": "^2.1.0",
     "express": "^4.16.3",
@@ -13,24 +13,28 @@
     "twemoji": "^11.0.0"
   },
   "devDependencies": {
+    "@types/node": "^11.11.3",
     "@typescript-eslint/eslint-plugin": "^1.4.2",
     "@typescript-eslint/parser": "^1.4.2",
+    "chai": "^4.2.0",
     "eslint": "^5.15.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-import-resolver-typescript": "^1.1.1",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-prettier": "^3.0.1",
+    "mocha": "^6.0.2",
     "prettier": "^1.16.4",
-    "ts-node": "^8.0.2",
+    "ts-node-dev": "^1.0.0-pre.32",
     "typescript": "^3.3.3333"
   },
   "scripts": {
-    "build": "tsc",
     "test": "npm run test:lint",
-    "test:lint": "eslint --ext .js,.ts \".\"",
-    "lint": "eslint --fix --ext .js,.ts \".\"",
-    "start": "ts-node src/index.ts"
+    "test:lint": "eslint --ext .ts \".\"",
+    "lint": "eslint --fix --ext .ts \".\"",
+    "dev": "tsnd src/index.ts",
+    "compile": "tsc --project .",
+    "start": "npm run compile && node dist/index.js"
   },
   "repository": {
     "type": "git",

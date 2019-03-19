@@ -1,2 +1,4 @@
+# Prevent newline changes between systems
+
 * text=auto
 * text eol=lf
