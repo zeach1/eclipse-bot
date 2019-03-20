@@ -1,13 +1,20 @@
 import { expect } from 'chai';
+import { Message } from 'discord.js';
 import { describe, it } from 'mocha';
 
 import Command from '../../src/struct/command';
+
+async function run(message: Message): Promise<Message> {
+  await message.channel.send('Test function');
+  return message;
+}
 
 describe('Command class', () => {
   let command = new Command({
     name: 'test',
     description: 'Test command',
     type: 'dev',
+    run,
   });
 
   it('should initialize with mandatory properties', () => {
@@ -19,6 +26,7 @@ describe('Command class', () => {
     expect(command).to.have.property('args');
     expect(command).to.have.property('tags');
     expect(command).to.have.property('details');
+    expect(command).to.have.property('run');
   });
 
   it('should have proper values in proper fields', () => {
@@ -38,6 +46,7 @@ describe('Command class', () => {
         name: 'test',
         description: 'Test command',
         type: 'notAValidType',
+        run,
       });
     }).to.throw("test command's type (notAValidType) is not valid.");
   });

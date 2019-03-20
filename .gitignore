@@ -1,6 +1,7 @@
 # System generated files/folders
 .DS_Store
 package-lock.json
+data
 dist
 node_modules
 

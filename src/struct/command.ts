@@ -1,5 +1,8 @@
 import { Message } from 'discord.js';
 
+// run function for all commands will be asynchronous.
+type RunCommandFunction = (message: Message, args?: string[]) => Promise<Message>;
+
 interface CommandOptions {
   name: string;
   description: string;
@@ -10,6 +13,8 @@ interface CommandOptions {
   args?: number;
   tags?: number;
   details?: string;
+
+  run: RunCommandFunction;
 }
 
 export default class Command {
@@ -44,11 +49,13 @@ export default class Command {
    */
   private details: string;
 
+  public run: RunCommandFunction;
+
   public constructor(options: CommandOptions) {
     const keys: string[] = Object.keys(options);
 
     keys.forEach((key) => {
-      if (key === 'type' && !['core', 'memeber', 'friends', 'mod', 'dev'].includes(options.type)) {
+      if (key === 'type' && !['core', 'misc', 'member', 'mod', 'dev'].includes(options.type)) {
         throw new Error(`${options.name} command's type (${options.type}) is not valid.`);
       }
 
@@ -75,10 +82,4 @@ export default class Command {
   public getTags(): number { return this.tags; }
 
   public getDetails(): string { return this.details; }
-
-  public static run(message: Message): Message {
-    message.channel.send('No implementation on this command yet').catch(() => {});
-
-    return message;
-  }
 }

@@ -1,36 +1,38 @@
-import { Client, Message } from 'discord.js';
-import dotenv from 'dotenv';
+import { Client } from 'discord.js';
+import { config } from 'dotenv';
+import Enmap from 'enmap';
 import { tz } from 'moment-timezone';
 
-import { server, timeZone } from './config/index';
+import { timeZone } from './config/index';
+import Rank from './struct/rank';
+import { processMessage } from './util/handleMessage';
 import ping from './util/ping';
 
-// Load environment variables if project is not running from Glitch, otherwise run ping script.
+// Load environment variables if project is running locally, ping if project is running in Glitch.
 if (!process.env.PROJECT_DOMAIN) {
-  dotenv.config();
+  config();
 } else {
   ping();
 }
 
+// Set time zome for bot.
 tz.setDefault(timeZone);
 
 const client = new Client();
+
+// Set up ranks for all users.
+const ranks = new Enmap<string, Rank>({
+  name: 'ranks',
+});
 
 function ready(): void {
   client.user.setActivity('with TypeScript', { type: 'PLAYING' });
 }
 
-function handleMessage(message: Message): void {
-  // Ensures that bot only processes messages from Reddit Eclipse server
-  if (message.guild.id !== server.guild) return;
-
-  if (message.content === 'Hi bot') {
-    message.channel.send(`Hi ${message.author}`).catch(() => {});
-  }
-}
-
+// Callback when bot logins.
 client.on('ready', ready);
 
-client.on('message', handleMessage);
+// Callback every time a message is sent in chat (any chat).
+client.on('message', message => processMessage(message, ranks));
 
 client.login(process.env.BOT_TOKEN);
