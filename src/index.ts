@@ -1,4 +1,4 @@
-import { Client } from 'discord.js';
+import { Client, Message } from 'discord.js';
 import dotenv from 'dotenv';
 import { tz } from 'moment-timezone';
 
@@ -20,7 +20,7 @@ function ready(): void {
   client.user.setActivity('with TypeScript', { type: 'PLAYING' });
 }
 
-function handleMessage(message): void {
+function handleMessage(message: Message): void {
   // Ensures that bot only processes messages from Reddit Eclipse server
   if (message.guild.id !== server.guild) return;
 
