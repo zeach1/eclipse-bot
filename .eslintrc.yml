@@ -24,6 +24,9 @@ rules:
   "@typescript-eslint/no-explicit-any": error
   multiline-comment-style: error
 
+  # @typescript-eslint/no-use-before-define is already defined
+  no-use-before-define: off
+
   # Re-adding changed Airbnb rules (removed most likely from eslint/recommended)
   "@typescript-eslint/camelcase":
     - error

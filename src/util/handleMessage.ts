@@ -3,10 +3,10 @@ import Enmap from 'enmap';
 
 import commands from '../commands/index';
 import { expCooldown, prefix, server } from '../config/index';
-import Command from '../struct/command';
+import { Command } from '../struct/command';
 import Rank from '../struct/rank';
 
-import { sendMessage } from './sendMessage';
+import { sendEmbed, sendArgumentError } from './sendMessage';
 
 const rankCooldown = new Collection();
 
@@ -21,8 +21,26 @@ function processCommand(message: Message): void {
   const args = content.split(/ +/);
   const commandName = args.shift();
 
-  // Runs corresponding command.
+  // Gets command based on commandName.
   const command: Command = commands[commandName];
+
+  // Checks if arguments satisfy command requirements.
+  if (!command.verifyArgs(args)) {
+    sendArgumentError(message, command, {
+      name: `You must provide ${command.getArgs().length === 1 ? 'a valid argument' : `${command.getArgs()} valid arguments`}`,
+    });
+    return;
+  }
+
+  // Checks if number of people tagged satisfy command requirements.
+  if (!command.verifyTags(message)) {
+    sendArgumentError(message, command, {
+      name: `You must tag ${command.getTags() === 1 ? 'a member' : `${command.getTags()}  members`}`,
+    });
+    return;
+  }
+
+  // Runs corresponding command.
   command.run(message, args).catch(() => {});
 }
 
@@ -54,7 +72,7 @@ function processRank(message: Message, ranks: Enmap): void {
   const newLevel = rank.getLevel();
 
   if (newLevel > oldLevel) {
-    sendMessage(message, {
+    sendEmbed(message, {
       title: '🎉 Level Up',
       color: 0x3ea92e,
       description: `${message.author} has leveled up to level ${newLevel}!`,

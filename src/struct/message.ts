@@ -7,11 +7,11 @@ import { FileOptions, MessageAttachment, StringResolvable } from 'discord.js';
  * for sending messages.
  */
 export interface MessageEmbedOptions {
-  title: string;
+  title?: string;
   description?: string;
   url?: string;
   timestamp?: Date | number;
-  color: number | string;
+  color?: number | string;
   fields?: { name: string; value: string; inline?: boolean }[];
   files?: (MessageAttachment | string | FileOptions)[];
   author?: { name?: string; url?: string; icon_url?: string; iconURL?: string };

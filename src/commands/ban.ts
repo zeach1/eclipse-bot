@@ -1,11 +1,11 @@
 import { Message } from 'discord.js';
 
-import Command from '../struct/command';
+import { Command } from '../struct/command';
 import { sendImages } from '../util/sendMessage';
 
 async function ban(message: Message): Promise<Message> {
   await sendImages(message, {
-    url: 'https://i.imgur.com/WOjy315.gif',
+    url: 'https://thumbs.gfycat.com/LonelyCapitalKissingbug-size_restricted.gif',
   });
 
   return message;

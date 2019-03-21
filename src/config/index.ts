@@ -15,5 +15,8 @@ export const prefix = '~';
 export { server };
 
 export default {
-  timeZone, expMultiplier, prefix, server,
+  timeZone,
+  expMultiplier,
+  prefix,
+  server,
 };

@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-import Command from '../struct/command';
+import { Command } from '../struct/command';
 import { sendImages } from '../util/sendMessage';
 
 async function poison(message: Message): Promise<Message> {

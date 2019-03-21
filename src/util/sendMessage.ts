@@ -2,23 +2,21 @@ import {
   Attachment, Collection, Message, MessageEmbed,
 } from 'discord.js';
 
+import { prefix } from '../config/index';
+import { Command, DummyCommand } from '../struct/command';
 import { ImageOptions, MessageEmbedOptions } from '../struct/message';
+
+// Object of embed type to their color.
+const colorGenerator = {
+  default: 0xfff,
+  argumentError: 0xf06c00,
+};
 
 /*
  * Collection of channels that the bot is currently sending images in.
  * The bot should not interrupt a sequence of images with another in the same channel.
  */
 const workingChannels = new Collection();
-
-function generateEmbed(message: Message, options: MessageEmbedOptions): MessageEmbed {
-  return new MessageEmbed(message, options);
-}
-
-export function sendMessage(message: Message, options: MessageEmbedOptions): void {
-  const embed = generateEmbed(message, options);
-
-  message.channel.send({ embed }).catch(() => {});
-}
 
 function sendImage(message: Message, options: ImageOptions): Promise<void | Message | Message[]> {
   return new Promise((resolve) => {
@@ -29,6 +27,24 @@ function sendImage(message: Message, options: ImageOptions): Promise<void | Mess
         message.channel.send(options.content || '', attachment).catch(() => {}),
       );
     }, options.delay || 0);
+  });
+}
+
+export async function sendEmbed(message: Message, options: MessageEmbedOptions): Promise<void> {
+  const embed = new MessageEmbed(message, options);
+
+  await message.channel.send({ embed }).catch(() => {});
+}
+
+export async function sendArgumentError(
+  message: Message, command: Command | DummyCommand, field?: { name?: string; value?: string },
+): Promise<void> {
+  await sendEmbed(message, {
+    color: colorGenerator.argumentError,
+    fields: [{
+      name: field && field.name ? field.name : 'Argument usage is incorrect',
+      value: field && field.value ? field.value : `Proper usage is ${prefix}${command.getName()} ${command.getUsage()}`,
+    }],
   });
 }
 
@@ -58,4 +74,8 @@ export async function sendImages(
   workingChannels.delete(message.channel.id);
 }
 
-export default { sendMessage };
+export default {
+  sendEmbed,
+  sendArgumentError,
+  sendImages,
+};

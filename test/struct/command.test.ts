@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Message } from 'discord.js';
 import { describe, it } from 'mocha';
 
-import Command from '../../src/struct/command';
+import { Command } from '../../src/struct/command';
 
 async function run(message: Message): Promise<Message> {
   await message.channel.send('Test function');
@@ -10,7 +10,7 @@ async function run(message: Message): Promise<Message> {
 }
 
 describe('Command class', () => {
-  let command = new Command({
+  const command = new Command({
     name: 'test',
     description: 'Test command',
     type: 'dev',
@@ -35,19 +35,8 @@ describe('Command class', () => {
     expect(command.getType()).to.equal('dev');
     expect(command.getAliases()).to.have.length(0);
     expect(command.getUsage()).to.equal('');
-    expect(command.getArgs()).to.equal(0);
+    expect(command.getArgs().length).to.equal(0);
     expect(command.getTags()).to.equal(0);
     expect(command.getDetails()).to.equal(command.getDescription());
-  });
-
-  it('should not initialize with an incorrect command type', () => {
-    expect(() => {
-      command = new Command({
-        name: 'test',
-        description: 'Test command',
-        type: 'notAValidType',
-        run,
-      });
-    }).to.throw("test command's type (notAValidType) is not valid.");
   });
 });
