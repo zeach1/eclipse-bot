@@ -6,7 +6,7 @@ type CommandRunFunction = (message: Message, args?: string[]) => Promise<Message
 // Command type field will always be the following.
 type CommandType = 'core' | 'misc' | 'member' | 'mod' | 'dev';
 
-export type CommandArgument = 'string' | 'number';
+type CommandArgument = 'string' | 'number';
 
 /*
  * There are two command classes exported in this file. The one that should be used is Command.
