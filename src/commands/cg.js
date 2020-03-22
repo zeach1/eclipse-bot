@@ -81,7 +81,7 @@ async function handle(message) {
   // makes user confirm, only if argument is not "view"
   if (message.args[0] !== 'view') {
     const confirm = await Messenger.confirm(message, {
-      content: `are you sure you want to run \`${prefix}${(new Command()).name} ${message.args[0]}\`?`,
+      content: `are you sure you want to run \`${prefix}${new Command().name} ${message.args[0]}\`?`,
       no: NO_MSG,
     });
 
@@ -203,7 +203,7 @@ async function getScores(message) {
         a.cgPoints.score < b.cgPoints.score ? 1 :
           a.cgPoints.score > b.cgPoints.score ? -1 :
             a.displayName > b.displayName ? 1 :
-              a.displayName < b.displayName ? -1 : 0
+              a.displayName < b.displayName ? -1 : 0,
   );
 
   return { scores: scores, playerCap: fileData.playerCap };

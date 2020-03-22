@@ -27,7 +27,7 @@ class Command {
         Messenger.sendError(message, {
           message: `Cannot kick ${member.displayName}`,
           submessage: `${member} has more permissions than me`,
-        })
+        }),
       );
   }
 }
