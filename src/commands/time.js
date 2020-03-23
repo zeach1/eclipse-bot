@@ -1,6 +1,6 @@
+const moment = require('moment-timezone');
 const { clanName } = require('../config/config.js');
 const Messenger = require('../helper/Messenger.js');
-const moment = require('moment-timezone');
 
 const COOLDOWN = 15000;
 const DATE_FORMAT = 'MMMM D, YYYY, h:mm A z';

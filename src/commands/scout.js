@@ -69,7 +69,8 @@ class Command {
   }
 
   execute(message) {
-    if (message.channel.id !== channel.development && message.channel.parentID !== categoryChannel.war_room) {
+    if (message.channel.id !== channel.development
+      && message.channel.parentID !== categoryChannel.war_room) {
       Messenger.sendError(message, {
         title: '🛡️ Wrong Channel',
         message: 'You can\'t call this command here',

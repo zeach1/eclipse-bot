@@ -1,8 +1,8 @@
+const outdent = require('outdent');
 const Check = require('../helper/Check.js');
 const Member = require('../helper/Member.js');
 const Messenger = require('../helper/Messenger.js');
 const Rank = require('../helper/Rank.js');
-const outdent = require('outdent');
 
 class Command {
   constructor() {
@@ -19,7 +19,8 @@ class Command {
 
     let player;
     if (message.args[0]) {
-      player = message.mentions.members.first() || Member.findMemberByName(message, message.guild.members, name) || message.member;
+      player = message.mentions.members.first()
+        || Member.findMemberByName(message, message.guild.members, name) || message.member;
     } else {
       player = message.member;
     }
@@ -29,26 +30,43 @@ class Command {
       return;
     }
 
-    const title = Check.isLeadership(player) ? 'Leadership' :
-      Check.isEclipse(player) ? 'Reddit Eclipse' :
-        Check.isFriends(player) ? 'Friends of Eclipse' : 'Noob';
+    let title = 'Noob';
+    if (Check.isLeadership(player)) {
+      title = 'Leadership';
+    } else if (Check.isEclipse(player)) {
+      title = 'Reddit Eclipse';
+    } else if (Check.isFriends(player)) {
+      title = 'Friends of Eclipse';
+    }
 
     let score = message.client.points.get(player.id);
-    if (!score || !score.exp) score = { exp: 0, level: 0, ranking: 5000, flair: '' };
-    const { exp, level, ranking, flair } = score;
+    if (!score || !score.exp) {
+      score = {
+        exp: 0, level: 0, ranking: 5000, flair: '',
+      };
+    }
+    const {
+      exp, level, ranking, flair,
+    } = score;
 
     const expToLevelUp = Rank.getExp(level + 1) - exp - 1;
-    const rank = 1 + Rank.getRankList(message, 'exp').findIndex(r => r.id === player.id);
+    const rank = 1 + Rank.getRankList(message, 'exp').findIndex((r) => r.id === player.id);
+
+    let color;
+    switch (rank) {
+      case 1: color = 0xffd700; break;
+      case 2: color = 0xc0c0c0; break;
+      case 3: color = 0xcd7f32; break;
+      case 4: color = 0xb87333; break;
+      case 5: color = 0xd3d4d5; break;
+      case 11: color = 0x696969; break;
+      default: color = 0xeee; break;
+    }
 
     Messenger.sendMessage(message, {
       title: `${player.displayName} | ${title}`,
       avatar: player.user.avatarURL ? player.user.avatarURL : 'https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png',
-      color: rank === 1 ? 0xffd700 :
-        rank === 2 ? 0xc0c0c0 :
-          rank === 3 ? 0xcd7f32 :
-            rank === 4 ? 0xb87333 :
-              rank === 5 ? 0xd3d4d5 :
-                rank >= 11 ? 0x696969 : 0xeee,
+      color,
       description: outdent`
         ${outdent}
         Level ${level} | **${ranking}** ER

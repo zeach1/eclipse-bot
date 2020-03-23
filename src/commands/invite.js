@@ -18,7 +18,7 @@ class Command {
         temporary: true,
         maxAge: 1200,
         unique: true,
-      }).catch(e => Messenger.sendDeveloperError(message, e));
+      }).catch((e) => Messenger.sendDeveloperError(message, e));
     }
 
     Messenger.sendMessage(message, {

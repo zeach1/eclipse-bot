@@ -26,7 +26,7 @@ class Command {
     if (working) return;
 
     working = true;
-    const num = parseInt(message.args[0]) || 0;
+    const num = Number.parseInt(message.args[0], 10) || 0;
     message.channel.send('Well you wanted a command, and I personally had no better idea on what to send, so I\'ll just ping you instead...');
 
     setTimeout(() => {

@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 const Messenger = require('../helper/Messenger.js');
 
 class Command {
@@ -10,7 +12,7 @@ class Command {
   }
 
   execute(message) {
-    Messenger.sendImages(message, { url: 'https://cdn.discordapp.com/attachments/390086345957179393/408337364868530206/trigger.gif' }).catch(e => Messenger.sendDeveloperError(message, e));
+    Messenger.sendImages(message, { url: 'https://cdn.discordapp.com/attachments/390086345957179393/408337364868530206/trigger.gif' }).catch((e) => Messenger.sendDeveloperError(message, e));
   }
 }
 

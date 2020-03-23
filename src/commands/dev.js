@@ -1,6 +1,6 @@
-const Messenger = require('../helper/Messenger.js');
 const outdent = require('outdent');
 const path = require('path');
+const Messenger = require('../helper/Messenger.js');
 const Rank = require('../helper/Rank.js');
 const Util = require('../helper/Util.js');
 
@@ -15,19 +15,19 @@ function test(message) { // eslint-disable-line
 }
 
 function fix(message) {
-  for (const id of message.client.points.keyArray()) {
-    const player = { id: id };
+  message.client.points.keyArray().forEach((id) => {
+    const player = { id };
 
     if (!message.guild.members.get(player.id)) {
       Rank.removePlayer(player, message.client);
-      continue;
+      return;
     }
 
     const score = message.client.points.get(player.id);
     Rank.setPlayer(message, player, score);
-  }
+  });
 
-  message.channel.send('Player scores fixed.').catch(e => Messenger.sendDeveloperError(message, e));
+  message.channel.send('Player scores fixed.').catch((e) => Messenger.sendDeveloperError(message, e));
 }
 
 function load(message, filePath) {
@@ -42,10 +42,13 @@ function load(message, filePath) {
   }
 
   players = Array.isArray(players) ? players : [players];
-  for (const player of players) {
-    if (!player || !player.id || !message.guild.members.get(player.id)) continue;
+
+  players.forEach((player) => {
+    if (!player || !player.id || !message.guild.members.get(player.id)) {
+      return;
+    }
     Rank.setPlayer(message, player, player);
-  }
+  });
 
   Messenger.sendSuccessMessage(message, {
     description: 'Player backup loaded',
@@ -56,15 +59,15 @@ function save(message, filePath) {
   const { points } = message.client;
   const players = [];
 
-  for (const id of points.keyArray()) {
+  points.keyArray().forEach((id) => {
     const score = points.get(id);
     players.push({
-      id: id,
+      id,
       exp: score.exp,
       ranking: score.ranking,
       flair: score.flair,
     });
-  }
+  });
 
   const success = Util.saveToJSON(filePath, players);
 
@@ -78,29 +81,6 @@ function save(message, filePath) {
       submessage: 'Check console for more details',
     });
   }
-}
-
-function set(message, args) {
-  const player = message.mentions.members.first();
-  const exp = parseInt(args[1]);
-  const ranking = parseInt(args[2]);
-  const flair = args[3] || args[2];
-
-  if (!player) {
-    Messenger.sendArgumentError(message, new Command(), 'You need to tag a member');
-    return;
-  }
-  if (isNaN(exp)) {
-    Messenger.sendArgumentError(message, new Command(), 'Wrong argument usage');
-    return;
-  }
-
-  Rank.setPlayer(message, player, { exp: exp, ranking: ranking, flair: flair });
-
-  const points = message.client.points.get(player.id);
-
-  message.channel.send(`Set **${player.displayName}** to ${points.exp} exp, level ${points.level}, ${points.ranking} ER ${points.flair}`)
-    .catch(e => Messenger.sendDeveloperError(message, e));
 }
 
 class Command {
@@ -126,10 +106,33 @@ class Command {
       case 'fix': fix(message); break;
       case 'load': load(message, LOADPATH); break;
       case 'save': save(message, SAVEPATH); break;
-      case 'set': set(message, message.args.slice(1)); break;
+      case 'set': this.set(message, message.args.slice(1)); break;
       case 'test': test(message); break;
       default: Messenger.sendArgumentError(message, this); break;
     }
+  }
+
+  set(message, args) {
+    const player = message.mentions.members.first();
+    const exp = Number.parseInt(args[1], 10);
+    const ranking = Number.parseInt(args[2], 10);
+    const flair = args[3] || args[2];
+
+    if (!player) {
+      Messenger.sendArgumentError(message, new Command(), 'You need to tag a member');
+      return;
+    }
+    if (Number.isNaN(exp)) {
+      Messenger.sendArgumentError(message, new Command(), 'Wrong argument usage');
+      return;
+    }
+
+    Rank.setPlayer(message, player, { exp, ranking, flair });
+
+    const points = message.client.points.get(player.id);
+
+    message.channel.send(`Set **${player.displayName}** to ${points.exp} exp, level ${points.level}, ${points.ranking} ER ${points.flair}`)
+      .catch((e) => Messenger.sendDeveloperError(message, e));
   }
 }
 

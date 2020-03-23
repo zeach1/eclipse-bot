@@ -16,7 +16,9 @@ class Command {
       case 'respect': case 'fear': {
         Messenger.sendMessage(message, {
           title: `${arg.charAt(0).toUpperCase()}${arg.slice(1)} Jay`,
-          description: arg === 'respect' ? '@everyone respect the dark knight of Go Canada!' : 'You are too weak to take it.',
+          description: arg === 'respect'
+            ? '@everyone respect the dark knight of Go Canada!'
+            : 'You are too weak to take it.',
         });
         break;
       }

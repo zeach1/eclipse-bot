@@ -1,30 +1,33 @@
 const Messenger = require('../helper/Messenger.js');
 
 async function clear(message, num, numDeleted) {
+  let deletedMessage;
   if (numDeleted === 0) {
-    message = await message.delete().catch(() => {});
+    deletedMessage = await message.delete().catch(() => {});
   }
 
-  const fetched = await message.channel.fetchMessages({ limit: num > 100 ? 100 : num }).catch(() => {});
+  const fetched = await deletedMessage.channel.fetchMessages({ limit: num > 100 ? 100 : num })
+    .catch(() => {});
 
+  let newNumDeleted = numDeleted;
   if (fetched && fetched.size > 0) {
-    const deleted = await message.channel.bulkDelete(fetched).catch(() => {});
+    const deleted = await deletedMessage.channel.bulkDelete(fetched).catch(() => {});
 
     // the following condition return false if the member is spamming 'clear'
     if (deleted && deleted.size > 0) {
-      numDeleted += deleted.size;
+      newNumDeleted += deleted.size;
       if (deleted.size < 100 || numDeleted === num) {
-        message.channel.send(`🖍 Deleted ${numDeleted} ${numDeleted !== 1 ? 'messages' : 'message'}.`)
-          .then(msg => msg.delete(3000).catch(() => {}))
-          .catch(e => Messenger.sendDeveloperError(message, e));
+        message.channel.send(`🖍 Deleted ${newNumDeleted} ${newNumDeleted !== 1 ? 'messages' : 'message'}.`)
+          .then((msg) => msg.delete(3000).catch(() => {}))
+          .catch((e) => Messenger.sendDeveloperError(message, e));
       } else {
-        clear(message, num - 100, numDeleted);
+        clear(message, num - 100, newNumDeleted);
       }
     }
   } else {
     message.channel.send('😰 There are no messages to delete')
-      .then(msg => msg.delete(3000).catch(() => {}))
-      .catch(e => Messenger.sendDeveloperError(message, e));
+      .then((msg) => msg.delete(3000).catch(() => {}))
+      .catch((e) => Messenger.sendDeveloperError(message, e));
   }
 }
 
@@ -41,7 +44,7 @@ class Command {
   }
 
   execute(message) {
-    const num = parseInt(message.args[0]);
+    const num = Number.parseInt(message.args[0], 10);
 
     if (!num && num !== 0) {
       Messenger.sendArgumentError(message, this, 'You must specify a number of messages to remove');

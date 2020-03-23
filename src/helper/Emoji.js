@@ -15,14 +15,15 @@ function getEmojiById(text, client) {
 }
 
 function getEmojiByName(text, client) {
+  let newText = text;
   if (text.startsWith('<')) {
-    text = text.slice(2, text.lastIndexOf(':') + 1);
+    newText = text.slice(2, text.lastIndexOf(':') + 1);
   }
 
-  let names = client.emojis.map(emoji => emoji.name);
+  let names = client.emojis.map((emoji) => emoji.name);
   names = Util.sort(names, false, true);
 
-  const emojiName = names.find(name => Util.match(text, name, true));
+  const emojiName = names.find((name) => Util.match(newText, name, true));
   const emoji = emojiName ? client.emojis.find('name', emojiName) : null;
 
   return emoji ? `<:${emoji.name}:${emoji.id}>` : null;
@@ -30,7 +31,9 @@ function getEmojiByName(text, client) {
 
 class Emoji {
   static getEmoji(text, client) {
-    return text ? getTwemoji(text) || getEmojiById(text, client) || getEmojiByName(text, client) : null;
+    return text
+      ? getTwemoji(text) || getEmojiById(text, client) || getEmojiByName(text, client)
+      : null;
   }
 }
 

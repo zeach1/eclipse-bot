@@ -1,7 +1,7 @@
-const ClashAPI = require('./ClashAPI.js');
 const fs = require('fs');
-const Messenger = require('./Messenger.js');
 const path = require('path');
+const ClashAPI = require('./ClashAPI.js');
+const Messenger = require('./Messenger.js');
 const Util = require('./Util.js');
 
 const ACHIEVEMENTPATH = path.join(__dirname, '..', '..', 'data', 'achievements');
@@ -14,7 +14,15 @@ function getAchievementFilePath(achievementName) {
 
 function displayResultMessage(message, check, info) {
   // quietly exists if missing description
-  if (!info || !info.success || !info.error || !info.success.title || !info.success.description || !info.error.message || !info.error.submessage) return;
+  if (!info
+    || !info.success
+    || !info.error
+    || !info.success.title
+    || !info.success.description
+    || !info.error.message
+    || !info.error.submessage) {
+    return;
+  }
 
   if (check) {
     Messenger.sendSuccessMessage(message, {
@@ -33,8 +41,11 @@ function getFileData(message, achievementName, info) {
   const data = Util.loadFromJSON(getAchievementFilePath(achievementName));
 
   if (!data) {
-    info.title = ''; info.description = '';
-    displayResultMessage(message, false, info);
+    displayResultMessage(message, false, {
+      title: '',
+      description: '',
+      ...info,
+    });
   }
 
   return data;
@@ -42,7 +53,8 @@ function getFileData(message, achievementName, info) {
 
 async function getAPIData(message, achievementName) {
   working = true;
-  const accounts = await ClashAPI.getClanMembers(message).catch(e => Messenger.sendDeveloperError(message, e));
+  const accounts = await ClashAPI.getClanMembers(message)
+    .catch((e) => Messenger.sendDeveloperError(message, e));
 
   // API login issues
   if (!accounts) {
@@ -51,10 +63,10 @@ async function getAPIData(message, achievementName) {
   }
 
   const data = [];
-  for (const account of accounts) {
-    const achievement = account.achievements.find(a => a.name === achievementName);
+  accounts.forEach((account) => {
+    const achievement = account.achievements.find((a) => a.name === achievementName);
     data.push({ name: account.name, tag: account.tag, value: achievement.value });
-  }
+  });
 
   working = false;
   return data;

@@ -3,6 +3,7 @@
 .env
 package-lock.json
 players.json
+.tern-project
 
 # folders
 data/achievements

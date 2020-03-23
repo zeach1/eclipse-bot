@@ -2,26 +2,37 @@ const fs = require('fs');
 
 class Util {
   static match(string, targetString, excludeSymbols, excludeNumber) {
-    string = string.toLowerCase().replace(/ /g, '');
-    targetString = targetString.toLowerCase().replace(/ /g, '');
+    let filteredString = string.toLowerCase().replace(/ /g, '');
+    let filteredTargetString = targetString.toLowerCase().replace(/ /g, '');
 
     if (excludeSymbols) {
       const regex = excludeNumber ? /[^a-z]/g : /[^a-z0-9]/g;
-      string = string.replace(regex, '');
-      targetString = targetString.replace(regex, '');
+      filteredString = string.replace(regex, '');
+      filteredTargetString = targetString.replace(regex, '');
     }
 
     // targetString should be longer than string, if they're not the same
-    return string === targetString || targetString.startsWith(string) || targetString.includes(string);
+    return filteredString === filteredTargetString
+      || filteredTargetString.startsWith(string)
+      || filteredTargetString.includes(string);
   }
 
   static sort(array, guildMemberCollection, sortByLength) {
     return array.sort((a, b) => {
-      a = guildMemberCollection ? a.displayName.toLowerCase() : a.toLowerCase();
-      b = guildMemberCollection ? b.displayName.toLowerCase() : b.toLowerCase();
+      const aName = guildMemberCollection ? a.displayName.toLowerCase() : a.toLowerCase();
+      const bName = guildMemberCollection ? b.displayName.toLowerCase() : b.toLowerCase();
 
-      if (sortByLength) return a.length > b.length ? 1 : a.length < b.length ? -1 : 0;
-      return a > b ? 1 : a < b ? -1 : 0;
+      if (sortByLength) {
+        return aName.length - bName.length;
+      }
+
+      if (aName > bName) {
+        return 1;
+      }
+      if (aName < bName) {
+        return -1;
+      }
+      return 0;
     });
   }
 
@@ -44,7 +55,6 @@ class Util {
 
   static saveToJSON(filePath, data) {
     if (!data) {
-      console.error('Data being saved is null');
       return false;
     }
 
@@ -54,7 +64,6 @@ class Util {
       fs.writeFileSync(filePath, fileData);
       successful = true;
     } catch (e) {
-      console.error(e);
       successful = false;
     }
 

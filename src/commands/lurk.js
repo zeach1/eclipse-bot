@@ -9,7 +9,8 @@ class Command {
   }
 
   execute(message) {
-    Messenger.sendImages(message, { url: 'https://i.imgur.com/JR5uChv.png' }).catch(e => Messenger.sendDeveloperError(message, e));
+    Messenger.sendImages(message, { url: 'https://i.imgur.com/JR5uChv.png' })
+      .catch((e) => Messenger.sendDeveloperError(message, e));
   }
 }
 

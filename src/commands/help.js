@@ -1,22 +1,6 @@
 const Check = require('../helper/Check.js');
 const Messenger = require('../helper/Messenger.js');
 
-function sendCommandHelp(message, commandName) {
-  const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-  if (!command) {
-    sendAllCommandHelp(message);
-    return;
-  }
-
-  if (!Check.hasPermissions(message.member, command)) {
-    Messenger.sendPermissionError(message);
-    return;
-  }
-
-  Messenger.sendCommandHelp(message, command);
-}
-
 function sendAllCommandHelp(message) {
   const commands = message.client.commands.array();
 
@@ -39,11 +23,31 @@ function sendAllCommandHelp(message) {
     },
   ];
 
-  for (const commandCategory of commandCategories) {
-    commandCategory.commands = commands.filter(command => command.type === commandCategory.type);
+  const filteredCommandCategories = [];
+  commandCategories.forEach((commandCategory) => {
+    filteredCommandCategories.push({
+      ...commandCategory,
+      commands: commands.filter((command) => command.type === commandCategory.type),
+    });
+  });
+
+  Messenger.sendAllCommandHelp(message, filteredCommandCategories);
+}
+function sendCommandHelp(message, commandName) {
+  const command = message.client.commands.get(commandName)
+    || message.client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
+
+  if (!command) {
+    sendAllCommandHelp(message);
+    return;
   }
 
-  Messenger.sendAllCommandHelp(message, commandCategories);
+  if (!Check.hasPermissions(message.member, command)) {
+    Messenger.sendPermissionError(message);
+    return;
+  }
+
+  Messenger.sendCommandHelp(message, command);
 }
 
 class Command {

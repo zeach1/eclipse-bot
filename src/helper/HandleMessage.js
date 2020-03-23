@@ -8,11 +8,11 @@ const Util = require('./Util.js');
 function filterProfanity(message) {
   const content = Util.cleanString(message.content).split(' ');
 
-  if (profanity.some(word => content.includes(word))) {
+  if (profanity.some((word) => content.includes(word))) {
     message.delete()
       .then(message.channel.send(`💢 Watch your language ${message.author}`)
-        .then(msg => msg.delete(3000).catch(() => {}))
-        .catch(e => Messenger.sendDeveloperError(message, e)));
+        .then((msg) => msg.delete(3000).catch(() => {}))
+        .catch((e) => Messenger.sendDeveloperError(message, e)));
     return true;
   }
   return false;
@@ -21,13 +21,13 @@ function filterProfanity(message) {
 function replySlang(message) { // eslint-disable-line
   const content = Util.cleanString(message.content).split(' ');
 
-  if (slang.some(word => content.includes(word))) {
-    message.channel.send('**NO U**').catch(e => Messenger.sendDeveloperError(message, e));
+  if (slang.some((word) => content.includes(word))) {
+    message.channel.send('**NO U**').catch((e) => Messenger.sendDeveloperError(message, e));
   }
 }
 
 function isCommand(message) {
-  const isNumber = parseInt(message);
+  const isNumber = Number.parseInt(message, 10);
   return !isNumber && message.content.startsWith(prefix);
 }
 
@@ -38,15 +38,18 @@ function getCommand(message) {
     .split(/ +/);
 
   const options = args
-    .filter(arg => arg.startsWith('-'))
-    .map(arg => arg.slice(1));
+    .filter((arg) => arg.startsWith('-'))
+    .map((arg) => arg.slice(1));
 
-  args = args.filter(arg => !arg.startsWith('-'));
+  args = args.filter((arg) => !arg.startsWith('-'));
 
   const commandName = args.shift();
-  const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+  const command = message.client.commands.get(commandName)
+    || message.client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
 
-  return { commandName: commandName, command: command, args: args, options: options };
+  return {
+    commandName, command, args, options,
+  };
 }
 
 function checkCommand(message, commandName, command, args) {
@@ -94,13 +97,12 @@ class HandleMessage {
 
     if (!isCommand(message)) return;
 
-    const { commandName, command, args, options } = getCommand(message);
+    const {
+      commandName, command, args, options,
+    } = getCommand(message);
     if (!checkCommand(message, commandName, command, args)) return;
 
-    message.args = args;
-    message.options = options;
-
-    command.execute(message);
+    command.execute({ args, options, ...message });
   }
 }
 

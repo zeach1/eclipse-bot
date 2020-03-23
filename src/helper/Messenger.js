@@ -1,7 +1,9 @@
-const { categoryChannel, channel, clanName, role, rules, password, prefix } = require('../config/config.js');
 const Discord = require('discord.js');
 const moment = require('moment');
 const outdent = require('outdent');
+const {
+  categoryChannel, channel, clanName, role, rules, password, prefix,
+} = require('../config/config.js');
 const { reply: replyConfig } = require('../config/words.js');
 
 const COLOR_HELP = 0xe7a237;
@@ -25,22 +27,12 @@ function createEmbed(info) {
 
   // other uses, currently sendAllCommandHelp and scout
   if (info.fields && info.fields.length > 0) {
-    for (const field of info.fields) {
+    info.fields.forEach((field) => {
       embed.addField(field.title, field.description);
-    }
+    });
   }
 
   return embed;
-}
-
-function sendImage(message, data) {
-  const { comment, url, delay } = data;
-
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(message.channel.send(comment ? comment : '', { files: Array.isArray(url) ? url : [url] }).catch(e => Messenger.sendDeveloperError(message, e)));
-    }, delay);
-  });
 }
 
 class Messenger {
@@ -59,13 +51,13 @@ class Messenger {
 
       **Type**: ${type[command.type] || 'Default'}
       **Usage**: ${prefix}${command.name} ${command.usage ? command.usage : ''}
-      ${command.aliases ? `**Aliases**: ${command.aliases.map(c => `${prefix}${c}`).join(', ')}` : ''}
+      ${command.aliases ? `**Aliases**: ${command.aliases.map((c) => `${prefix}${c}`).join(', ')}` : ''}
     `;
 
     Messenger.sendMessage(message, {
       title: `${command.name} | Eclipse Bot Help`,
       avatar: message.client.user.avatarURL,
-      description: description,
+      description,
       color: COLOR_HELP,
       request: true,
       requestTime: true,
@@ -87,26 +79,30 @@ class Messenger {
     ];
 
     let tempDescription = [];
-    for (const commandCategory of commandCategories) {
+    commandCategories.forEach((commandCategory) => {
       if (commandCategory.type === 'leadership' && message.channel.parentID !== categoryChannel.leadership) {
-        continue;
+        return;
       }
 
-      tempDescription.push({ title: commandCategory.categoryHeader[0], description: commandCategory.categoryHeader[1] });
-      for (const command of commandCategory.commands) {
+      tempDescription.push({
+        title: commandCategory.categoryHeader[0],
+        description: commandCategory.categoryHeader[1],
+      });
+      commandCategory.commands.forEach((command) => {
         tempDescription.push({
           title: `${prefix}${command.name} ${command.usage ? command.usage : ''}`,
           description: command.description,
         });
-      }
+      });
+
       description.push(tempDescription);
       tempDescription = [];
-    }
+    });
 
     Messenger.sendMessages(message, {
       title: 'Eclipse Bot Help',
       avatar: message.client.user.avatarURL,
-      description: description,
+      description,
       color: COLOR_HELP,
       request: true,
       requestTime: true,
@@ -116,23 +112,28 @@ class Messenger {
   static sendScoutTips(message, details) {
     const description = ['Use these tips to guide you in scouting a base'];
 
-    if (details.length === 0 || details.some(d => !d.fields)) {
+    if (details.length === 0 || details.some((d) => !d.fields)) {
       description[0] = 'No tips have been made yet';
     }
 
     let tempDescription = [];
-    for (const detail of details) {
+    details.forEach((detail) => {
       tempDescription.push({ title: detail.title, description: detail.description });
-      for (const field of detail.fields) {
-        tempDescription.push({ title: field.title, description: field.description && field.description.length > 0 ? field.description.map(desc => `- ${desc}`) : 'No tips have been made for this yet' });
-      }
+      detail.fields.forEach((field) => {
+        tempDescription.push({
+          title: field.title,
+          description: field.description && field.description.length > 0
+            ? field.description.map((desc) => `- ${desc}`)
+            : 'No tips have been made for this yet',
+        });
+      });
       description.push(tempDescription);
       tempDescription = [];
-    }
+    });
 
     Messenger.sendMessages(message, {
       title: '🛡️ Scout Guidelines',
-      description: description,
+      description,
       color: 0x84d6e7,
       request: true,
     });
@@ -142,11 +143,11 @@ class Messenger {
     if (working) return;
     working = true;
 
-    info = Array.isArray(info) ? info : [info];
-    for (const data of info) {
-      // eslint-disable-next-line
-      await sendImage(message, data).catch(e => Messenger.sendDeveloperError(message, e));
-    }
+    const infoArray = Array.isArray(info) ? info : [info];
+    infoArray.forEach(async (data) => {
+      await Messenger.sendImage(message, data)
+        .catch((e) => Messenger.sendDeveloperError(message, e));
+    });
 
     working = false;
   }
@@ -172,14 +173,16 @@ class Messenger {
 
     // ping the member
     message.channel.send(`${member}`)
-      .then(msg => msg.delete(2000).catch(() => {}))
-      .catch(e => Messenger.sendDeveloperError(message, e));
+      .then((msg) => msg.delete(2000).catch(() => {}))
+      .catch((e) => Messenger.sendDeveloperError(message, e));
   }
 
   static sendSuccessMessage(message, info) {
-    info.color = 0x3ea92e;
-    info.title = info.title ? info.title : '✅ Success';
-    Messenger.sendMessage(message, info);
+    Messenger.sendMessage(message, {
+      color: 0x3ea92e,
+      title: info.title ? info.title : '✅ Success',
+      ...info,
+    });
   }
 
   static sendLeaveMessage(member) {
@@ -204,8 +207,6 @@ class Messenger {
   }
 
   static sendRankings(message, info, data, limit) {
-    limit = limit ? limit : DEFAULT_RANKINGEMBED;
-
     // data contains name, value, and flair
     if (data.length === 0) {
       Messenger.sendMessage(message, {
@@ -224,14 +225,14 @@ class Messenger {
 
     const rankingDescription = [];
     let tempRankingDescription = '';
-    for (let i = 1; i <= data.length; i++) {
+    for (let i = 1; i <= data.length; i += 1) {
       const { value, name, flair } = data[i - 1];
 
       const indexString = `${i}`.padEnd(indexStringLength);
       const valueString = `${value}`.padStart(valueStringLength);
 
-      tempRankingDescription += `\`${indexString} ${valueString}\` | ${flair ? flair : ''} ${name.substring(0, 25)}\n`;
-      if (i % limit === 0 && i !== data.length) {
+      tempRankingDescription += `\`${indexString} ${valueString}\` | ${flair || ''} ${name.substring(0, 25)}\n`;
+      if (i % (limit || DEFAULT_RANKINGEMBED) === 0 && i !== data.length) {
         rankingDescription.push(tempRankingDescription);
         tempRankingDescription = '';
       }
@@ -292,7 +293,9 @@ class Messenger {
     });
 
     // if there is no message.guild, the message should point to the development channel
-    const logMessage = message.guild ? { channel: message.guild.channels.get(channel.development) } : message;
+    const logMessage = message.guild
+      ? { channel: message.guild.channels.get(channel.development) }
+      : message;
 
     const eMsg = error.message;
     Messenger.sendError(logMessage, {
@@ -305,17 +308,16 @@ class Messenger {
   }
 
   static sendDeveloperError(message, error) {
-    if (error) console.error(error);
     Messenger.sendError(message, {
       title: '😅 Oops',
       message: 'Something went wrong',
-      submessage: 'Send an issue through the our [issues page](https://github.com/Luis729/reddit-eclipse-bot)',
+      submessage: error,
     });
   }
 
   // this supports fields or normal descriptions
   static async sendMessages(message, info, remove, removeDelay) {
-    for (let i = 0; i < info.description.length; i++) {
+    for (let i = 0; i < info.description.length; i += 1) {
       const embedInfo = {
         title: i === 0 ? info.title : null,
         avatar: i === 0 ? info.avatar : null,
@@ -340,13 +342,20 @@ class Messenger {
   // this only supports normal descriptions
   // fields are excluded for errors
   static sendMessage(message, info, remove, removeDelay) {
+    let footer = '';
+    if (info.footer !== undefined) {
+      footer = { info };
+    } else if (info.request !== undefined) {
+      footer = FOOTER_REQUEST(message, info.requestTime);
+    }
+
     Messenger.send(message, {
       title: info.title ? info.title : '',
       avatar: info.avatar ? info.avatar : '',
       color: info.color ? info.color : 0x3498db,
       fields: info.fields ? info.fields : '',
       description: info.description ? info.description : '',
-      footer: info.footer ? info.footer : info.request ? FOOTER_REQUEST(message, info.requestTime) : '',
+      footer,
     }, remove, removeDelay);
   }
 
@@ -362,10 +371,23 @@ class Messenger {
   static send(message, info, remove, removeDelay) {
     const embed = createEmbed(info);
     message.channel.send(embed)
-      .then(msg => {
+      .then((msg) => {
         if (remove) msg.delete(removeDelay || DELETE_COOLDOWN).catch(() => {});
       })
-      .catch(e => Messenger.sendDeveloperError(message, e));
+      .catch((e) => Messenger.sendDeveloperError(message, e));
+  }
+
+  static sendImage(message, data) {
+    const { comment, url, delay } = data;
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(
+          message.channel.send(comment || '', { files: Array.isArray(url) ? url : [url] })
+            .catch((e) => Messenger.sendDeveloperError(message, e)),
+        );
+      }, delay);
+    });
   }
 
   static async confirm(message, info) {
@@ -374,16 +396,16 @@ class Messenger {
     await Messenger.reply(message, {
       content: `⚠️ ${message.author}, ${info.content} (y/n)`,
       embed: info.embed,
-    }).then(reply => {
+    }).then((reply) => {
       const replyContent = reply.content.trim().toLowerCase().split(' ')[0];
       replied = true;
       success = replyConfig.yes.includes(replyContent);
     }).catch(() => {});
 
     if (success && info.yes) {
-      await message.channel.send(info.yes).catch(e => Messenger.sendDeveloperError(message, e));
+      await message.channel.send(info.yes).catch((e) => Messenger.sendDeveloperError(message, e));
     } else if (!success && replied && info.no) {
-      await message.channel.send(info.no).catch(e => Messenger.sendDeveloperError(message, e));
+      await message.channel.send(info.no).catch((e) => Messenger.sendDeveloperError(message, e));
     }
 
     return success;
@@ -398,13 +420,13 @@ class Messenger {
       message.channel.send(info.content, {
         embed: info.embed ? createEmbed(info.embed) : null,
       }).then(() => {
-        message.channel.awaitMessages(msg => msg.author === author, {
+        message.channel.awaitMessages((msg) => msg.author === author, {
           max: 1,
           time: info.time || 10000,
           errors: ['time'],
-        }).then(collected => resolve(collected.first()))
+        }).then((collected) => resolve(collected.first()))
           .catch(reject);
-      }).catch(e => Messenger.sendDeveloperError(message, e));
+      }).catch((e) => Messenger.sendDeveloperError(message, e));
     });
   }
 }

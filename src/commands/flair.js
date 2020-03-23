@@ -1,6 +1,6 @@
+const outdent = require('outdent');
 const Emoji = require('../helper/Emoji.js');
 const Messenger = require('../helper/Messenger.js');
-const outdent = require('outdent');
 const { prefix } = require('../config/config.js');
 const Rank = require('../helper/Rank.js');
 

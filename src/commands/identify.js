@@ -1,6 +1,6 @@
+const outdent = require('outdent');
 const { channel } = require('../config/config.js');
 const Messenger = require('../helper/Messenger.js');
-const outdent = require('outdent');
 
 class Command {
   constructor() {
@@ -40,7 +40,7 @@ class Command {
           message.delete().catch(() => {});
         }
       })
-      .catch(e => Messenger.sendDeveloperError(message, e));
+      .catch((e) => Messenger.sendDeveloperError(message, e));
   }
 }
 

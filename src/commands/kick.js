@@ -23,12 +23,10 @@ class Command {
 
     member.kick(reason)
       .then(() => Messenger.sendKickMessage(message, member, reason))
-      .catch(() =>
-        Messenger.sendError(message, {
-          message: `Cannot kick ${member.displayName}`,
-          submessage: `${member} has more permissions than me`,
-        }),
-      );
+      .catch(() => Messenger.sendError(message, {
+        message: `Cannot kick ${member.displayName}`,
+        submessage: `${member} has more permissions than me`,
+      }));
   }
 }
 

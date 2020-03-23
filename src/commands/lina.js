@@ -9,7 +9,7 @@ class Command {
   }
 
   execute(message) {
-    message.channel.send('**#ANGST**').catch(e => Messenger.sendDeveloperError(message, e));
+    message.channel.send('**#ANGST**').catch((e) => Messenger.sendDeveloperError(message, e));
   }
 }
 
