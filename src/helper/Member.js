@@ -122,7 +122,7 @@ class Member {
         if (complete.length >= 5) {
           // prevent Discord from blocking promise processes from happening with this cooldown
           complete.push(new Promise((resolve) => { setTimeout(resolve, DISCORD_COOLDDOWN); }));
-          await Promise.all(complete) // eslint-disable-line
+          await Promise.all(complete)
             .then(() => { complete.length = 0; })
             .catch((e) => Messenger.sendDeveloperError(message, e));
         }
@@ -154,7 +154,7 @@ class Member {
         if (complete.length >= 5) {
           // prevent Discord from blocking promise processes from happening with this cooldown
           complete.push(new Promise((resolve) => { setTimeout(resolve, DISCORD_COOLDDOWN); }));
-          await Promise.all(complete) // eslint-disable-line
+          await Promise.all(complete)
             .then(() => { complete.length = 0; })
             .catch((e) => Messenger.sendDeveloperError(message, e));
         }

@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 const Messenger = require('../helper/Messenger.js');
 
 class Command {

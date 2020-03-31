@@ -13,7 +13,7 @@ class Command {
 
   execute(message) {
     const member = message.mentions.members.first();
-    const reason = message.content.trim().split(/ +/).slice(2).join(' '); // eslint-disable-line
+    const reason = message.content.trim().split(/ +/).slice(2).join(' ');
 
 
     if (member.user.bot) {

@@ -98,10 +98,10 @@ class Command {
     let duration = parseFloat(message.args[1]);
 
     if (duration) {
-      reason = message.content.trim().split(/ +/).slice(3).join(' '); // eslint-disable-line
+      reason = message.content.trim().split(/ +/).slice(3).join(' ');
     } else {
       duration = DURATION;
-      reason = message.content.trim().split(/ +/).slice(2).join(' '); // eslint-disable-line
+      reason = message.content.trim().split(/ +/).slice(2).join(' ');
     }
 
 
