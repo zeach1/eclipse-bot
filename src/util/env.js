@@ -3,6 +3,7 @@ import http from 'http';
 import moment from 'moment-timezone';
 
 import { TIMEZONE } from '../config/config';
+import logger from './logger';
 
 const OK_STATUS = 200;
 const PING_INTERVAL_MS = 280000;
@@ -25,16 +26,15 @@ function setUpGlitchEnvironment() {
   app.listen(ECLIPSE_BOT_PORT);
 
   setInterval(() => {
-    http.get(ECLIPSE_BOT_URL);
+    logger.info('Pinging project URL');
+    http.get(ECLIPSE_BOT_URL, ({ statusCode }) => {
+      if (statusCode !== 200) {
+        logger.error(`Received bad status code ${statusCode}`);
+      } else {
+        logger.info('Received ok status 200');
+      }
+    });
   }, PING_INTERVAL_MS);
-}
-
-/**
- * Sets up environment variables in .env file when running it locally in own computer.
- */
-function setUpLocalEnvironment() {
-  // eslint-disable-next-line global-require
-  require('dotenv').config();
 }
 
 /**
@@ -50,10 +50,9 @@ function inGlitchEnvironment() {
 export function setUpEnvironment() {
   if (inGlitchEnvironment()) {
     setUpGlitchEnvironment();
-  } else {
-    setUpLocalEnvironment();
   }
 
+  logger.info(`Default timezone is set to ${TIMEZONE}`);
   moment.tz.setDefault(TIMEZONE);
 }
 
