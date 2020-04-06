@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import moment from 'moment-timezone';
 
-import { TIMEZONE } from '../config/config';
+import { TIMEZONE } from '../config/index';
 import logger from './logger';
 
 const OK_STATUS = 200;

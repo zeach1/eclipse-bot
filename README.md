@@ -1,5 +1,6 @@
 # Eclipse Bot
 
+[![Build Status](https://travis-ci.com/Luis729/eclipse-bot.svg?branch=master)](https://travis-ci.com/Luis729/eclipse-bot)
 [![dependencies Status](https://david-dm.org/luis729/eclipse-bot/status.svg)](https://david-dm.org/luis729/eclipse-bot)
 [![devDependencies Status](https://david-dm.org/luis729/eclipse-bot/dev-status.svg)](https://david-dm.org/luis729/eclipse-bot?type=dev)
 

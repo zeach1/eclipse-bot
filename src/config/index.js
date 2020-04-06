@@ -1,5 +1,8 @@
-import config from './config';
+export const TIMEZONE = 'America/New_York';
+
+export const SUBREDDIT_URL = 'https://www.reddit.com/r/RedditEclipse/';
 
 export default {
-  ...config,
+  TIMEZONE,
+  SUBREDDIT_URL,
 };

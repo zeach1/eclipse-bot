@@ -11,7 +11,8 @@
     "express": "^4.17.1",
     "moment-timezone": "^0.5.28",
     "outdent": "^0.7.1",
-    "twemoji": "^12.1.5"
+    "twemoji": "^12.1.5",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -25,8 +26,7 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
     "markdownlint-cli": "^0.22.0",
-    "nodemon": "^2.0.2",
-    "winston": "^3.2.1"
+    "nodemon": "^2.0.2"
   },
   "scripts": {
     "dev": "nodemon --exec babel-node --require dotenv/config src/index.js",
