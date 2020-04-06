@@ -1,40 +1,38 @@
 {
   "name": "eclipse-bot",
-  "version": "0.8.3",
+  "version": "0.9.0",
+  "license": "MIT",
+  "author": "Paul Matthew Barrameda",
   "description": "Reddit Eclipse custom Discord bot",
-  "main": "index.js",
+  "repository": "https://github.com/Luis729/eclipse-bot",
   "dependencies": {
     "clash-of-clans-api": "^0.6.3",
     "discord.js": "^12.0.2",
-    "enmap": "^5.2.4",
-    "enmap-level": "^2.1.0",
     "express": "^4.17.1",
     "moment-timezone": "^0.5.28",
     "outdent": "^0.7.1",
     "twemoji": "^12.1.5"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.0",
     "better-sqlite3": "^5.4.3",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
-    "markdownlint-cli": "^0.22.0"
+    "markdownlint-cli": "^0.22.0",
+    "nodemon": "^2.0.2"
   },
   "scripts": {
-    "start": "node ./src/index.js",
+    "dev": "nodemon --exec babel-node src/index.js",
     "test": "npm run test:eslint && npm run test:markdownlint",
-    "test:eslint": "eslint --report-unused-disable-directives .",
-    "test:markdownlint": "markdownlint --config .markdownlint.yml README.md"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Luis729/eclipse-bot.git"
-  },
-  "author": "Paul Matthew Barrameda",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Luis729/reddit-eclipse-bot/issues"
-  },
-  "homepage": "https://github.com/Luis729/eclipse-bot#readme"
+    "test:eslint": "eslint --report-unused-disable-directives src",
+    "test:markdownlint": "markdownlint --config .markdownlint.yml README.md",
+    "start": "npm run build && npm run serve",
+    "build": "babel src --out-dir dist",
+    "serve": "node dist/index.js"
+  }
 }

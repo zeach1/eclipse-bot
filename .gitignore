@@ -1,11 +1,10 @@
 # files
 .DS_Store
 .env
-package-lock.json
-players.json
 .tern-project
+package-lock.json
 
 # folders
-data/achievements
-data/players
+data
+dist
 node_modules

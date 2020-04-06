@@ -1,9 +1,15 @@
-extends: [airbnb-base]
-
-env:
-  node: true
+extends:
+  - airbnb-base
 
 rules:
   linebreak-style: off
-  import/extensions: [error, never]
-  class-methods-use-this: off # temporarily turning this off
+
+  import/order:
+    - error
+    - groups:
+      - [builtin, external, internal]
+      - [sibling, parent, index]
+      newlines-between: always
+      alphabetize:
+        order: asc
+        caseInsensitive: false
