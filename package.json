@@ -1,6 +1,6 @@
 {
   "name": "eclipse-bot",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "license": "MIT",
   "author": "Paul Matthew Barrameda",
   "description": "Reddit Eclipse custom Discord bot",
@@ -9,6 +9,7 @@
     "clash-of-clans-api": "^0.6.3",
     "discord.js": "^12.0.2",
     "express": "^4.17.1",
+    "minimist": "^1.2.5",
     "moment-timezone": "^0.5.28",
     "outdent": "^0.7.1",
     "twemoji": "^12.1.5",

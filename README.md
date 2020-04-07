@@ -14,6 +14,9 @@ chat.
 Make a fork of this repository, make your code changes, and make a pull request. Feel free to
 ping me (@Paul#8664) in the server to review your code.
 
+Use [JSDoc](https://jsdoc.app/tags-type.html) in all of your code to make modifying code as simple as
+possible.
+
 ## License
 
 [MIT](./LICENSE)
