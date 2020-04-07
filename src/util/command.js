@@ -54,7 +54,7 @@ export const commands = new Map();
  * @param {!Command} command Command to check
  * @throws Will throw an error if command fails validotion.
  */
-function validateCommand(command) {
+function validCommand(command) {
   let error = '';
 
   // check validity of command fields that ommand does not duplicate other command aliases
@@ -87,8 +87,9 @@ function validateCommand(command) {
 
   if (error !== '') {
     logger.error(error);
-    throw new Error(error);
+    return false;
   }
+  return true;
 }
 
 /**
@@ -106,7 +107,9 @@ function addCommandsInDirectory(type, directory) {
       type,
     };
 
-    validateCommand(command);
+    if (!validCommand(command)) {
+      return;
+    }
 
     aliases.set(command.name, command.name);
     if (command.alises !== undefined) {
