@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import moment from 'moment-timezone';
 
-import { TIMEZONE } from '../config/index';
+import { TIMEZONE, PROJECT_ENV } from '../config/index';
 import logger from './logger';
 
 const OK_STATUS = 200;
@@ -38,17 +38,10 @@ function setUpGlitchEnvironment() {
 }
 
 /**
- * Checks if environment is in Glitch or not.
- */
-function inGlitchEnvironment() {
-  return process.env.PROJECT_DOMAIN !== undefined;
-}
-
-/**
  * Sets up environment variables and timezone.
  */
 export function setUpEnvironment() {
-  if (inGlitchEnvironment()) {
+  if (PROJECT_ENV === 'glitch') {
     setUpGlitchEnvironment();
   }
 

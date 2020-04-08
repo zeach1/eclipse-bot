@@ -1,7 +1,9 @@
 import fs from 'fs';
-import path from 'path';
+import minimist from 'minimist';
 
+import { PREFIX } from '../config';
 import logger, { toString } from './logger';
+import { sendRaw } from './messenger';
 
 const DEVELOPMENT_TYPE = 'Development';
 const ECLIPSE_TYPE = 'Eclipse';
@@ -9,15 +11,17 @@ const ESSENTIALS_TYPE = 'Essentials';
 const LEADERSHIP_TYPE = 'Leadership';
 const MISC_TYPE = 'Miscellaneous';
 
-const COMMANDS_DIRECTORY = path.resolve(__dirname, '..', 'commands');
-const DEVELOPMENT_COMMANDS_DIRECTORY = path.resolve(COMMANDS_DIRECTORY, 'development');
-const ECLIPSE_COMMANDS_DIRECTORY = path.resolve(COMMANDS_DIRECTORY, 'eclipse');
-const ESSENTIALS_COMMANDS_DIRECTORY = path.resolve(COMMANDS_DIRECTORY, 'essentials');
-const LEADERSHIP_COMMANDS_DIRECTORY = path.resolve(COMMANDS_DIRECTORY, 'leadership');
-const MISC_COMMANDS_DIRECTORY = path.resolve(COMMANDS_DIRECTORY, 'misc');
+
+const COMMANDS_DIRECTORY = './src/commands';
+const DEVELOPMENT_COMMANDS_DIRECTORY = `${COMMANDS_DIRECTORY}/development`;
+const ECLIPSE_COMMANDS_DIRECTORY = `${COMMANDS_DIRECTORY}/eclipse`;
+const ESSENTIALS_COMMANDS_DIRECTORY = `${COMMANDS_DIRECTORY}/essentials`;
+const LEADERSHIP_COMMANDS_DIRECTORY = `${COMMANDS_DIRECTORY}/leadership`;
+const MISC_COMMANDS_DIRECTORY = `${COMMANDS_DIRECTORY}/misc`;
 
 /**
  * @callback CommandExecute
+ * @param {!import('discord.js').Message} message
  * @param {!import('minimist').ParsedArgs} args
  * @returns {void}
  */
@@ -40,13 +44,13 @@ const MISC_COMMANDS_DIRECTORY = path.resolve(COMMANDS_DIRECTORY, 'misc');
  * Mapping of command alias to command name.
  * @type {!Map<string, string>}
  */
-export const aliases = new Map();
+const aliases = new Map();
 
 /**
  * Mapping of command alias to command object
  * @type {!Map<string, Command>}
  */
-export const commands = new Map();
+const commands = new Map();
 
 /**
  * Checks if a command has valid information. This includes mandatory information as well as no
@@ -103,7 +107,7 @@ function addCommandsInDirectory(type, directory) {
     /** @type {Command} */
     const command = {
       // eslint-disable-next-line global-require, import/no-dynamic-require
-      ...require(`../commands/${file}`),
+      ...require(`../../${directory}/${file}`),
       type,
     };
 
@@ -133,6 +137,45 @@ export function setUpCommands() {
   addCommandsInDirectory(MISC_TYPE, MISC_COMMANDS_DIRECTORY);
 }
 
+/**
+ * Executes a command.
+ * @param {import('discord.js').Message} message Message context
+ */
+export function executeCommand(message) {
+  const [name, args] = message.content
+    .slice(PREFIX.length)
+    .split(/(?<=^\S+)\s/);
+
+  const commandName = aliases.get(name);
+  if (commandName === undefined) {
+    return;
+  }
+
+  const command = commands.get(commandName);
+  if (command === undefined) {
+    logger.error(`Found undefined command for command name "${commandName}"`);
+    return;
+  }
+
+  // all args without any mentions in it
+  const filteredArgs = (args || '')
+    .split(/ +/)
+    .filter((arg) => arg.match(/<@.*?>/) === null)
+    .join(' ');
+
+  if (command.args !== undefined && filteredArgs.length < command.args) {
+    sendRaw(message, `Insufficient arguents given, required ${command.args} given ${filteredArgs.length}`);
+    return;
+  }
+  if (command.mentions !== undefined && message.mentions.length < command.mentions) {
+    sendRaw(message, `Insufficient mentions given, required ${command.mentions} given ${message.mentions.length}`);
+    return;
+  }
+
+  command.execute(message, minimist(filteredArgs));
+}
+
 export default {
   setUpCommands,
+  executeCommand,
 };

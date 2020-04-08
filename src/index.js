@@ -8,5 +8,5 @@ setUpCommands();
 startClient();
 
 process.on('unhandledRejection', (e) => {
-  logger.error(`Uncaught Promise Rejection\n ${e}`);
+  logger.error(`Uncaught Promise Rejection - ${e}`);
 });
