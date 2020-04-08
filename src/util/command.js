@@ -160,19 +160,19 @@ export function executeCommand(message) {
   // all args without any mentions in it
   const filteredArgs = (args || '')
     .split(/ +/)
-    .filter((arg) => arg.match(/<@.*?>/) === null)
-    .join(' ');
+    .filter((arg) => arg.match(/<@.*?>/) === null);
 
-  if (command.args !== undefined && filteredArgs.length < command.args) {
+  const parsedArgs = minimist(filteredArgs);
+  if (command.args !== undefined && parsedArgs._.length < command.args) {
     sendRaw(message, `Insufficient arguents given, required ${command.args} given ${filteredArgs.length}`);
     return;
   }
-  if (command.mentions !== undefined && message.mentions.length < command.mentions) {
+  if (command.mentions !== undefined && message.mentions.members < command.mentions) {
     sendRaw(message, `Insufficient mentions given, required ${command.mentions} given ${message.mentions.length}`);
     return;
   }
 
-  command.execute(message, minimist(filteredArgs));
+  command.execute(message, parsedArgs);
 }
 
 export default {
