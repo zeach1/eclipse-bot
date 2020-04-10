@@ -2,7 +2,7 @@ import Discord from 'discord.js';
 
 import { SUBREDDIT_URL, PREFIX } from '../config/index';
 import { executeCommand } from './command';
-import logger from './logger';
+import * as logger from './logger';
 
 const { BOT_TOKEN } = process.env;
 const PRESENCE = {
@@ -37,7 +37,7 @@ export function startClient() {
   client.on('ready', () => onReady());
   client.on('message', (message) => onMessage(message));
 
-  client.login(BOT_TOKEN).catch((e) => logger.error(`Failed to login - ${e}`));
+  client.login(BOT_TOKEN).catch((e) => logger.fatal('Failed to login', e));
   logger.info('Client connected');
 }
 

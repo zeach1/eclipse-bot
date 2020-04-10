@@ -1,8 +1,9 @@
 import fs from 'fs';
 import minimist from 'minimist';
+import shlex from 'shlex';
 
 import { PREFIX } from '../config';
-import logger, { toString } from './logger';
+import * as logger from './logger';
 import { sendRaw } from './messenger';
 
 const DEVELOPMENT_TYPE = 'Development';
@@ -10,7 +11,6 @@ const ECLIPSE_TYPE = 'Eclipse';
 const ESSENTIALS_TYPE = 'Essentials';
 const LEADERSHIP_TYPE = 'Leadership';
 const MISC_TYPE = 'Miscellaneous';
-
 
 const COMMANDS_DIRECTORY = './src/commands';
 const DEVELOPMENT_COMMANDS_DIRECTORY = `${COMMANDS_DIRECTORY}/development`;
@@ -32,11 +32,11 @@ const MISC_COMMANDS_DIRECTORY = `${COMMANDS_DIRECTORY}/misc`;
  * @property {!string} name Name of command, as well as main alias for command
  * @property {!string} description Brief description of command
  * @property {!string} type Type of command
+ * @property {!number} args Number of arguments command should have when called
+ * @property {!number} mentions Number of mentions command should have when called
  * @property {!CommandExecute} execute Function to execute on command
- * @property {!number} [args] Number of arguments command should have when called
- * @property {!number} [mentions] Number of mentions command should have when called
  * @property {!string} [details] Detailed descrioption of command
- * @property {!string} [usage] Usage of command, required if args > 0
+ * @property {!string} [usage] Usage of command, required if args > 0 or mentions > 0
  * @property {!string[]} [aliases] Different aliases of command that can be called
  */
 
@@ -59,40 +59,68 @@ const commands = new Map();
  * @throws Will throw an error if command fails validotion.
  */
 function validCommand(command) {
-  let error = '';
+  // check type of command fields
+  if (typeof command.name !== 'string') {
+    logger.error('Received command with no name', command);
+    return false;
+  }
+  if (typeof command.description !== 'string') {
+    logger.error('Received command with no description', command);
+    return false;
+  }
+  if (typeof command.type !== 'string') {
+    logger.error('Received command with no type', command);
+    return false;
+  }
+  if (typeof command.args !== 'number') {
+    logger.error('Received command with no args', command);
+    return false;
+  }
+  if (typeof command.mentions !== 'number') {
+    logger.error('Received command with no mentions', command);
+    return false;
+  }
+  if (typeof command.execute !== 'function') {
+    logger.error('Received command with invalid execute function', command);
+    return false;
+  }
+  if (command.details !== undefined && typeof command.details !== 'string') {
+    logger.error('Received command with invalid details', command);
+    return false;
+  }
+  if (command.usage !== undefined && typeof command.usage !== 'string') {
+    logger.error('Received command with invalid usage', command);
+    return false;
+  }
+  if (command.aliases !== undefined && !Array.isArray(command.aliases)) {
+    logger.error('Received command with invalid aliases', command);
+    return false;
+  }
 
-  // check validity of command fields that ommand does not duplicate other command aliases
-  if (command.name === undefined) {
-    error = `Received command with no name: ${toString(command)}`;
-  } else if (command.description === undefined) {
-    error = `Received command with no description: ${toString(command)}`;
-  } else if (command.type === undefined) {
-    error = `Received command with no type: ${toString(command)}`;
-  } else if (command.execute === undefined || typeof command.execute !== 'function') {
-    error = `Received command with invalid execute function: ${toString(command)}`;
-  } else if (command.args !== undefined && typeof command.args !== 'number') {
-    error = `Received command with invalid args: ${toString(command)}`;
-  } else if (command.mentions !== undefined && typeof command.mentions !== 'number') {
-    error = `Received command with invalid mentions: ${toString(command)}`;
-  } else if (command.aliases !== undefined && !Array.isArray(command.aliases)) {
-    error = `Received command with invalid aliases: ${toString(command)}`;
-  } else if (aliases.has(command.name)) {
-    // check duplicate command name
-    error = `Received command "${command.name}" whose name exists in another command "${aliases.get(command.name)}"`;
-  } else if (command.aliases !== undefined) {
-    // check duplicate command aliases
-    command.aliases.some((alias) => {
+  // check required usage if args/mentions > 0
+  if ((command.args > 0 || command.mentions > 0) && command.usage === undefined) {
+    logger.error('Received command with required args/mentions but no usage', command);
+    return false;
+  }
+
+  // check duplicate command name
+  if (aliases.has(command.name)) {
+    logger.error(`Received command "${command.name}" whose name exists in another command "${aliases.get(command.name)}"`);
+    return false;
+  }
+  if (command.aliases !== undefined) {
+    const duplicateAlias = command.aliases.some((alias) => {
       if (aliases.has(alias)) {
-        error = `Received command "${command.name}" whose alias "${alias}" exists in another command "${aliases.get(alias)}"`;
+        logger.error(`Received command "${command.name}" whose alias "${alias}" exists in another command "${aliases.get(alias)}"`);
       }
       return aliases.has(alias);
     });
+
+    if (duplicateAlias) {
+      return false;
+    }
   }
 
-  if (error !== '') {
-    logger.error(error);
-    return false;
-  }
   return true;
 }
 
@@ -104,10 +132,15 @@ function validCommand(command) {
  */
 function addCommandsInDirectory(type, directory) {
   fs.readdirSync(directory).forEach((file) => {
-    /** @type {Command} */
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    const info = require(`../../${directory}/${file}`);
+
+    /**
+     * @type {Command}
+     */
     const command = {
-      // eslint-disable-next-line global-require, import/no-dynamic-require
-      ...require(`../../${directory}/${file}`),
+      ...info,
+      usage: info.usage === undefined ? info.name : `${info.name} ${info.usage}`,
       type,
     };
 
@@ -142,9 +175,7 @@ export function setUpCommands() {
  * @param {import('discord.js').Message} message Message context
  */
 export function executeCommand(message) {
-  const [name, args] = message.content
-    .slice(PREFIX.length)
-    .split(/(?<=^\S+)\s/);
+  const [name, args] = message.content.slice(PREFIX.length).split(/(?<=^\S+)\s/);
 
   const commandName = aliases.get(name);
   if (commandName === undefined) {
@@ -158,9 +189,7 @@ export function executeCommand(message) {
   }
 
   // all args without any mentions in it
-  const filteredArgs = (args || '')
-    .split(/ +/)
-    .filter((arg) => arg.match(/<@.*?>/) === null);
+  const filteredArgs = shlex.split(args || '').filter((arg) => arg.match(/<@.*?>/) === null);
 
   const parsedArgs = minimist(filteredArgs);
   if (command.args !== undefined && parsedArgs._.length < command.args) {

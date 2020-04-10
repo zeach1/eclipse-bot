@@ -3,7 +3,7 @@ import http from 'http';
 import moment from 'moment-timezone';
 
 import { TIMEZONE, PROJECT_ENV } from '../config/index';
-import logger from './logger';
+import * as logger from './logger';
 
 const OK_STATUS = 200;
 const PING_INTERVAL_MS = 280000;
@@ -29,7 +29,7 @@ function setUpGlitchEnvironment() {
     logger.info('Pinging project URL');
     http.get(ECLIPSE_BOT_URL, ({ statusCode }) => {
       if (statusCode !== 200) {
-        logger.error(`Received bad status code ${statusCode}`);
+        logger.error('Received bad status code', statusCode);
       } else {
         logger.info('Received ok status 200');
       }
@@ -45,7 +45,7 @@ export function setUpEnvironment() {
     setUpGlitchEnvironment();
   }
 
-  logger.info(`Default timezone is set to ${TIMEZONE}`);
+  logger.info('Default timezone is set to', TIMEZONE);
   moment.tz.setDefault(TIMEZONE);
 }
 
