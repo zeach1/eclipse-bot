@@ -140,7 +140,6 @@ function addCommandsInDirectory(type, directory) {
      */
     const command = {
       ...info,
-      usage: info.usage === undefined ? info.name : `${info.name} ${info.usage}`,
       type,
     };
 
