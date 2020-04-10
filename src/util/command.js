@@ -4,7 +4,7 @@ import shlex from 'shlex';
 
 import { PREFIX } from '../config';
 import * as logger from './logger';
-import { sendRaw } from './messenger';
+import { sendArgumentError } from './messenger';
 
 const DEVELOPMENT_TYPE = 'Development';
 const ECLIPSE_TYPE = 'Eclipse';
@@ -192,11 +192,19 @@ export function executeCommand(message) {
 
   const parsedArgs = minimist(filteredArgs);
   if (command.args !== undefined && parsedArgs._.length < command.args) {
-    sendRaw(message, `Insufficient arguents given, required ${command.args} given ${filteredArgs.length}`);
+    sendArgumentError(
+      message,
+      command,
+      `You must provide ${command.args === 1 ? 'an argument' : `${command.args} arguments`}`,
+    );
     return;
   }
   if (command.mentions !== undefined && message.mentions.members < command.mentions) {
-    sendRaw(message, `Insufficient mentions given, required ${command.mentions} given ${message.mentions.length}`);
+    sendArgumentError(
+      message,
+      command,
+      `You must mention ${command.args === 1 ? 'a person' : `${command.args} people`}`,
+    );
     return;
   }
 

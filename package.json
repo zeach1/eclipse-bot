@@ -1,6 +1,6 @@
 {
   "name": "eclipse-bot",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "license": "MIT",
   "author": "Paul Matthew Barrameda",
   "description": "Reddit Eclipse custom Discord bot",
@@ -12,6 +12,7 @@
     "minimist": "^1.2.5",
     "moment-timezone": "^0.5.28",
     "outdent": "^0.7.1",
+    "randomcolor": "^0.5.4",
     "shlex": "^2.0.2",
     "twemoji": "^12.1.5",
     "winston": "^3.2.1"

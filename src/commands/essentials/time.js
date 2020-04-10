@@ -15,7 +15,7 @@ export const args = 0;
 export const mentions = 0;
 
 /**
- * @param {!import('discord.js').Message} message
+ * @param {!import('discord.js').Message} message Message context
  */
 export function execute(message) {
   if (isBusy(name)) {
@@ -27,6 +27,5 @@ export function execute(message) {
   sendEmbed(message, {
     title: '📅 Current Time',
     description: moment().format(TIME_FORMAT),
-    color: 0x00666f,
   });
 }
