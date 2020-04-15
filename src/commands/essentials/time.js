@@ -18,11 +18,11 @@ export const mentions = 0;
  * @param {!import('discord.js').Message} message Message context
  */
 export function execute(message) {
-  if (isBusy(name)) {
+  if (isBusy(this)) {
     return;
   }
 
-  setBusy(name, COOLDOWN_MS);
+  setBusy(this, COOLDOWN_MS);
 
   sendEmbed(message, {
     title: '📅 Current Time',

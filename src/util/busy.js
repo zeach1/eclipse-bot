@@ -1,38 +1,38 @@
 /**
  * Map of command name to whether or not they are busy or not
- * @type {!Map<string, boolean}
+ * @type {!Map<string, boolean>}
  */
 const busy = new Map();
 
 /**
  * Checks if command with given command name is busy.
- * @param {!string} commandName Name of command
+ * @param {!import('./command').Command} command Command to check for
  */
-export function isBusy(commandName) {
-  if (!busy.has(commandName)) {
-    busy.set(commandName, false);
+export function isBusy(command) {
+  if (!busy.has(command.name)) {
+    busy.set(command.name, false);
   }
-  return busy.get(commandName);
+  return busy.get(command.name);
 }
 
 /**
  * Sets a command with given command name as busy.
- * @param {!string} commandName Name of command
+ * @param {!import('./command').Command} command Command to check for
  * @param {!number} [durationMs] How long the command is busy for, in milliseconds
  */
-export function setBusy(commandName, durationMs) {
-  busy.set(commandName, true);
+export function setBusy(command, durationMs) {
+  busy.set(command.name, true);
   if (durationMs !== undefined) {
-    setTimeout(() => busy.set(commandName, false), durationMs);
+    setTimeout(() => busy.set(command.name, false), durationMs);
   }
 }
 
 /**
  * Sets a command with given command name as available.
- * @param {!string} commandName Name of command
+ * @param {!import('./command').Command} command Command to check for
  */
-export function setAvailable(commandName) {
-  busy.set(commandName, false);
+export function setAvailable(command) {
+  busy.set(command.name, false);
 }
 
 export default {

@@ -53,15 +53,6 @@ export async function sendEmbed(message, embedOptions) {
 }
 
 /**
- * Sends raw message to channel.
- * @param {Discord.Message} message Message context
- * @param {string} content Content to send to channel
- */
-export async function sendRaw(message, content) {
-  await message.channel.send(content).catch((e) => onSendError(e));
-}
-
-/**
  * Sends argument error embed to channel.
  * @param {!Discord.Message} message Message context
  * @param {!import('./command').Command} command Command information
@@ -94,6 +85,28 @@ export function sendCommandHelp(message, command) {
     footer: `Requested by ${message.member.displayName}`,
     timestamp: moment().toDate(),
   });
+}
+
+/**
+ * Sends raw message to channel.
+ * @param {Discord.Message} message Message context
+ * @param {string} content Content to send to channel
+ */
+export async function sendRaw(message, content) {
+  await message.channel.send(content).catch((e) => onSendError(e));
+}
+
+/**
+ * Sends raw message to channel and then deletes it.
+ * @param {Discord.Message} message Message context
+ * @param {string} content Content to send to channel
+ * @param {number} deletionTimeoutMs Time to delete the message in milliseconds
+ */
+export async function sendAndDeleteRaw(message, content, deletionTimeoutMs) {
+  await message.channel.send(content)
+    .then((msg) => msg.delete({ timeout: deletionTimeoutMs })
+      .catch((e) => logger.error('Failed to delete raw message', e)))
+    .catch((e) => onSendError(e));
 }
 
 export default {
