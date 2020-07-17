@@ -11,7 +11,7 @@
     "express": "^4.17.1",
     "moment-timezone": "^0.5.28",
     "outdent": "^0.7.1",
-    "twemoji": "^12.1.5"
+    "twemoji": "^13.0.1"
   },
   "devDependencies": {
     "better-sqlite3": "^5.4.3",
