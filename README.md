@@ -7,6 +7,7 @@ Reddit Eclipse *(one of the best RCS clans out there)* has its own bot? Why, yes
 
 Join our server and check the bot out <https://discord.gg/FzUNupJ>. For help, type `+help` in the
 chat.
+[![Run on Repl.it](https://repl.it/badge/github/zeach1/eclipse-bot)](https://repl.it/github/zeach1/eclipse-bot)
 
 ## Contributing
 
